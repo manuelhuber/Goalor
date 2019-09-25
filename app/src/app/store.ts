@@ -4,10 +4,8 @@ import {goalReducer} from "../goals/duck";
 const initialState = {'bar': 42};
 
 const mainReducer: Reducer = (state = initialState, action) => {
-    console.log(state);
     return state;
 };
-
 
 const rootReducer = combineReducers({foo: mainReducer, goals: goalReducer});
 

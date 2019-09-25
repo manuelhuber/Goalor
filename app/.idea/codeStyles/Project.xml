@@ -6,7 +6,6 @@
     <codeStyleSettings language="TypeScript">
       <option name="ALIGN_MULTILINE_CHAINED_METHODS" value="true" />
       <option name="KEEP_SIMPLE_BLOCKS_IN_ONE_LINE" value="true" />
-      <option name="KEEP_SIMPLE_METHODS_IN_ONE_LINE" value="true" />
     </codeStyleSettings>
   </code_scheme>
 </component>
