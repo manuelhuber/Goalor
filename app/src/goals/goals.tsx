@@ -1,24 +1,20 @@
+import {AppState} from "app/store";
 import React from "react";
 import {connect} from 'react-redux'
-import {AppState} from "app/store";
-import {addGoal, Goal} from "./duck";
-
-interface Props {
-    count: number;
-    addGoal: (goal: Goal) => void;
-}
+import {addGoal} from "./duck";
 
 const mapStateToProps = (state: AppState) => {
-    return {count: state.goals.goals.length}
+    return {count: state.goals.length, bar: state.foo}
 };
-
 const mapDispatchToProps = {addGoal};
 
 const Goals: React.FC<Props> = props => {
-
     return <div>
-        <button onClick={() => props.addGoal({id: "1", title: "foo", steps: []})}>click</button>
+        <button onClick={() => props.addGoal({id: "1", title: "foo", steps: []})}>We have {props.count}</button>
     </div>;
 };
 
+type DispatchProps = typeof mapDispatchToProps;
+type StateMapProps = ReturnType<typeof mapStateToProps>
+type Props = DispatchProps & StateMapProps;
 export default connect(mapStateToProps, mapDispatchToProps)(Goals);

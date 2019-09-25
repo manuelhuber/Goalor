@@ -30,7 +30,7 @@ const App: React.FC<Props> = (props) => {
 
 const mapStateToProps = (state: AppState): Props => {
     return {
-        count: state.goals.goals.length
+        count: state.goals.length
     }
 };
 

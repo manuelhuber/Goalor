@@ -1,5 +1,7 @@
 import {Action, Reducer} from "redux";
 
+// State
+
 export interface Step {
     text: string;
     done: boolean;
@@ -11,9 +13,21 @@ export interface Goal {
     steps: Step[];
 }
 
-export interface GoalState {
-    goals: Goal[];
-}
+export type GoalState = Goal[];
+
+const initialState: GoalState = [{
+        id: "1",
+        title: "Create this site",
+        steps: [
+            {text: "Setup React boilerplate", done: false},
+            {text: "Add redux", done: false},
+            {text: "Design a My-Goal page", done: false},
+            {text: "Refactoring / Cleanup", done: false},
+        ]
+    }]
+;
+
+// Actions
 
 export interface AddGoal extends Action<"AddGoal"> {
     goal: Goal;
@@ -29,26 +43,15 @@ export interface CompleteGoal extends Action<"CompleteGoal"> {
 
 export type GoalAction = AddGoal | CompleteGoal;
 
-const initialState: GoalState = {
-    goals: [{
-        id: "1",
-        title: "Create this site",
-        steps: [
-            {text: "Setup React boilerplate", done: false},
-            {text: "Add redux", done: false},
-            {text: "Design a My-Goal page", done: false},
-            {text: "Refactoring / Cleanup", done: false},
-        ]
-    }]
-};
+// Reducer
 
-export const goalReducer: Reducer<GoalState, GoalAction> = (state = initialState, action) => {
+export const goalReducer: Reducer<GoalState, GoalAction> = (state = initialState, action): GoalState => {
     console.log(state);
     switch (action.type) {
         case 'AddGoal':
-            return {...state, goals: [action.goal, ...state.goals]};
+            return [action.goal, ...state];
         case "CompleteGoal":
-            const goals = state.goals.map(goal => {
+            return state.map(goal => {
                 if (goal.id !== action.id) {
                     return goal;
                 }
@@ -57,10 +60,6 @@ export const goalReducer: Reducer<GoalState, GoalAction> = (state = initialState
                     done: action.done
                 }
             });
-            return {
-                ...state,
-                goals
-            };
         default:
             return state;
     }
