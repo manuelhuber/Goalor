@@ -1,16 +1,11 @@
 import {combineReducers, createStore, Reducer} from "redux";
 import {goalReducer} from "../goals/duck";
 
-const initialState = {'bar': 42};
-
-const mainReducer: Reducer = (state = initialState, action) => {
-    return state;
-};
-
-const rootReducer = combineReducers({foo: mainReducer, goals: goalReducer});
+const rootReducer = combineReducers({goals: goalReducer});
 
 export type AppState = ReturnType<typeof rootReducer>
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer,
+    (<any>window).__REDUX_DEVTOOLS_EXTENSION__ && (<any>window).__REDUX_DEVTOOLS_EXTENSION__());
 
 export default store;
