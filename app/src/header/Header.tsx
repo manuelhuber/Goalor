@@ -6,7 +6,6 @@ import style from "./Header.module.scss";
 const mapStateToProps = (state: AppState) => {
     return {}
 };
-
 const mapDispatchToProps = {};
 
 const Header: React.FC<Props> = props => {

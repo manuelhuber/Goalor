@@ -3,6 +3,7 @@ import React from "react";
 import {connect} from "react-redux"
 import Goals from "../goals/Goals";
 import Header from "../header/Header";
+import style from "./App.module.scss";
 
 const mapStateToProps = (state: AppState) => {
     return {}
@@ -11,7 +12,7 @@ const mapStateToProps = (state: AppState) => {
 const mapDispatchToProps = {};
 
 const App: React.FC<Props> = props => {
-    return <div>
+    return <div className={style.app}>
         <div>
             <Header/>
         </div>
@@ -19,7 +20,5 @@ const App: React.FC<Props> = props => {
     </div>;
 };
 
-type DispatchProps = typeof mapDispatchToProps;
-type StateMapProps = ReturnType<typeof mapStateToProps>
-type Props = DispatchProps & StateMapProps;
+type Props = typeof mapDispatchToProps & ReturnType<typeof mapStateToProps>;
 export default connect(mapStateToProps, mapDispatchToProps)(App);

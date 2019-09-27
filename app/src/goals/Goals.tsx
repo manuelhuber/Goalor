@@ -9,9 +9,16 @@ const mapStateToProps = (state: AppState) => {
     return {count: state.goals.ids.length, goals: state.goals}
 };
 const mapDispatchToProps = {addGoal};
-
+let counter = 1;
 const Goals: React.FC<Props> = props => {
-    const addGoal = () => () => props.addGoal({goal: {id: "asdfasd", title: "foo", steps: [], image: ""}});
+    const addGoal = () => () => props.addGoal({
+        goal: {
+            id: "new" + counter++,
+            title: "foo",
+            steps: [{done: false, text: "step 1"}],
+            image: ""
+        }
+    });
 
     return <div className={styles.goals}>
         <div className={styles.title}>My Goals <hr className={styles.titleLine}/></div>
