@@ -1,8 +1,8 @@
 import {AppState} from "app/store";
 import React from "react";
 import {connect} from "react-redux"
-import Goals from "../goals/Goals";
-import Header from "../header/Header";
+import Goals from "./features/goals/Goals";
+import Header from "./features/header/Header";
 import style from "./App.module.scss";
 
 const mapStateToProps = (state: AppState) => {

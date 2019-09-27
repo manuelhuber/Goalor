@@ -1,5 +1,5 @@
 import {combineReducers, createStore} from "redux";
-import {goalReducer} from "../goals/duck";
+import {goalReducer} from "./features/goals/duck";
 
 const rootReducer = combineReducers({goals: goalReducer});
 

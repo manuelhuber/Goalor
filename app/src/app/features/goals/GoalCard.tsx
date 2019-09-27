@@ -1,7 +1,8 @@
 import {AppState} from "app/store";
 import React, {CSSProperties, useState} from "react";
 import {connect} from "react-redux"
-import Checkbox from "../common/Checkbox";
+import {jc} from "../../../util/style";
+import Checkbox from "../../common/Checkbox";
 import {completeGoal, Step} from "./duck";
 import styles from "./GoalCard.module.scss"
 
@@ -27,16 +28,15 @@ const GoalCard: React.FC<Props> = props => {
 
     let stepStyle: CSSProperties = {};
     if (!isToggled) {
-        stepStyle["width"] = "0";
         stepStyle["display"] = "none";
     }
 
-    return <div className={[styles.card, styles.border].join(" ")} style={{"backgroundImage": `url(${image})`}}>
+    return <div className={jc(styles.card, styles.border)} style={{"backgroundImage": `url(${image})`}}>
 
         <div onClick={() => setToggle(!isToggled)}>
             <span className={styles.title}>{title}</span></div>
 
-        <div className={[styles.steps, styles.border].join(" ")} style={stepStyle}>{steps.map((step, stepNumber) => {
+        <div className={jc(styles.steps, styles.border)} style={stepStyle}>{steps.map((step, stepNumber) => {
             const toggleStep = (done) => toggle(step, stepNumber, done);
             return <div key={stepNumber} onClick={() => toggleStep(!step.done)}>
                 <Checkbox checked={step.done}/> {step.text}
