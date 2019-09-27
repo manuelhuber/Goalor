@@ -10,6 +10,7 @@ export interface Step {
 export interface Goal {
     id: string;
     title: string;
+    image: string;
     steps: Step[];
 }
 
@@ -19,11 +20,12 @@ export type GoalState = {
 };
 
 const initialState: GoalState = {
-    ids: ['1'],
+    ids: ["1"],
     goals: {
-        '1': {
+        "1": {
             id: "1",
             title: "Create this site",
+            image: "https://labs.lullabot.com/user/pages/01.home/09.react-redux-boilerplate/reactredux.png",
             steps: [
                 {text: "Setup React boilerplate", done: false},
                 {text: "Add redux", done: false},
@@ -37,16 +39,16 @@ const initialState: GoalState = {
 // Actions
 
 type AddGoal = { goal: Goal };
-type AddGoalAction = AddGoal & Action<'ADD_GOAL'>;
-export const addGoal = (input: AddGoal): AddGoalAction => ({type: 'ADD_GOAL', ...input});
+type AddGoalAction = AddGoal & Action<"ADD_GOAL">;
+export const addGoal = (input: AddGoal): AddGoalAction => ({type: "ADD_GOAL", ...input});
 
 type CompleteGoal = {
     id: string;
     step: number;
     done: boolean;
 };
-type CompleteGoalAction = CompleteGoal & Action<'COMPLETE_GOAL'>;
-export const completeGoal = (input: CompleteGoal): CompleteGoalAction => ({type: 'COMPLETE_GOAL', ...input});
+type CompleteGoalAction = CompleteGoal & Action<"COMPLETE_GOAL">;
+export const completeGoal = (input: CompleteGoal): CompleteGoalAction => ({type: "COMPLETE_GOAL", ...input});
 
 export type GoalAction = AddGoalAction | CompleteGoalAction;
 
@@ -55,7 +57,7 @@ export type GoalAction = AddGoalAction | CompleteGoalAction;
 export const goalReducer: Reducer<GoalState, GoalAction> = (state = initialState, action): GoalState => {
     let id;
     switch (action.type) {
-        case 'ADD_GOAL':
+        case "ADD_GOAL":
             id = action.goal.id;
             return {
                 ...state,

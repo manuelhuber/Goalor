@@ -1,4 +1,4 @@
-import {combineReducers, createStore, Reducer} from "redux";
+import {combineReducers, createStore} from "redux";
 import {goalReducer} from "../goals/duck";
 
 const rootReducer = combineReducers({goals: goalReducer});

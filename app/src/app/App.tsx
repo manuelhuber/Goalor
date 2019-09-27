@@ -1,8 +1,8 @@
-import React from "react";
-import {connect} from 'react-redux'
 import {AppState} from "app/store";
+import React from "react";
+import {connect} from "react-redux"
 import Goals from "../goals/Goals";
-import styles from './App.module.scss';
+import Header from "../header/Header";
 
 const mapStateToProps = (state: AppState) => {
     return {}
@@ -12,8 +12,9 @@ const mapDispatchToProps = {};
 
 const App: React.FC<Props> = props => {
     return <div>
-        <div className={styles.Appheader}>a</div>
-        <div>foo</div>
+        <div>
+            <Header/>
+        </div>
         <Goals/>
     </div>;
 };
