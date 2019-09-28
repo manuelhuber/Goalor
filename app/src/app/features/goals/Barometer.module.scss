@@ -1,0 +1,59 @@
+$color-empty: darkgrey;
+$color-full: green;
+$delay: 300ms;
+.pipe {
+  margin: 0 auto;
+  height: 40px;
+  width: 10px;
+  border-width: 0 1px 0 1px;
+  border-style: solid;
+  border-color: black;
+  background: linear-gradient(to top, $color-full 0%, $color-full 50%, $color-empty 50%, $color-empty 100%);
+  background-size: 100% 200%;
+
+  &.empty {
+    background-position: top;
+  }
+
+  &.full {
+    background-position: bottom;
+  }
+
+  &.semi {
+    transition-delay: 500ms;
+    background-position: center;
+  }
+
+  transition: all 300ms linear;
+
+}
+
+.dot {
+  margin: 0 auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid black;
+  transition: all 200ms linear;
+  transition-delay: 300ms;
+
+
+  background: linear-gradient(to top, $color-full 0%, $color-full 50%, $color-empty 50%, $color-empty 100%);
+  background-size: 100% 250%;
+
+  &.empty {
+    background-position: top;
+  }
+
+  &.full {
+    background-position: bottom;
+  }
+}
+
+.entryRow {
+  display: flex;
+}
+
+.barometerColumn {
+  width: 40px;
+}

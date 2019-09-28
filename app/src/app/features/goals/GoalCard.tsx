@@ -2,14 +2,13 @@ import {AppState} from "app/store";
 import React, {CSSProperties, useState} from "react";
 import {connect} from "react-redux"
 import {jc} from "../../../util/style";
-import Checkbox from "../../common/Checkbox";
-import {completeGoal, Step} from "./duck";
+import Barometer from "./Barometer";
 import styles from "./GoalCard.module.scss"
 
 const mapStateToProps = (state: AppState, ownProps: { id: string }) => {
     return {goal: state.goals.goals[ownProps.id]}
 };
-const mapDispatchToProps = {completeGoal};
+const mapDispatchToProps = {};
 
 const GoalCard: React.FC<Props> = props => {
     const [isToggled, setToggle] = useState(false);
@@ -18,17 +17,9 @@ const GoalCard: React.FC<Props> = props => {
     }
     const {id, title, steps, image} = props.goal;
 
-    const toggle = (step: Step, stepNumber: number, done: boolean) => {
-        props.completeGoal({
-            id,
-            step: stepNumber,
-            done: done
-        });
-    };
-
     let stepStyle: CSSProperties = {};
     if (!isToggled) {
-        stepStyle["display"] = "none";
+        // stepStyle["display"] = "none";
     }
 
     return <div className={jc(styles.card, styles.border)} style={{"backgroundImage": `url(${image})`}}>
@@ -36,12 +27,8 @@ const GoalCard: React.FC<Props> = props => {
         <div onClick={() => setToggle(!isToggled)}>
             <span className={styles.title}>{title}</span></div>
 
-        <div className={jc(styles.steps, styles.border)} style={stepStyle}>{steps.map((step, stepNumber) => {
-            const toggleStep = (done) => toggle(step, stepNumber, done);
-            return <div key={stepNumber} onClick={() => toggleStep(!step.done)}>
-                <Checkbox checked={step.done}/> {step.text}
-            </div>
-        })}
+        <div className={jc(styles.steps, styles.border)} style={stepStyle}>
+            <Barometer steps={steps} goalId={id}/>
         </div>
     </div>;
 };
