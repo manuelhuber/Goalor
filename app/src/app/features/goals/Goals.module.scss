@@ -1,24 +1,8 @@
-@import "../../../style/styleConstants";
+@import "style/styleConstants";
 
 .goals {
   margin-top: 10px;
   padding: 8px;
-}
-
-.title {
-  color: $red-dark;
-  font-family: $fancy-font;
-  font-weight: bold;
-  display: flex;
-  align-items: baseline;
-}
-
-.titleLine {
-  flex-grow: 1;
-  height: 2px;
-  border: none;
-  background: linear-gradient(to right, $red-dark, rgba(0, 0, 0, 0));
-
 }
 
 .goalsWrapper {

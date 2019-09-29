@@ -13,10 +13,13 @@ $delay: 300ms;
 
   &.empty {
     background-position: top;
+    transition-timing-function: ease-out;
+
   }
 
   &.full {
     background-position: bottom;
+    transition-timing-function: ease-in;
   }
 
   &.semi {
@@ -34,7 +37,7 @@ $delay: 300ms;
   height: 20px;
   border-radius: 50%;
   border: 1px solid black;
-  transition: all 200ms linear;
+  transition: all 100ms linear;
   transition-delay: 300ms;
 
 

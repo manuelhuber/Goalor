@@ -12,24 +12,18 @@ const mapDispatchToProps = {};
 
 const GoalCard: React.FC<Props> = props => {
     const [isToggled, setToggle] = useState(false);
-    if (!props.goal) {
-        return <div></div>;
-    }
     const {id, title, steps, image} = props.goal;
 
     let stepStyle: CSSProperties = {};
-    if (!isToggled) {
-        // stepStyle["display"] = "none";
-    }
 
     return <div className={jc(styles.card, styles.border)} style={{"backgroundImage": `url(${image})`}}>
 
         <div onClick={() => setToggle(!isToggled)}>
             <span className={styles.title}>{title}</span></div>
 
-        <div className={jc(styles.steps, styles.border)} style={stepStyle}>
+        {isToggled && <div className={jc(styles.steps, styles.border)} style={stepStyle}>
             <Barometer steps={steps} goalId={id}/>
-        </div>
+        </div>}
     </div>;
 };
 

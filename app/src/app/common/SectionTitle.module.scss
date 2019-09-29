@@ -1,0 +1,14 @@
+@import "style/styleConstants";
+
+.title {
+  font-family: $fancy-font;
+  font-weight: bold;
+  display: flex;
+  align-items: baseline;
+}
+
+.titleLine {
+  flex-grow: 1;
+  height: 2px;
+  border: none;
+}
