@@ -1,4 +1,4 @@
-import {AppState} from "app/store";
+import {AppState} from "app/Store";
 import React from "react";
 import {connect} from "react-redux"
 import style from "./Header.module.scss";

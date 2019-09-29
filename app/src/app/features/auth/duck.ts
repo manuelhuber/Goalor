@@ -1,6 +1,6 @@
 import {Action, Reducer} from "redux";
 import {ThunkAction} from "redux-thunk";
-import {AppState, Thunk} from "../../store";
+import {AppState, Thunk} from "../../Store";
 
 // State
 
@@ -10,7 +10,7 @@ export type AuthState = {
     isLoading: boolean;
 };
 
-const initialState: AuthState = {authenticated: true, isLoading: false};
+const initialState: AuthState = {authenticated: false, isLoading: false};
 
 // Actions
 export type LoginRequest = { username: string, password: string };

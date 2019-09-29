@@ -1,0 +1,15 @@
+@import "style/styleConstants";
+
+* {
+  /* Sets our Baseline Grid */
+  --rhythm: 2rem;
+
+  /* Sets font-size relative to rhythm */
+  --line-height-ratio: 1.4;
+}
+
+html {
+  --color-primary-tint1: #{$red-lighter};
+  --color-primary: #{$red};
+  --color-primary-shade1: #{$red-dark};
+}

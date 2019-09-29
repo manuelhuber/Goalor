@@ -1,7 +1,8 @@
-import {AppState} from "app/store";
+import {AppState} from "app/Store";
 import React, {useState} from "react";
 import {connect} from "react-redux"
 import {useInput} from "../../../util/InputHook";
+import {jc} from "../../../util/style";
 import {login, LoginRequest, register, RegisterRequest} from "./duck";
 
 const mapStateToProps = (state: AppState) => {
@@ -27,11 +28,12 @@ const Authenticate: React.FC<Props> = props => {
         event.preventDefault();
     };
     return <div>
-        <form action="" onSubmit={submit}>
-            <label>Username<input type="text" {...bindUsername}/></label>
-            <label>password<input type="password" {...bindPassword}/></label>
-            {isRegistration && <label>email<input type="email" {...bindEmail}/></label>}
-            <input type="submit" value="Submit"/>
+        <form action="" onSubmit={submit} className='wrapper'>
+            <label className='field'><input type="text" {...bindUsername}/><span className='label'>Username</span></label>
+            <label className='field'><input type="password" {...bindPassword}/><span className='label'>password</span></label>
+            {isRegistration &&
+            <label className='field'><input type="email" {...bindEmail}/><span className='label'>email</span></label>}
+            <input type="submit" value={isRegistration ? "Register" : "Login"} className={jc("button", "-block")}/>
         </form>
         <a onClick={() => setRegistration(!isRegistration)}>{isRegistration ? "Already registered? Login!" : "New here? Sign up!"}</a>
     </div>;

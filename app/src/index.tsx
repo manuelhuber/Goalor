@@ -2,8 +2,9 @@ import App from "app/App";
 import React from "react";
 import ReactDOM from "react-dom";
 import {Provider} from "react-redux";
-import store from "./app/store";
+import store from "./app/Store";
 import "./index.css";
+import "./style/cutestrap.scss";
 import * as serviceWorker from "./serviceWorker";
 import "./style/styleConstants.scss";
 

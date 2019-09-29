@@ -1,4 +1,4 @@
-import {AppState} from "app/store";
+import {AppState} from "app/Store";
 import React, {CSSProperties, useState} from "react";
 import {connect} from "react-redux"
 import {jc} from "../../../util/style";

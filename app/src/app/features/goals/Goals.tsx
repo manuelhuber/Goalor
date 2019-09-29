@@ -1,6 +1,7 @@
-import {AppState} from "app/store";
+import {AppState} from "app/Store";
 import React from "react";
 import {connect} from "react-redux"
+import {jc} from "../../../util/style";
 import SectionTitle from "../../common/SectionTitle";
 import {addGoal} from "./duck";
 import GoalCard from "./GoalCard";
@@ -23,7 +24,7 @@ const Goals: React.FC<Props> = props => {
 
     return <div className={styles.goals}>
         <SectionTitle title={props.title} color={props.color}/>
-        <button onClick={addGoal()}>We have {props.count}</button>
+        <button className={jc("button")} onClick={addGoal()}>We have {props.count}</button>
         <div className={styles.goalsWrapper}>{props.goals.map(id =>
             <div className={styles.cardWrapper} key={id}>
                 <GoalCard id={id}/>
