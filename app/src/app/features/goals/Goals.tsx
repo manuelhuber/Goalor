@@ -1,14 +1,13 @@
 import {AppState} from "app/store";
 import React from "react";
 import {connect} from "react-redux"
-import {redDark} from "../../../style/styleConstants";
 import SectionTitle from "../../common/SectionTitle";
 import {addGoal} from "./duck";
 import GoalCard from "./GoalCard";
 import styles from "./Goals.module.scss";
 
-const mapStateToProps = (state: AppState) => {
-    return {count: state.goals.ids.length, goals: state.goals}
+const mapStateToProps = (state: AppState, props: { ids: string[], title: string, color: string }) => {
+    return {goals: props.ids, count: props.ids.length, ...props};
 };
 const mapDispatchToProps = {addGoal};
 let counter = 1;
@@ -23,9 +22,9 @@ const Goals: React.FC<Props> = props => {
     });
 
     return <div className={styles.goals}>
-        <SectionTitle title="My Goals" color={redDark}/>
+        <SectionTitle title={props.title} color={props.color}/>
         <button onClick={addGoal()}>We have {props.count}</button>
-        <div className={styles.goalsWrapper}>{props.goals.ids.map(id =>
+        <div className={styles.goalsWrapper}>{props.goals.map(id =>
             <div className={styles.cardWrapper} key={id}>
                 <GoalCard id={id}/>
             </div>)}

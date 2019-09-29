@@ -3,6 +3,7 @@ export const red = "#e03541";
 export const white = "#faedca";
 export const blue = "#52489c";
 export const black = "#4e5340";
+export const green = "#73AF33";
 
 export const orangeDark = "#cf7f1d";
 export const redDark = "#b82c36";
