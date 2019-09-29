@@ -12,13 +12,12 @@ const mapStateToProps = (state: AppState, otherProps: { allGood: boolean }) => {
 const mapDispatchToProps = {};
 
 const Personal: React.FC<Props> = props => {
-        console.log(props);
-        return <div>
-            <Goals ids={props.personalGoals} title='My Goals' color={redDark}/>
-            <Goals ids={[]} title='Maybe Someday' color={green}/>
-        </div>;
-    }
-;
+    console.log(props);
+    return <div>
+        <Goals ids={props.personalGoals} title='My Goals' color={redDark}/>
+        <Goals ids={[]} title='Maybe Someday' color={green}/>
+    </div>;
+};
 
 type Props = typeof mapDispatchToProps & ReturnType<typeof mapStateToProps>;
 export default connect(mapStateToProps, mapDispatchToProps)(Personal);

@@ -5,6 +5,7 @@ import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import style from "./App.module.scss";
 import RestrictedRoute from "./features/auth/RestrictedRoute";
 import Header from "./features/header/Header";
+import Landing from "./page/Landing";
 import NotFound from "./page/NotFound";
 import Personal from "./page/Personal";
 
@@ -19,9 +20,11 @@ const App: React.FC<Props> = props => {
         <div>
             <Header/>
         </div>
+        <div draggable={true}>foo</div>
         <Router>
             <Switch>
                 <RestrictedRoute exact path='/me' component={Personal}/>
+                <Route path='/' component={Landing}/>
                 <Route component={NotFound}/>
             </Switch>
         </Router>
