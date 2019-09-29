@@ -1,7 +1,7 @@
 import {AppState} from "app/Store";
 import React from "react";
 import {connect} from "react-redux"
-import {css, jc} from "../../../util/style";
+import {css, jc} from "../../../util/Style";
 import style from "./Barometer.module.scss";
 import {completeGoal, Step} from "./duck";
 
