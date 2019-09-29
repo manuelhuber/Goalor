@@ -10,7 +10,7 @@ export type AuthState = {
     isLoading: boolean;
 };
 
-const initialState: AuthState = {authenticated: false, isLoading: false};
+const initialState: AuthState = {authenticated: true, isLoading: false};
 
 // Actions
 export type LoginRequest = { username: string, password: string };

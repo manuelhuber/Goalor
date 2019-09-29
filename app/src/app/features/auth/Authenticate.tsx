@@ -1,7 +1,7 @@
 import {AppState} from "app/store";
 import React, {useState} from "react";
 import {connect} from "react-redux"
-import {useInput} from "../../common/InputHook";
+import {useInput} from "../../../util/InputHook";
 import {login, LoginRequest, register, RegisterRequest} from "./duck";
 
 const mapStateToProps = (state: AppState) => {

@@ -1,7 +1,7 @@
 import {Action, Reducer} from "redux";
+import {replaceItem} from "../../../util/DuckUtil";
 
 // State
-
 export interface Step {
     text: string;
     done: boolean;
@@ -55,21 +55,18 @@ export type GoalAction = AddGoalAction | CompleteGoalAction;
 // Reducer
 
 export const goalReducer: Reducer<GoalState, GoalAction> = (state = initialState, action): GoalState => {
-    let id;
     switch (action.type) {
         case "ADD_GOAL":
-            id = action.goal.id;
             return {
                 ...state,
-                ids: state.ids.concat(id),
-                goals: {...state.goals, [id]: action.goal}
+                ids: state.ids.concat(action.goal.id),
+                goals: {...state.goals, [action.goal.id]: action.goal}
             };
         case "COMPLETE_GOAL":
-            id = action.id;
-            const updatedState = completeStep(state.goals[id], action.step, action.done);
+            const updatedState = completeStep(state.goals[(action.id)], action.step, action.done);
             return {
                 ...state,
-                goals: {...state.goals, [id]: updatedState}
+                goals: {...state.goals, [action.id]: updatedState}
             };
         default:
             return state;
@@ -77,15 +74,6 @@ export const goalReducer: Reducer<GoalState, GoalAction> = (state = initialState
 };
 
 function completeStep(goal: Goal, step: number, done: boolean): Goal {
-    const steps = goal.steps.map((value, index) => {
-        if (index !== step) {
-            return value;
-        } else {
-            return {
-                ...value,
-                done: done
-            }
-        }
-    });
+    const steps = replaceItem(goal.steps, step, step => ({...step, done: done}));
     return {...goal, steps}
 }
