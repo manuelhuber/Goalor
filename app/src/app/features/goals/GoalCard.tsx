@@ -3,10 +3,11 @@ import React, {useState} from "react";
 import {connect} from "react-redux"
 import {jc} from "../../../util/Style";
 import Barometer from "./Barometer";
+import {Goal} from "./duck";
 import styles from "./GoalCard.module.scss"
 
-const mapStateToProps = (state: AppState, ownProps: { id: string }) => {
-    return {goal: state.goals.goals[ownProps.id]}
+const mapStateToProps = (state: AppState, ownProps: { goal: Goal }) => {
+    return {goal: ownProps.goal}
 };
 const mapDispatchToProps = {};
 

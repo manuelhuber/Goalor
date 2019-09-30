@@ -12,6 +12,7 @@ export interface Goal {
     title: string;
     image: string;
     steps: Step[];
+    types: string[];
 }
 
 export type GoalState = {
@@ -21,7 +22,7 @@ export type GoalState = {
 };
 
 const initialState: GoalState = {
-    active: ["1"],
+    active: ["1", "3", "4", "5"],
     maybeSomeday: ["2"],
     goals: {
         "1": {
@@ -33,12 +34,32 @@ const initialState: GoalState = {
                 {text: "Add redux", done: false},
                 {text: "Design a My-GoalCard page", done: false},
                 {text: "Refactoring / Cleanup", done: false},
-            ]
+            ],
+            types: ["sport"],
         }, "2": {
             id: "2",
             title: "Learn Violine",
             image: "https://labs.lullabot.com/user/pages/01.home/09.react-redux-boilerplate/reactredux.png",
-            steps: []
+            steps: [],
+            types: ["music"]
+        }, "3": {
+            id: "3",
+            title: "Learn Spanish",
+            image: "https://labs.lullabot.com/user/pages/01.home/09.react-redux-boilerplate/reactredux.png",
+            steps: [],
+            types: ["education"]
+        }, "4": {
+            id: "4",
+            title: "Do 100 burpees",
+            image: "https://labs.lullabot.com/user/pages/01.home/09.react-redux-boilerplate/reactredux.png",
+            steps: [],
+            types: ["sport"]
+        }, "5": {
+            id: "5",
+            title: "Learn Violine",
+            image: "https://labs.lullabot.com/user/pages/01.home/09.react-redux-boilerplate/reactredux.png",
+            steps: [],
+            types: ["education"]
         }
     }
 };

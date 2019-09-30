@@ -7,17 +7,15 @@ import GoalCard from "./GoalCard";
 import styles from "./Goals.module.scss";
 
 const mapStateToProps = (state: AppState, props: { ids: string[], title: string, color: string }) => {
-    return {goals: props.ids, count: props.ids.length, ...props};
+    return {goals: props.ids.map(id => state.goals.goals[id]), count: props.ids.length, ...props};
 };
 const mapDispatchToProps = {addGoal: createGoal};
 
 const Goals: React.FC<Props> = props => {
     return <div className={styles.goals}>
         <SectionTitle title={props.title} color={props.color}/>
-        <div className={styles.goalsWrapper}>{props.goals.map(id =>
-            <div className={styles.cardWrapper} key={id}>
-                <GoalCard id={id}/>
-            </div>)}
+        <div className={styles.goalsWrapper}>{props.goals.map(goal =>
+            <div className={styles.cardWrapper} key={goal.id}><GoalCard goal={goal}/></div>)}
         </div>
     </div>;
 };
