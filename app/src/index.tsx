@@ -4,8 +4,9 @@ import ReactDOM from "react-dom";
 import {Provider} from "react-redux";
 import store from "./app/Store";
 import "./index.css";
-import "./style/cutestrap.scss";
 import * as serviceWorker from "./serviceWorker";
+import "./style/common.scss";
+import "./style/cutestrap.scss";
 import "./style/styleConstants.scss";
 
 

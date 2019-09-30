@@ -1,6 +1,12 @@
 $color-empty: darkgrey;
 $color-full: green;
 $delay: 300ms;
+
+.root {
+  font-size: 1rem;
+  line-height: 1rem;
+}
+
 .pipe {
   margin: 0 auto;
   height: 40px;

@@ -15,12 +15,14 @@ export interface Goal {
 }
 
 export type GoalState = {
-    ids: string[];
+    active: string[];
+    maybeSomeday: string[];
     goals: { [key: string]: Goal }
 };
 
 const initialState: GoalState = {
-    ids: ["1"],
+    active: ["1"],
+    maybeSomeday: ["2"],
     goals: {
         "1": {
             id: "1",
@@ -32,15 +34,24 @@ const initialState: GoalState = {
                 {text: "Design a My-GoalCard page", done: false},
                 {text: "Refactoring / Cleanup", done: false},
             ]
+        }, "2": {
+            id: "2",
+            title: "Learn Violine",
+            image: "https://labs.lullabot.com/user/pages/01.home/09.react-redux-boilerplate/reactredux.png",
+            steps: []
         }
     }
 };
 
 // Actions
 
-type AddGoal = { goal: Goal };
+type AddGoal = { id: string };
 type AddGoalAction = AddGoal & Action<"ADD_GOAL">;
-export const addGoal = (input: AddGoal): AddGoalAction => ({type: "ADD_GOAL", ...input});
+export const addGoal = (id: string): AddGoalAction => ({type: "ADD_GOAL", id});
+
+type CreateGoal = { goal: Goal };
+type CreateGoalAction = CreateGoal & Action<"CREATE_GOAL">;
+export const createGoal = (input: CreateGoal): CreateGoalAction => ({type: "CREATE_GOAL", ...input});
 
 type CompleteGoal = {
     id: string;
@@ -50,16 +61,18 @@ type CompleteGoal = {
 type CompleteGoalAction = CompleteGoal & Action<"COMPLETE_GOAL">;
 export const completeGoal = (input: CompleteGoal): CompleteGoalAction => ({type: "COMPLETE_GOAL", ...input});
 
-export type GoalAction = AddGoalAction | CompleteGoalAction;
+export type GoalAction = AddGoalAction | CreateGoalAction | CompleteGoalAction;
 
 // Reducer
 
 export const goalReducer: Reducer<GoalState, GoalAction> = (state = initialState, action): GoalState => {
     switch (action.type) {
         case "ADD_GOAL":
+            return {...state, active: state.active.concat(action.id)}
+        case "CREATE_GOAL":
             return {
                 ...state,
-                ids: state.ids.concat(action.goal.id),
+                active: state.active.concat(action.goal.id),
                 goals: {...state.goals, [action.goal.id]: action.goal}
             };
         case "COMPLETE_GOAL":

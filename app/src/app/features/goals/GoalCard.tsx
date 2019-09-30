@@ -1,5 +1,5 @@
 import {AppState} from "app/Store";
-import React, {CSSProperties, useState} from "react";
+import React, {useState} from "react";
 import {connect} from "react-redux"
 import {jc} from "../../../util/Style";
 import Barometer from "./Barometer";
@@ -14,16 +14,10 @@ const GoalCard: React.FC<Props> = props => {
     const [isToggled, setToggle] = useState(false);
     const {id, title, steps, image} = props.goal;
 
-    let stepStyle: CSSProperties = {};
 
     return <div className={jc(styles.card, styles.border)} style={{"backgroundImage": `url(${image})`}}>
-
-        <div onClick={() => setToggle(!isToggled)}>
-            <span className={styles.title}>{title}</span></div>
-
-        {isToggled && <div className={jc(styles.steps, styles.border)} style={stepStyle}>
-            <Barometer steps={steps} goalId={id}/>
-        </div>}
+        <div onClick={() => setToggle(!isToggled)}><h6 className={styles.title}>{title}</h6></div>
+        {isToggled && <div className={jc(styles.steps, styles.border)}><Barometer steps={steps} goalId={id}/></div>}
     </div>;
 };
 
