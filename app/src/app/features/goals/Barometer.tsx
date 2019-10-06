@@ -1,7 +1,7 @@
-import {AppState} from "app/store";
+import {AppState} from "app/Store";
 import React from "react";
 import {connect} from "react-redux"
-import {css, jc} from "../../../util/style";
+import {css, jc} from "../../../util/Style";
 import style from "./Barometer.module.scss";
 import {completeGoal, Step} from "./duck";
 
@@ -29,7 +29,7 @@ const Barometer: React.FC<Props> = props => {
         if (!prev) return style.empty;
         return style.semi;
     };
-    return <div>{props.steps.slice(0).reverse().map((step, index) => {
+    return <div className={style.root}>{props.steps.slice(0).reverse().map((step, index) => {
         const stepNumber = stepCount - index - 1;
         return <div key={stepNumber}>
             <div onClick={() => toggle(step, stepNumber, !step.done)} className={style.entryRow}>

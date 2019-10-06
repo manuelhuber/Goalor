@@ -1,7 +1,9 @@
-import {AppState} from "app/store";
+import {AppState} from "app/Store";
 import React, {useState} from "react";
 import {connect} from "react-redux"
 import {useInput} from "../../../util/InputHook";
+import {jc} from "../../../util/Style";
+import Button from "../../common/Button";
 import {login, LoginRequest, register, RegisterRequest} from "./duck";
 
 const mapStateToProps = (state: AppState) => {
@@ -15,6 +17,9 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
+const WithLabel = (props: { label: string, children: React.ReactNode }) =>
+    <label className='field'>{props.children}<span className='label'>{props.label}</span></label>;
+
 const Authenticate: React.FC<Props> = props => {
     const [isRegistration, setRegistration] = useState(false);
 
@@ -26,14 +31,15 @@ const Authenticate: React.FC<Props> = props => {
         isRegistration ? props.login({username, password}) : props.register({username, password, email});
         event.preventDefault();
     };
-    return <div>
+    return <div className='wrapper' style={{maxWidth: "25rem"}}>
         <form action="" onSubmit={submit}>
-            <label>Username<input type="text" {...bindUsername}/></label>
-            <label>password<input type="password" {...bindPassword}/></label>
-            {isRegistration && <label>email<input type="email" {...bindEmail}/></label>}
-            <input type="submit" value="Submit"/>
+            {isRegistration && <WithLabel label='E-Mail'><input type="email" {...bindEmail}/></WithLabel>}
+            <WithLabel label='Username'><input type="text" {...bindUsername}/></WithLabel>
+            <WithLabel label='Password'><input type="password" {...bindPassword}/></WithLabel>
+            <input type="submit" value={isRegistration ? "Register" : "Login"} className={jc("button", "-block")}/>
         </form>
-        <a onClick={() => setRegistration(!isRegistration)}>{isRegistration ? "Already registered? Login!" : "New here? Sign up!"}</a>
+        <Button onClick={() => setRegistration(!isRegistration)} type='link' block={true}>
+            {isRegistration ? "Already registered? Login!" : "New here? Sign up!"}</Button>
     </div>;
 };
 

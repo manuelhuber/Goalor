@@ -1,4 +1,4 @@
-import {isString} from "./types";
+import {isString} from "./Types";
 
 export function jc(...classes: string[]): string {
     return classes.join(" ");

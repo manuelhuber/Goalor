@@ -1,4 +1,4 @@
-import {AppState} from "app/store";
+import {AppState} from "app/Store";
 import React from "react";
 import {connect} from "react-redux"
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
@@ -20,7 +20,6 @@ const App: React.FC<Props> = props => {
         <div>
             <Header/>
         </div>
-        <div draggable={true}>foo</div>
         <Router>
             <Switch>
                 <RestrictedRoute exact path='/me' component={Personal}/>

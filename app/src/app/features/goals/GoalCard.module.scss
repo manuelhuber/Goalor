@@ -1,8 +1,11 @@
+@import "style/styleConstants";
+
 $borderWidth: 3px;
 
 .border {
-  border: $borderWidth solid black;;
+  border: $borderWidth solid $black;
   border-radius: 4px;
+  padding: 4px;
 }
 
 .card {
@@ -15,6 +18,7 @@ $borderWidth: 3px;
 }
 
 .title {
+  margin: 0 auto;
 }
 
 .steps {

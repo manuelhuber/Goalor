@@ -1,6 +1,6 @@
 import {Action, Reducer} from "redux";
 import {ThunkAction} from "redux-thunk";
-import {AppState, Thunk} from "../../store";
+import {AppState, Thunk} from "../../Store";
 
 // State
 

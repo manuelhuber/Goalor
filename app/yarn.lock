@@ -3053,6 +3053,11 @@ currently-unhandled@^0.4.1:
   dependencies:
     array-find-index "^1.0.1"
 
+cutestrap@^2.0.0-2:
+  version "2.0.0-2"
+  resolved "https://registry.yarnpkg.com/cutestrap/-/cutestrap-2.0.0-2.tgz#cc72ad4c477e6aba29a1d82eb031cfd5d7db65fd"
+  integrity sha512-caFK3XZje9DWlVnMXEmm/YJZSBmX9Y6UqJQqywhATgX0nQTYULqej5n6LCpqiXTY3mRA2cWNe4G18RDoGZA67g==
+
 cyclist@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
