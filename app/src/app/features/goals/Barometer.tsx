@@ -31,8 +31,8 @@ const Barometer: React.FC<Props> = props => {
     };
     return <div>{props.steps.slice(0).reverse().map((step, index) => {
         const stepNumber = stepCount - index - 1;
-        return <div>
-            <div key={stepNumber} onClick={() => toggle(step, stepNumber, !step.done)} className={style.entryRow}>
+        return <div key={stepNumber}>
+            <div onClick={() => toggle(step, stepNumber, !step.done)} className={style.entryRow}>
                 <div className={style.barometerColumn}>
                     <div className={css(style.dot, [style.full, step.done], [style.empty, !step.done])}/>
                 </div>
