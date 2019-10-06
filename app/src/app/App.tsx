@@ -1,9 +1,12 @@
 import {AppState} from "app/store";
 import React from "react";
 import {connect} from "react-redux"
-import Goals from "./features/goals/Goals";
-import Header from "./features/header/Header";
+import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import style from "./App.module.scss";
+import RestrictedRoute from "./features/auth/RestrictedRoute";
+import Header from "./features/header/Header";
+import NotFound from "./page/NotFound";
+import Personal from "./page/Personal";
 
 const mapStateToProps = (state: AppState) => {
     return {}
@@ -16,7 +19,12 @@ const App: React.FC<Props> = props => {
         <div>
             <Header/>
         </div>
-        <Goals/>
+        <Router>
+            <Switch>
+                <RestrictedRoute exact path='/me' component={Personal}/>
+                <Route component={NotFound}/>
+            </Switch>
+        </Router>
     </div>;
 };
 
