@@ -4,7 +4,7 @@ import {authReducer} from "./features/auth/duck";
 import {filterReducer} from "./features/filter/duck";
 import {goalReducer} from "./features/goals/duck";
 
-const rootReducer = combineReducers({goals: goalReducer, auth: authReducer, filters: filterReducer});
+const rootReducer = combineReducers({goals: goalReducer, auth: authReducer});
 
 export type AppState = ReturnType<typeof rootReducer>
 

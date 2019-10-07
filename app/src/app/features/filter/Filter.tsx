@@ -1,8 +1,8 @@
+import Checkbox from "app/common/Checkbox";
 import {AppState} from "app/Store";
 import React from "react";
 import {connect} from "react-redux"
-import Checkbox from "app/common/Checkbox";
-import {FilterState, resetFilter, setSearchTerm, setTags} from "./duck";
+import {FilterState, resetFilter, setSearchTerm, toggleTag} from "./duck";
 
 const mapStateToProps = (state: AppState, props: { filters: FilterState, namespace: string }) => {
     const tags = new Set<string>();
@@ -20,7 +20,7 @@ const mapStateToProps = (state: AppState, props: { filters: FilterState, namespa
 };
 
 const mapDispatchToProps = {
-    setTags,
+    toggleTag,
     setSearchTerm,
     resetFilter
 };
@@ -31,7 +31,7 @@ const Filter: React.FC<Props> = props =>
             <Checkbox key={tag}
                       label={tag}
                       checked={props.selectedTags.includes(tag)}
-                      onChange={() => props.setTags([tag], props.namespace)}/>)}
+                      onChange={() => props.toggleTag(tag, props.namespace)}/>)}
     </div>;
 
 type Props = typeof mapDispatchToProps & ReturnType<typeof mapStateToProps>;

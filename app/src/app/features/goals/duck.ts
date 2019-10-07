@@ -116,6 +116,7 @@ export const goalReducer: Reducer<GoalState, GoalAction> = (state = initialState
         case "RESET_FILTER":
         case "SET_SEARCH_TERM":
         case "SET_TAGS":
+        case "TOGGLE_TAG":
             const activeFilters = activeGoalsFilterReducer(state.activeFilters, action);
             const activeFiltered = state.active.filter(id => filterGoal(activeFilters, state.goals[id]));
             const maybeFilters = maybeSomedayFilterReducer(state.maybeSomedayFilters, action);

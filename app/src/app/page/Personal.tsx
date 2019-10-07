@@ -1,10 +1,12 @@
+import Expandable from "app/common/Expandable";
+import SectionTitle from "app/common/SectionTitle";
+import Filter from "app/features/filter/Filter";
+import {addGoal} from "app/features/goals/duck";
+import Goals from "app/features/goals/Goals";
 import {AppState} from "app/Store";
-import React from "react";
+import React, {useState} from "react";
 import {connect} from "react-redux"
 import {green, redDark} from "style/styleConstants";
-import Filter from "../features/filter/Filter";
-import {addGoal} from "../features/goals/duck";
-import Goals from "../features/goals/Goals";
 
 const mapStateToProps = (state: AppState, otherProps: { allGood: boolean }) => {
     const toGoals = (ids: string[]) => ids.map(id => state.goals.goals[id]);
@@ -21,13 +23,20 @@ const mapStateToProps = (state: AppState, otherProps: { allGood: boolean }) => {
 const mapDispatchToProps = {addGoal};
 
 const Personal: React.FC<Props> = props => {
+    const [isPersonalFilterOpen, setPersonalFilterOpen] = useState(false);
+    const [isMaybeFiltersOpen, setMaybeFiltersOpen] = useState(false);
     return <div>
-        <div>ACTIVE:</div>
-        <Filter filters={props.personalFilters} namespace='ACTIVE_GOALS'/>
-        <div>MAYBE:</div>
-        <Filter filters={props.maybeFilters} namespace='MAYBE_GOALS'/>
-        <Goals goals={props.personalGoals} title='My Goals' color={redDark}/>
-        <Goals goals={props.maybeSomeday} title='Maybe Someday' color={green}/>
+        <SectionTitle title="My Goals" color={redDark}/>
+        <Expandable expanded={isPersonalFilterOpen} onChange={open => setPersonalFilterOpen(open)} label="Filters">
+            <Filter filters={props.personalFilters} namespace='ACTIVE_GOALS'/>
+        </Expandable>
+        <Goals goals={props.personalGoals}/>
+
+        <SectionTitle title="Maybe Someday" color={green}/>
+        <Expandable expanded={isMaybeFiltersOpen} onChange={open => setMaybeFiltersOpen(open)} label="Filters">
+            <Filter filters={props.maybeFilters} namespace='MAYBE_GOALS'/>
+        </Expandable>
+        <Goals goals={props.maybeSomeday}/>
     </div>;
 };
 

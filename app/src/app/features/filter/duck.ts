@@ -19,6 +19,10 @@ type SetTags = { tags: string[] };
 type SetTagsAction = SetTags & NamespacedAction<"SET_TAGS">;
 export const setTags = (tags: string[], namespace: string): SetTagsAction => ({namespace, type: "SET_TAGS", tags});
 
+type ToggleTag = { tag: string };
+type ToggleTagAction = ToggleTag & NamespacedAction<"TOGGLE_TAG">;
+export const toggleTag = (tag: string, namespace: string): ToggleTagAction => ({namespace, type: "TOGGLE_TAG", tag});
+
 type SetSearchTerm = { term: string };
 type SetSearchTermAction = SetSearchTerm & NamespacedAction<"SET_SEARCH_TERM">;
 export const setSearchTerm = (term: string, namespace: string): SetSearchTermAction => ({
@@ -30,7 +34,7 @@ export const setSearchTerm = (term: string, namespace: string): SetSearchTermAct
 type ResetFilterAction = NamespacedAction<"RESET_FILTER">;
 export const resetFilter = (namespace: string): ResetFilterAction => ({namespace, type: "RESET_FILTER"});
 
-export type FilterAction = SetTagsAction | SetSearchTermAction | ResetFilterAction;
+export type FilterAction = SetTagsAction | SetSearchTermAction | ResetFilterAction | ToggleTagAction;
 
 // Reducer
 
@@ -46,6 +50,14 @@ export const filterReducer: Reducer<FilterState, FilterAction> = (state = emptyF
                 searchTerm: "",
                 selectedTags: []
             };
+        case "TOGGLE_TAG":
+            let selectedTags;
+            if (state.selectedTags.includes(action.tag)) {
+                selectedTags = state.selectedTags.without(action.tag);
+            } else {
+                selectedTags = state.selectedTags.concat(action.tag);
+            }
+            return {...state, selectedTags: selectedTags};
         default:
             return state;
     }
