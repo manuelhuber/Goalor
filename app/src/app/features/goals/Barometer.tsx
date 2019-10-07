@@ -19,7 +19,6 @@ const Barometer: React.FC<Props> = props => {
             done: done
         });
     };
-    console.log(style.done);
     const stepCount = props.steps.length;
 
     const pipeClass = (stepNumber: number): string => {

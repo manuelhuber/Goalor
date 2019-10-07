@@ -2,12 +2,12 @@ import {AppState} from "app/Store";
 import React from "react";
 import {connect} from "react-redux"
 import SectionTitle from "../../common/SectionTitle";
-import {createGoal} from "./duck";
+import {createGoal, Goal} from "./duck";
 import GoalCard from "./GoalCard";
 import styles from "./Goals.module.scss";
 
-const mapStateToProps = (state: AppState, props: { ids: string[], title: string, color: string }) => {
-    return {goals: props.ids.map(id => state.goals.goals[id]), count: props.ids.length, ...props};
+const mapStateToProps = (state: AppState, props: { goals: Goal[], title: string, color: string }) => {
+    return {goals: props.goals, count: props.goals.length, ...props};
 };
 const mapDispatchToProps = {addGoal: createGoal};
 

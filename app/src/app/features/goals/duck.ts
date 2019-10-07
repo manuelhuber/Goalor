@@ -38,7 +38,7 @@ const initialState: GoalState = {
             types: ["sport"],
         }, "2": {
             id: "2",
-            title: "Learn Violine",
+            title: "Learn 3Violine",
             image: "https://labs.lullabot.com/user/pages/01.home/09.react-redux-boilerplate/reactredux.png",
             steps: [],
             types: ["music"]
@@ -89,7 +89,7 @@ export type GoalAction = AddGoalAction | CreateGoalAction | CompleteGoalAction;
 export const goalReducer: Reducer<GoalState, GoalAction> = (state = initialState, action): GoalState => {
     switch (action.type) {
         case "ADD_GOAL":
-            return {...state, active: state.active.concat(action.id)}
+            return {...state, active: state.active.concat(action.id)};
         case "CREATE_GOAL":
             return {
                 ...state,
