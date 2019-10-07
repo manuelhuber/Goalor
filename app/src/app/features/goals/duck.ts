@@ -1,5 +1,6 @@
 import {Action, Reducer} from "redux";
-import {replaceItem} from "../../../util/DuckUtil";
+import {namespacedReducer, replaceItem} from "util/DuckUtil";
+import {emptyFilterState, FilterAction, filterReducer, FilterState} from "../filter/duck";
 
 // State
 export interface Step {
@@ -17,13 +18,21 @@ export interface Goal {
 
 export type GoalState = {
     active: string[];
+    activeFiltered: string[];
     maybeSomeday: string[];
-    goals: { [key: string]: Goal }
+    maybeSomedayFiltered: string[];
+    goals: { [key: string]: Goal };
+    activeFilters: FilterState;
+    maybeSomedayFilters: FilterState;
 };
 
 const initialState: GoalState = {
+    activeFilters: emptyFilterState(),
+    maybeSomedayFilters: emptyFilterState(),
     active: ["1", "3", "4", "5"],
+    activeFiltered: ["1", "3", "4", "5"],
     maybeSomeday: ["2"],
+    maybeSomedayFiltered: ["2"],
     goals: {
         "1": {
             id: "1",
@@ -38,7 +47,7 @@ const initialState: GoalState = {
             types: ["sport"],
         }, "2": {
             id: "2",
-            title: "Learn Violine",
+            title: "Learn 3Violine",
             image: "https://labs.lullabot.com/user/pages/01.home/09.react-redux-boilerplate/reactredux.png",
             steps: [],
             types: ["music"]
@@ -82,14 +91,16 @@ type CompleteGoal = {
 type CompleteGoalAction = CompleteGoal & Action<"COMPLETE_GOAL">;
 export const completeGoal = (input: CompleteGoal): CompleteGoalAction => ({type: "COMPLETE_GOAL", ...input});
 
-export type GoalAction = AddGoalAction | CreateGoalAction | CompleteGoalAction;
+export type GoalAction = AddGoalAction | CreateGoalAction | CompleteGoalAction | FilterAction;
 
 // Reducer
+const activeGoalsFilterReducer = namespacedReducer(filterReducer, "ACTIVE_GOALS");
+const maybeSomedayFilterReducer = namespacedReducer(filterReducer, "MAYBE_GOALS");
 
 export const goalReducer: Reducer<GoalState, GoalAction> = (state = initialState, action): GoalState => {
     switch (action.type) {
         case "ADD_GOAL":
-            return {...state, active: state.active.concat(action.id)}
+            return {...state, active: state.active.concat(action.id)};
         case "CREATE_GOAL":
             return {
                 ...state,
@@ -102,6 +113,21 @@ export const goalReducer: Reducer<GoalState, GoalAction> = (state = initialState
                 ...state,
                 goals: {...state.goals, [action.id]: updatedState}
             };
+        case "RESET_FILTER":
+        case "SET_SEARCH_TERM":
+        case "SET_TAGS":
+        case "TOGGLE_TAG":
+            const activeFilters = activeGoalsFilterReducer(state.activeFilters, action);
+            const activeFiltered = state.active.filter(id => filterGoal(activeFilters, state.goals[id]));
+            const maybeFilters = maybeSomedayFilterReducer(state.maybeSomedayFilters, action);
+            const maybeSomedayFiltered = state.maybeSomeday.filter(id => filterGoal(maybeFilters, state.goals[id]));
+            return {
+                ...state,
+                activeFiltered,
+                maybeSomedayFiltered,
+                activeFilters: activeFilters,
+                maybeSomedayFilters: maybeFilters
+            };
         default:
             return state;
     }
@@ -110,4 +136,10 @@ export const goalReducer: Reducer<GoalState, GoalAction> = (state = initialState
 function completeStep(goal: Goal, step: number, done: boolean): Goal {
     const steps = replaceItem(goal.steps, step, step => ({...step, done: done}));
     return {...goal, steps}
+}
+
+function filterGoal(filters: FilterState, goal: Goal) {
+    const tagsPass = filters.selectedTags.length === 0 || goal.types.some(value => filters.selectedTags.includes(value));
+    const termPass = filters.searchTerm.length === 0 || goal.title.includes(filters.searchTerm);
+    return tagsPass && termPass;
 }

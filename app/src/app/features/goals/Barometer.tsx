@@ -1,7 +1,7 @@
 import {AppState} from "app/Store";
 import React from "react";
 import {connect} from "react-redux"
-import {css, jc} from "../../../util/Style";
+import {css, jc} from "util/Style";
 import style from "./Barometer.module.scss";
 import {completeGoal, Step} from "./duck";
 
@@ -19,7 +19,6 @@ const Barometer: React.FC<Props> = props => {
             done: done
         });
     };
-    console.log(style.done);
     const stepCount = props.steps.length;
 
     const pipeClass = (stepNumber: number): string => {

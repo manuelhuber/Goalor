@@ -1,7 +1,7 @@
 import {AppState} from "app/Store";
 import React, {useState} from "react";
 import {connect} from "react-redux"
-import {jc} from "../../../util/Style";
+import {jc} from "util/Style";
 import Barometer from "./Barometer";
 import {Goal} from "./duck";
 import styles from "./GoalCard.module.scss"
