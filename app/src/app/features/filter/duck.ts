@@ -1,5 +1,5 @@
+import {NamespacedAction} from "model/NamespacedAction";
 import {Reducer} from "redux";
-import {NamespacedAction} from "../../../model/NamespacedAction";
 
 // State
 

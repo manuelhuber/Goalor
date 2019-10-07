@@ -1,5 +1,5 @@
 import {Action, Reducer} from "redux";
-import {namespacedReducer, replaceItem} from "../../../util/DuckUtil";
+import {namespacedReducer, replaceItem} from "util/DuckUtil";
 import {emptyFilterState, FilterAction, filterReducer, FilterState} from "../filter/duck";
 
 // State

@@ -1,7 +1,7 @@
 import {AppState} from "app/Store";
 import React from "react";
 import {connect} from "react-redux"
-import Checkbox from "../../common/Checkbox";
+import Checkbox from "app/common/Checkbox";
 import {FilterState, resetFilter, setSearchTerm, setTags} from "./duck";
 
 const mapStateToProps = (state: AppState, props: { filters: FilterState, namespace: string }) => {

@@ -1,9 +1,9 @@
+import Button from "app/common/Button";
 import {AppState} from "app/Store";
 import React, {useState} from "react";
 import {connect} from "react-redux"
-import {useInput} from "../../../util/InputHook";
-import {jc} from "../../../util/Style";
-import Button from "../../common/Button";
+import {useInput} from "util/InputHook";
+import {jc} from "util/Style";
 import {login, LoginRequest, register, RegisterRequest} from "./duck";
 
 const mapStateToProps = (state: AppState) => {

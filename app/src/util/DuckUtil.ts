@@ -1,5 +1,5 @@
+import {NamespacedAction} from "model/NamespacedAction";
 import {Reducer} from "redux";
-import {NamespacedAction} from "../model/NamespacedAction";
 
 export function replaceItem<T>(array: T[], updateIndex: number, replace: (T) => T) {
     return array.map((value, index) => {

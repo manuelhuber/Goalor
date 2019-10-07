@@ -1,7 +1,7 @@
 import {AppState} from "app/Store";
 import React from "react";
 import {connect} from "react-redux"
-import {green, redDark} from "../../style/styleConstants";
+import {green, redDark} from "style/styleConstants";
 import Filter from "../features/filter/Filter";
 import {addGoal} from "../features/goals/duck";
 import Goals from "../features/goals/Goals";
