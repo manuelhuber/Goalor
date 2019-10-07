@@ -1,7 +1,6 @@
 import {Action, applyMiddleware, combineReducers, compose, createStore} from "redux";
 import thunkMiddleware, {ThunkAction} from "redux-thunk"
 import {authReducer} from "./features/auth/duck";
-import {filterReducer} from "./features/filter/duck";
 import {goalReducer} from "./features/goals/duck";
 
 const rootReducer = combineReducers({goals: goalReducer, auth: authReducer});
