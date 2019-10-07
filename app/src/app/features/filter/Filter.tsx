@@ -2,17 +2,18 @@ import {AppState} from "app/Store";
 import React from "react";
 import {connect} from "react-redux"
 import Checkbox from "../../common/Checkbox";
-import {resetFilter, setSearchTerm, setTags} from "./duck";
+import {FilterState, resetFilter, setSearchTerm, setTags} from "./duck";
 
-const mapStateToProps = (state: AppState) => {
+const mapStateToProps = (state: AppState, props: { filters: FilterState, namespace: string }) => {
     const tags = new Set<string>();
     for (let goal of Object.values(state.goals.goals)) {
         goal.types.forEach(tag => tags.add(tag));
     }
 
-    const selected = state.filters.selectedTags;
+    const selected = props.filters.selectedTags;
 
     return {
+        namespace: props.namespace,
         tags: tags,
         selectedTags: selected
     }
@@ -24,17 +25,14 @@ const mapDispatchToProps = {
     resetFilter
 };
 
-const Filter: React.FC<Props> = props => {
-    const tags = Array.from(props.tags.values());
-    console.log(props.selectedTags);
-
-    return <div>
-        {tags.map(tag => <Checkbox key={tag}
-                                   label={tag}
-                                   checked={props.selectedTags.includes(tag)}
-                                   onChange={() => props.setTags([tag])}/>)}
+const Filter: React.FC<Props> = props =>
+    <div>
+        {Array.from(props.tags.values()).map(tag =>
+            <Checkbox key={tag}
+                      label={tag}
+                      checked={props.selectedTags.includes(tag)}
+                      onChange={() => props.setTags([tag], props.namespace)}/>)}
     </div>;
-};
 
 type Props = typeof mapDispatchToProps & ReturnType<typeof mapStateToProps>;
 export default connect(mapStateToProps, mapDispatchToProps)(Filter);

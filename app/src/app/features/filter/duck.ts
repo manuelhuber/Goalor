@@ -1,5 +1,5 @@
-import {Action, Reducer} from "redux";
-import {Goal} from "../goals/duck";
+import {Reducer} from "redux";
+import {NamespacedAction} from "../../../model/NamespacedAction";
 
 // State
 
@@ -8,29 +8,33 @@ export type FilterState = {
     searchTerm: string,
 };
 
-const initialState: FilterState = {
+export const emptyFilterState = (): FilterState => ({
     selectedTags: [],
     searchTerm: ""
-};
+});
 
 // Actions
 
 type SetTags = { tags: string[] };
-type SetTagsAction = SetTags & Action<"SET_TAGS">;
-export const setTags = (tags: string[]): SetTagsAction => ({type: "SET_TAGS", tags});
+type SetTagsAction = SetTags & NamespacedAction<"SET_TAGS">;
+export const setTags = (tags: string[], namespace: string): SetTagsAction => ({namespace, type: "SET_TAGS", tags});
 
 type SetSearchTerm = { term: string };
-type SetSearchTermAction = SetSearchTerm & Action<"SET_SEARCH_TERM">;
-export const setSearchTerm = (term: string): SetSearchTermAction => ({type: "SET_SEARCH_TERM", term});
+type SetSearchTermAction = SetSearchTerm & NamespacedAction<"SET_SEARCH_TERM">;
+export const setSearchTerm = (term: string, namespace: string): SetSearchTermAction => ({
+    namespace,
+    type: "SET_SEARCH_TERM",
+    term
+});
 
-type ResetFilterAction = Action<"RESET_FILTER">;
-export const resetFilter = (): ResetFilterAction => ({type: "RESET_FILTER"});
+type ResetFilterAction = NamespacedAction<"RESET_FILTER">;
+export const resetFilter = (namespace: string): ResetFilterAction => ({namespace, type: "RESET_FILTER"});
 
 export type FilterAction = SetTagsAction | SetSearchTermAction | ResetFilterAction;
 
 // Reducer
 
-export const filterReducer: Reducer<FilterState, FilterAction> = (state = initialState, action): FilterState => {
+export const filterReducer: Reducer<FilterState, FilterAction> = (state = emptyFilterState(), action): FilterState => {
     switch (action.type) {
         case "SET_TAGS":
             return {...state, selectedTags: action.tags};
@@ -46,12 +50,3 @@ export const filterReducer: Reducer<FilterState, FilterAction> = (state = initia
             return state;
     }
 };
-
-export function filterGoals(filters: FilterState, goals: Goal[]) {
-    return goals.filter(goal =>
-        filters.selectedTags.length === 0 || goal.types.some(value => filters.selectedTags.includes(value))
-    ).filter(goal =>
-        filters.searchTerm.length === 0 || goal.title.includes(filters.searchTerm)
-    );
-
-}
