@@ -1,15 +1,23 @@
 @import "style/styleConstants";
 
 .title {
-  font-family: $fancy-font;
-  font-weight: bold;
   display: flex;
   align-items: baseline;
 }
 
+.titleText {
+  font-family: $fancy-font;
+}
+
 .titleLine {
   flex-grow: 1;
-  height: 2px;
+  height: 3px;
   border: none;
+  margin-left: -5px;
   margin-bottom: 0;
+}
+
+// Override cutestrap
+.titleLine:before {
+  content: none;
 }

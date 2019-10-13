@@ -1,4 +1,5 @@
 import React from "react";
+import {css} from "util/Style";
 
 type Props = {
     checked: boolean;
@@ -6,9 +7,10 @@ type Props = {
     onChange?: (newValue: boolean) => void
     disable?: boolean;
     value?: string;
+    noMargin?: boolean;
 }
 const Checkbox: React.FC<Props> = props =>
-    <label className="field">
+    <label className={css("field", (props.noMargin, "mb-zero"))}>
         <input type="checkbox"
                disabled={props.disable}
                value={props.value}

@@ -30,6 +30,7 @@ const Filter: React.FC<Props> = props =>
         {Array.from(props.tags.values()).map(tag =>
             <Checkbox key={tag}
                       label={tag}
+                      noMargin={true}
                       checked={props.selectedTags.includes(tag)}
                       onChange={() => props.toggleTag(tag, props.namespace)}/>)}
     </div>;

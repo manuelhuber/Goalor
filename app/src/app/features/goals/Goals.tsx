@@ -12,7 +12,7 @@ const mapDispatchToProps = {addGoal: createGoal};
 
 const Goals: React.FC<Props> = props => {
     return <div className={styles.goals}>
-        <div className={styles.goalsWrapper}>{props.goals.map(goal =>
+        <div className="clearfix">{props.goals.map(goal =>
             <div className={styles.cardWrapper} key={goal.id}><GoalCard goal={goal}/></div>)}
         </div>
     </div>;

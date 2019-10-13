@@ -25,7 +25,7 @@ const mapDispatchToProps = {addGoal};
 const Personal: React.FC<Props> = props => {
     const [isPersonalFilterOpen, setPersonalFilterOpen] = useState(false);
     const [isMaybeFiltersOpen, setMaybeFiltersOpen] = useState(false);
-    return <div>
+    return <div style={{padding: "5px"}}>
         <SectionTitle title="My Goals" color={redDark}/>
         <Expandable expanded={isPersonalFilterOpen} onChange={open => setPersonalFilterOpen(open)} label="Filters">
             <Filter filters={props.personalFilters} namespace='ACTIVE_GOALS'/>
