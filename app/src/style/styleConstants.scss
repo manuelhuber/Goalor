@@ -39,3 +39,15 @@ $black-lighter: #aeb0a8;
 $fancy-font: 'Pacifico', sans-serif;
 $default-font: 'Avenir', 'Avenir Next', 'Helvetica Neue', 'Segoe UI', 'Verdana', sans-serif;
 $mono-font: 'Consolas', 'Monaco', 'Courier New', monospace;
+
+// Small tablets and large smartphones (landscape view)
+$screen-sm-min: 576px;
+
+// Small tablets (portrait view)
+$screen-md-min: 768px;
+
+// Tablets and small desktops
+$screen-lg-min: 992px;
+
+// Large tablets and desktops
+$screen-xl-min: 1200px;
