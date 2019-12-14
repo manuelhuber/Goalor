@@ -4,18 +4,17 @@ import React, {useState} from "react";
 import {connect} from "react-redux"
 import {useInput} from "util/InputHook";
 import {jc} from "util/Style";
-import {login, LoginRequest, register, RegisterRequest} from "./duck";
+import {login, register} from "./duck";
+import {bindActionCreators} from 'redux';
 
 const mapStateToProps = (state: AppState) => {
     return {}
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        login: async (req: LoginRequest) => await dispatch(login(req)),
-        register: async (req: RegisterRequest) => await dispatch(register(req))
-    }
-};
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+    login,
+    register,
+}, dispatch);
 
 const WithLabel = (props: { label: string, children: React.ReactNode }) =>
     <label className='field'>{props.children}<span className='label'>{props.label}</span></label>;

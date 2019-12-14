@@ -1,6 +1,5 @@
 import {Action, Reducer} from "redux";
-import {ThunkAction} from "redux-thunk";
-import {AppState, Thunk} from "app/Store";
+import {Thunk} from "app/Store";
 
 // State
 
@@ -14,8 +13,8 @@ const initialState: AuthState = {authenticated: true, isLoading: false};
 
 // Actions
 export type LoginRequest = { username: string, password: string };
-export const login = (req: LoginRequest): ThunkAction<Promise<void>, AppState, {}, Action> => {
-    return async (dispatch, getState) => {
+export const login = (req: LoginRequest): Thunk =>
+    async (dispatch, getState) => {
         if (getState().auth.token) {
             return Promise.resolve();
         } else {
@@ -26,18 +25,17 @@ export const login = (req: LoginRequest): ThunkAction<Promise<void>, AppState, {
             }, 1000);
         }
     };
-};
 
 export type RegisterRequest = { username: string, password: string, email: string };
-export const register = (req: RegisterRequest): Thunk => {
-    return async (dispatch) => {
+export const register = (req: RegisterRequest): Thunk =>
+    async (dispatch) => {
         dispatch(setLoading(true));
         setTimeout(() => {
             dispatch(setLoading(false));
             dispatch(setToken({token: "fakeToken"}));
         }, 1000);
     };
-};
+
 
 type SetToken = { token: string };
 type SetTokenAction = SetToken & Action<"SET_TOKEN">;
