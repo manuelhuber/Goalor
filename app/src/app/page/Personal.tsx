@@ -3,6 +3,7 @@ import SectionTitle from "app/common/SectionTitle";
 import Filter from "app/features/filter/Filter";
 import {addGoal} from "app/features/goals/duck";
 import Goals from "app/features/goals/Goals";
+import Aspects from "app/features/aspects/aspects";
 import {AppState} from "app/Store";
 import React, {useState} from "react";
 import {connect} from "react-redux"
@@ -37,6 +38,7 @@ const Personal: React.FC<Props> = props => {
             <Filter filters={props.maybeFilters} namespace='MAYBE_GOALS'/>
         </Expandable>
         <Goals goals={props.maybeSomeday}/>
+        <Aspects/>
     </div>;
 };
 
