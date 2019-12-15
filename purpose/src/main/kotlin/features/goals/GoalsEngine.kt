@@ -1,12 +1,7 @@
 package features.goals
 
 class GoalsEngine {
-    val goals = hashMapOf(
-        "0" to Goal(id = "0"),
-        "1" to Goal(id = "1"),
-        "2" to Goal(id = "2"),
-        "3" to Goal(id = "3")
-    )
+    val goals = hashMapOf("0" to Goal(id = "0"), "1" to Goal(id = "1"), "2" to Goal(id = "2"), "3" to Goal(id = "3"))
 
     fun getAll(): MutableCollection<Goal> {
         return goals.values
