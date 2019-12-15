@@ -21,8 +21,9 @@ dependencies {
     compile "org.slf4j:slf4j-simple:1.8.0-beta4"
     compile 'io.javalin:javalin:...'
     compile 'com.github.kmehrunes:javalin-jwt:v0.2'
-//    compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
     compile 'dev.misfitlabs.kotlinguice4:kotlin-guice:1.4.1'
+    compile group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
+
 }
 
 compileKotlin {

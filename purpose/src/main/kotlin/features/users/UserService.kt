@@ -12,6 +12,7 @@ import javalinjwt.JWTGenerator
 import javalinjwt.JWTProvider
 import lib.auth.*
 import lib.engine.NotFound
+import org.mindrot.jbcrypt.BCrypt
 
 
 class UserService @Inject constructor(private val engine: UserEngine) {
@@ -47,15 +48,19 @@ class UserService @Inject constructor(private val engine: UserEngine) {
 
     fun login(reqLogin: Login): String {
         val user = engine.getByEmail(reqLogin.email)
-        if (user.password == hashPassword(reqLogin.password)) {
+        if (validate(reqLogin.password, user.password)) {
             return generateToken(user)
         } else {
             throw WrongPassword()
         }
     }
 
+    private fun validate(candidate: String, hashed: String): Boolean {
+        return BCrypt.checkpw(candidate, hashed)
+    }
+
     private fun hashPassword(password: String): String {
-        return password
+        return BCrypt.hashpw(password, BCrypt.gensalt())
     }
 
     private fun generateToken(user: User): String {
