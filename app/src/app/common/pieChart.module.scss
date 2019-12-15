@@ -1,0 +1,10 @@
+.initial {
+  transition: all 500ms;
+  opacity: 0;
+  transform: rotate(-45deg);
+}
+
+.notInitial {
+  opacity: 1;
+  transform: rotate(0);
+}

@@ -11,4 +11,5 @@ export class Aspect {
     name: string;
     weight: number;
     completed?: number;
+    color?: string;
 }

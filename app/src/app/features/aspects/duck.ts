@@ -8,7 +8,12 @@ export type AspectsState = {
 };
 
 const initialState: AspectsState = {
-    aspects: []
+    aspects: [
+        {name: "Health", weight: 3, completed: .50, id: "1", color: 'red'},
+        {name: "Career", weight: 4, completed: 1, id: "2", color: 'blue'},
+        {name: "Hobbies", weight: 2, completed: .33, id: "3", color: 'green'},
+        {name: "Charity", weight: 1, completed: .0, id: "4", color: 'purple'}
+    ]
 };
 
 // Actions
@@ -25,13 +30,13 @@ export const addAspectRequest = (req: AddAspect): Thunk =>
         // Call backend
         setTimeout(() => {
             dispatch(removeAspect(tmp));
-            if (Math.random() > 0.5) {
+            if (false && Math.random() > 0.5) {
                 // Error
                 console.log("ERROR!")
             } else {
                 // Success
                 dispatch(addAspect(new Aspect(
-                tmp.name + "from backend", tmp.weight, Math.random().toString(), 0
+                    tmp.name + "from backend", tmp.weight, Math.random().toString(), 0
                 )));
             }
         }, 2000);
