@@ -1,5 +1,6 @@
 package features.users
 
+import com.google.inject.Inject
 import features.users.models.Login
 import features.users.models.Registration
 import features.users.models.User
@@ -11,13 +12,13 @@ import io.javalin.plugin.openapi.annotations.OpenApiResponse
 import javalinjwt.examples.JWTResponse
 import lib.engine.NotFound
 
-class UserController(private val service: UserService) {
+class UserController @Inject constructor(private val service: UserService) {
 
     @OpenApi(requestBody = OpenApiRequestBody(content = [OpenApiContent(from = Registration::class)]),
-            responses = [OpenApiResponse(status = "200", content = [OpenApiContent(from = User::class)])])
+            responses = [OpenApiResponse(status = "200", content = [OpenApiContent(from = UserTO::class)])])
     fun register(ctx: Context) {
         val foo = ctx.body<Registration>()
-        ctx.json(service.register(foo))
+        ctx.json(UserTO.fromUser(service.register(foo)))
     }
 
     @OpenApi(requestBody = OpenApiRequestBody(content = [OpenApiContent(from = Login::class)]),
@@ -30,6 +31,7 @@ class UserController(private val service: UserService) {
         }
     }
 
+    @OpenApi(responses = [OpenApiResponse(status = "200", content = [OpenApiContent(from = UserTO::class)])])
     fun getUser(ctx: Context) {
         val user = ctx.attribute<String>("email")
             ?.let { service.getUser(it) }
@@ -37,10 +39,15 @@ class UserController(private val service: UserService) {
             ctx.status(404)
                 .result("Account not found")
         } else {
-            ctx.json(user)
+            ctx.json(UserTO.fromUser(user))
         }
     }
 }
 
-
-
+data class UserTO(val email: String, val id: String) {
+    companion object {
+        fun fromUser(user: User): UserTO {
+            return UserTO(user.email, user.id)
+        }
+    }
+}

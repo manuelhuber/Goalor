@@ -8,6 +8,14 @@ class LocalUserEngine : UserEngine {
 
     private val users = mutableMapOf<String, User>()
 
+    init {
+        print("Creating a user engine")
+    }
+
+    override fun getByEmail(email: String): User {
+        return users.values.find { user -> user.email == email } ?: throw NotFound()
+    }
+
     override fun get(id: String): User {
         return users.getOrElse(id) { throw NotFound() }
     }

@@ -8,7 +8,7 @@ import javalinjwt.JavalinJWT
 
 
 internal enum class Roles : Role {
-    ANYONE, USER, ADMIN
+    ANYONE, USER,
 }
 
 const val USER_LEVEL = "level"

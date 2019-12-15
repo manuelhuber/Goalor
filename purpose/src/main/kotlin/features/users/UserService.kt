@@ -3,26 +3,25 @@ package features.users
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTCreator
 import com.auth0.jwt.algorithms.Algorithm
+import com.google.inject.Inject
 import features.users.models.Login
 import features.users.models.Registration
 import features.users.models.User
 import features.users.models.UserEngine
 import javalinjwt.JWTGenerator
 import javalinjwt.JWTProvider
-import lib.auth.EMAIL
-import lib.auth.Roles
-import lib.auth.USER_LEVEL
-import lib.auth.WrongPassword
+import lib.auth.*
+import lib.engine.NotFound
 
 
-class UserService(private val engine: UserEngine) {
+class UserService @Inject constructor(private val engine: UserEngine) {
 
     var provider: JWTProvider
         private set
 
     init {
         val algorithm = Algorithm.HMAC256("very_secret")
-        val generator: JWTGenerator<User> = JWTGenerator<User> { user: User, alg: Algorithm? ->
+        val generator: JWTGenerator<User> = JWTGenerator { user: User, alg: Algorithm? ->
             val token: JWTCreator.Builder = JWT.create()
                 .withClaim(EMAIL, user.email)
                 .withClaim(USER_LEVEL, Roles.USER.name)
@@ -34,17 +33,20 @@ class UserService(private val engine: UserEngine) {
     }
 
     fun getUser(email: String): User {
-        return engine.get(email)
+        return engine.getByEmail(email)
     }
 
     fun register(request: Registration): User {
-        val user = User(request.email, hashPassword(request.password), "")
-        engine.create(user)
-        return user
+        try {
+            engine.getByEmail(request.email)
+            throw AccountAlreadyExists()
+        } catch (e: NotFound) {
+            return engine.create(User(request.email, hashPassword(request.password), ""))
+        }
     }
 
     fun login(reqLogin: Login): String {
-        val user = engine.get(reqLogin.email)
+        val user = engine.getByEmail(reqLogin.email)
         if (user.password == hashPassword(reqLogin.password)) {
             return generateToken(user)
         } else {

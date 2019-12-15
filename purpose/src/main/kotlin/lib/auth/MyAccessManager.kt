@@ -6,7 +6,7 @@ import io.javalin.http.Context
 import io.javalin.http.Handler
 import javalinjwt.JavalinJWT
 
-class MyAccessManager() : AccessManager {
+class MyAccessManager : AccessManager {
 
     override fun manage(handler: Handler, ctx: Context, permittedRoles: MutableSet<Role>) {
         if (permittedRoles.size == 0 || permittedRoles.contains(Roles.ANYONE)) {
@@ -16,7 +16,7 @@ class MyAccessManager() : AccessManager {
         if (JavalinJWT.containsJWT(ctx)) {
             val jwt = JavalinJWT.getDecodedFromContext(ctx)
             val role = jwt.getClaim(USER_LEVEL)
-            if (!role.isNull && permittedRoles.any { r -> r.toString() == role.toString() }) {
+            if (!role.isNull && permittedRoles.any { r -> r.toString() == role.asString() }) {
                 handler.handle(ctx)
                 return
             }
