@@ -6,7 +6,7 @@ import {useInput} from '../../../util/InputHook';
 import Button from '../../common/Button';
 import {Aspect} from './models';
 import {bindActionCreators} from 'redux';
-import PieChart, {CircleEntry} from '../../common/pieChart';
+import PieChart, {PieChartEntry} from '../../common/pieChart';
 
 const mapStateToProps = (state: AppState) => {
     return {aspects: state.aspects.aspects}
@@ -22,10 +22,11 @@ type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateT
 const Aspects: React.FC<Props> = props => {
 
     const total = props.aspects.map(a => a.weight).reduce((sum, weight) => sum + weight, 0);
-    const circleEntries: CircleEntry[] = props.aspects.map((aspect, index) => ({
+    const circleEntries: PieChartEntry[] = props.aspects.map((aspect) => ({
         percentage: aspect.weight / total,
         radius: aspect.completed || 0,
-        color: aspect.color || "red"
+        color: aspect.color || "red",
+        onClick: () => console.log(aspect.name)
     }));
 
     const {value: newAspect, bind: bindNewAspect} = useInput('');
