@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTCreator
 import com.auth0.jwt.algorithms.Algorithm
 import com.google.inject.Inject
+import com.google.inject.name.Named
 import features.auth.models.WrongPassword
 import features.users.models.User
 import features.users.models.UserEngine
@@ -11,14 +12,13 @@ import javalinjwt.JWTGenerator
 import javalinjwt.JWTProvider
 import org.mindrot.jbcrypt.BCrypt
 
-
-class AuthService @Inject constructor(private val engine: UserEngine) {
+class AuthService @Inject constructor(private val engine: UserEngine, @Named(JWT_SECRET) secret: String) {
 
     internal var provider: JWTProvider
         private set
 
     init {
-        val algorithm = Algorithm.HMAC256("very_secret")
+        val algorithm = Algorithm.HMAC256(secret)
         val generator: JWTGenerator<User> = JWTGenerator { user: User, alg: Algorithm? ->
             val token: JWTCreator.Builder = JWT.create().withClaim(Claims.ID.name, user.id)
                 .withClaim(Claims.USER_LEVEL.name, Roles.USER.name)

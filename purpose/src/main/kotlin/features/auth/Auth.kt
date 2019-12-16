@@ -16,6 +16,8 @@ enum class Claims {
 
 }
 
+const val JWT_SECRET = "jwt_secret"
+
 fun addAuth(app: Javalin, jwtProvider: JWTProvider) {
     // decrypt JWT
     app.before(JavalinJWT.createHeaderDecodeHandler(jwtProvider))

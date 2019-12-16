@@ -23,14 +23,15 @@ fun main(args: Array<String>) {
             logger?.info("Response: {}", ctx.resultString())
         }
     }.start(7000)
-    val injector = Guice.createInjector(MyModule())
-    app.exception(Exception::class.java) { exception, ctx ->
+
+    app.exception(Exception::class.java) { exception, _ ->
         logger?.error("uncaught", exception)
     }.exception(NotFound::class.java) { exception, ctx ->
         logger?.info(exception.message)
         ctx.status(404).result(exception.message.orEmpty())
     }
 
+    val injector = Guice.createInjector(GuiceModule())
     addAuth(app, injector.getInstance<AuthService>().provider)
     createRoutes(app, injector)
 }
