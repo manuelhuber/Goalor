@@ -27,7 +27,7 @@ const Authenticate: React.FC<Props> = props => {
     const {value: email, bind: bindEmail} = useInput("");
 
     const submit = (event) => {
-        isRegistration ? props.login({username, password}) : props.register({username, password, email});
+        isRegistration ? props.register({username, password, email}) : props.login({username, password});
         event.preventDefault();
     };
     return <div className='wrapper' style={{maxWidth: "25rem"}}>

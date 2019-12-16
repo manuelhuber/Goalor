@@ -10,6 +10,7 @@ import io.javalin.plugin.openapi.annotations.OpenApiContent
 import io.javalin.plugin.openapi.annotations.OpenApiRequestBody
 import io.javalin.plugin.openapi.annotations.OpenApiResponse
 import javalinjwt.examples.JWTResponse
+import lib.auth.WrongPassword
 import lib.engine.NotFound
 
 class UserController @Inject constructor(private val service: UserService) {
@@ -26,8 +27,13 @@ class UserController @Inject constructor(private val service: UserService) {
     fun login(ctx: Context) {
         try {
             ctx.json(JWTResponse(service.login(ctx.body<Login>())))
-        } catch (e: NotFound) {
-            ctx.res.status = 404
+        } catch (e: Exception) {
+            when (e) {
+                is WrongPassword, is NotFound -> {
+                    ctx.res.status = 401
+                }
+                else -> throw e
+            }
         }
     }
 

@@ -16,6 +16,7 @@ const mapStateToProps = (state: AppState) => {
 const mapDispatchToProps = {};
 
 const App: React.FC<Props> = props => {
+    console.log(process.env.REACT_APP_BASE_URL);
     return <div className={style.app}>
         <div>
             <Header/>

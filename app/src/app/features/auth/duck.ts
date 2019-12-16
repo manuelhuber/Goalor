@@ -1,5 +1,6 @@
 import {Action, Reducer} from "redux";
 import {Thunk} from "app/Store";
+import {post} from '../../lib/fetch';
 
 // State
 
@@ -9,7 +10,8 @@ export type AuthState = {
     isLoading: boolean;
 };
 
-const initialState: AuthState = {authenticated: true, isLoading: false};
+const initialState: AuthState = {authenticated: false, isLoading: false};
+
 
 // Actions
 export type LoginRequest = { username: string, password: string };
@@ -19,10 +21,13 @@ export const login = (req: LoginRequest): Thunk =>
             return Promise.resolve();
         } else {
             dispatch(setLoading(true));
-            setTimeout(() => {
-                dispatch(setLoading(false));
-                dispatch(setToken({token: "fakeToken"}));
-            }, 1000);
+            post("login", {email: req.username, password: req.password})
+                .then(res => {
+                    dispatch(setLoading(false));
+                    let token = res['jwt'];
+                    console.log(token);
+                    dispatch(setToken({token: token}));
+                });
         }
     };
 
@@ -54,6 +59,7 @@ export const authReducer: Reducer<AuthState, AuthAction> = (state = initialState
         case "SET_LOADING":
             return {...state, isLoading: action.loading};
         case "SET_TOKEN":
+            localStorage.setItem("GOALOR_KEY", action.token);
             return {...state, token: action.token, authenticated: !!action.token};
         default:
             return state;

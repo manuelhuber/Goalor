@@ -18,6 +18,7 @@ fun main(args: Array<String>) {
     val app = Javalin.create { config ->
         addSwagger(config)
         config.accessManager(MyAccessManager())
+        config.enableCorsForAllOrigins()
     }
         .start(7000)
     val injector = Guice.createInjector(MyModule())
