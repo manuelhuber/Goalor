@@ -1,64 +1,53 @@
 package features.users
 
 import com.google.inject.Inject
-import features.users.models.Login
+import features.auth.AuthService
+import features.auth.Roles
 import features.users.models.Registration
+import features.users.models.RegistrationResponse
 import features.users.models.User
+import features.users.models.UserTO
+import io.javalin.Javalin
+import io.javalin.apibuilder.ApiBuilder.get
+import io.javalin.apibuilder.ApiBuilder.post
+import io.javalin.core.security.SecurityUtil
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.annotations.OpenApi
 import io.javalin.plugin.openapi.annotations.OpenApiContent
 import io.javalin.plugin.openapi.annotations.OpenApiRequestBody
 import io.javalin.plugin.openapi.annotations.OpenApiResponse
-import javalinjwt.examples.JWTResponse
-import lib.auth.WrongPassword
+import lib.controller.Controller
 import lib.engine.NotFound
 
-class UserController @Inject constructor(private val service: UserService) {
+class UserController @Inject constructor(private val service: UserService, private val authService: AuthService) :
+        Controller() {
+
+    override fun addRoutes(app: Javalin) {
+        app.routes {
+            get("/users/me", this::getUser, SecurityUtil.roles(Roles.USER))
+            post("/register", this::register)
+        }
+    }
 
     @OpenApi(requestBody = OpenApiRequestBody(content = [OpenApiContent(from = Registration::class)]),
             responses = [OpenApiResponse(status = "200",
                     content = [OpenApiContent(from = RegistrationResponse::class)])])
     fun register(ctx: Context) {
-        val foo = ctx.body<Registration>()
-        val user = service.register(foo)
-        val token = service.login(user.email, foo.password)
+        val reg = ctx.body<Registration>()
+        val user = service.register(reg)
+        val token = authService.login(user.email, reg.password)
         ctx.json(RegistrationResponse(UserTO.fromUser(user), token))
-    }
-
-    @OpenApi(requestBody = OpenApiRequestBody(content = [OpenApiContent(from = Login::class)]),
-            responses = [OpenApiResponse(status = "200", content = [OpenApiContent(from = JWTResponse::class)])])
-    fun login(ctx: Context) {
-        try {
-            ctx.json(JWTResponse(service.login(ctx.body<Login>().email, ctx.body<Login>().password)))
-        } catch (e: Exception) {
-            when (e) {
-                is WrongPassword, is NotFound -> {
-                    ctx.res.status = 401
-                }
-                else -> throw e
-            }
-        }
     }
 
     @OpenApi(responses = [OpenApiResponse(status = "200", content = [OpenApiContent(from = UserTO::class)])])
     fun getUser(ctx: Context) {
-        val user = ctx.attribute<String>("email")
-            ?.let { service.getUser(it) }
+        val mail = ctx.attribute<String>("email")
+        val user = mail?.let { service.getUser(it) }
         if (user == null) {
-            ctx.status(404)
-                .result("Account not found")
+            throw NotFound(mail.orEmpty(), User::class, "email")
         } else {
             ctx.json(UserTO.fromUser(user))
         }
     }
 }
 
-data class UserTO(val email: String, val id: String) {
-    companion object {
-        fun fromUser(user: User): UserTO {
-            return UserTO(user.email, user.id)
-        }
-    }
-}
-
-data class RegistrationResponse(val user: UserTO, val token: String)

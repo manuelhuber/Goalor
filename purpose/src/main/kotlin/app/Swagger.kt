@@ -8,8 +8,7 @@ import io.swagger.v3.oas.models.info.Info
 
 fun addSwagger(conf: JavalinConfig) {
 
-    val applicationInfo = Info().version("1.0")
-        .description("My Application")
+    val applicationInfo = Info().version("1.0").description("My Application")
 
     val openApiPlugin = OpenApiOptions(applicationInfo).path("/swagger-docs")
         .swagger(SwaggerOptions("/swagger").title("My Swagger Documentation"))

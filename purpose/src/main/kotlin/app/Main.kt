@@ -3,15 +3,12 @@ package app
 import com.google.inject.Guice
 import com.google.inject.Injector
 import dev.misfitlabs.kotlinguice4.getInstance
+import features.auth.AuthController
+import features.auth.AuthService
+import features.auth.MyAccessManager
+import features.auth.addAuth
 import features.users.UserController
-import features.users.UserService
 import io.javalin.Javalin
-import io.javalin.apibuilder.ApiBuilder.get
-import io.javalin.apibuilder.ApiBuilder.post
-import io.javalin.core.security.SecurityUtil.roles
-import lib.auth.MyAccessManager
-import lib.auth.Roles
-import lib.auth.addAuth
 import lib.engine.NotFound
 import org.slf4j.LoggerFactory
 
@@ -25,28 +22,21 @@ fun main(args: Array<String>) {
             logger?.info("{} - Request took {} ms", ctx.url(), ms)
             logger?.info("Response: {}", ctx.resultString())
         }
-    }
-        .start(7000)
+    }.start(7000)
     val injector = Guice.createInjector(MyModule())
     app.exception(Exception::class.java) { exception, ctx ->
         logger?.error("uncaught", exception)
+    }.exception(NotFound::class.java) { exception, ctx ->
+        logger?.info(exception.message)
+        ctx.status(404).result(exception.message.orEmpty())
     }
-        .exception(NotFound::class.java) { exception, ctx ->
-            logger?.info(exception.message)
-            ctx.status(404)
-        }
 
-    val userService = injector.getInstance<UserService>()
-    addAuth(app, userService)
-    createRoutes(app, userService, injector)
+    addAuth(app, injector.getInstance<AuthService>().provider)
+    createRoutes(app, injector)
 }
 
-fun createRoutes(app: Javalin, userService: UserService, injector: Injector) {
-    val userController = injector.getInstance<UserController>()
-    app.routes {
-        get("/users/me", userController::getUser, roles(Roles.USER))
-        post("/register", userController::register)
-        post("/login", userController::login)
-    }
+fun createRoutes(app: Javalin, injector: Injector) {
+    val controllers = listOf(UserController::class, AuthController::class)
+    controllers.forEach { kClass -> injector.getInstance(kClass.java).addRoutes(app) }
 }
 

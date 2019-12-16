@@ -8,16 +8,19 @@ import lib.engine.NotFound
 @Singleton
 class LocalUserEngine : UserEngine {
 
-    private val users = mutableMapOf<String, User>("0" to User("test",
-            "\$2a\$10\$/UrUNRvydZ0rXWXN.cu5AuYgMJW8gMAcqmAQHuyc3BkJdmSNoNpf.", // "test"
-            "0"))
+    private val users = mutableMapOf("0" to User(email = "mail@mail.mail",
+            username = "test",
+            password = "\$2a\$10\$/UrUNRvydZ0rXWXN.cu5AuYgMJW8gMAcqmAQHuyc3BkJdmSNoNpf.", // "test"
+            id = "0",
+            firstName = "First",
+            lastName = "Last"))
 
     override fun getByEmail(email: String): User {
-        return users.values.find { user -> user.email == email } ?: throw NotFound()
+        return users.values.find { user -> user.email == email } ?: throw NotFound(email, User::class, "email")
     }
 
     override fun get(id: String): User {
-        return users.getOrElse(id) { throw NotFound() }
+        return users.getOrElse(id) { throw NotFound(id, User::class) }
     }
 
     override fun create(update: User): User {

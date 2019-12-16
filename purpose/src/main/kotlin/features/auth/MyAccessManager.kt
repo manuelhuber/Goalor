@@ -1,4 +1,4 @@
-package lib.auth
+package features.auth
 
 import io.javalin.core.security.AccessManager
 import io.javalin.core.security.Role
@@ -15,14 +15,13 @@ class MyAccessManager : AccessManager {
         }
         if (JavalinJWT.containsJWT(ctx)) {
             val jwt = JavalinJWT.getDecodedFromContext(ctx)
-            val role = jwt.getClaim(USER_LEVEL)
+            val role = jwt.getClaim(Claims.USER_LEVEL.name)
             if (!role.isNull && permittedRoles.any { r -> r.toString() == role.asString() }) {
                 handler.handle(ctx)
                 return
             }
         }
-        ctx.status(401)
-            .result("Unauthorized")
+        ctx.status(401).result("Unauthorized")
     }
 
 }

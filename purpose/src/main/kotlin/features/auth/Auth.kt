@@ -1,9 +1,9 @@
-package lib.auth
+package features.auth
 
 import com.auth0.jwt.interfaces.DecodedJWT
-import features.users.UserService
 import io.javalin.Javalin
 import io.javalin.core.security.Role
+import javalinjwt.JWTProvider
 import javalinjwt.JavalinJWT
 
 
@@ -11,20 +11,22 @@ internal enum class Roles : Role {
     ANYONE, USER,
 }
 
-const val USER_LEVEL = "level"
-const val EMAIL = "email"
+enum class Claims {
+    USER_LEVEL, ID,
 
-fun addAuth(app: Javalin, service: UserService) {
+}
+
+fun addAuth(app: Javalin, jwtProvider: JWTProvider) {
     // decrypt JWT
-    app.before(JavalinJWT.createHeaderDecodeHandler(service.provider))
+    app.before(JavalinJWT.createHeaderDecodeHandler(jwtProvider))
 
     // Read email from JWT and add it to ctx for easier access in controller
     app.before { ctx ->
         if (JavalinJWT.containsJWT(ctx)) {
             val jwt = ctx.attribute<DecodedJWT>("jwt")
-            val mail = jwt!!.getClaim(EMAIL)
-            if (!mail.isNull) {
-                ctx.attribute(EMAIL, mail.asString())
+            val userId = jwt!!.getClaim(Claims.ID.name)
+            if (!userId.isNull) {
+                ctx.attribute(Claims.ID.name, userId.asString())
             }
         }
     }

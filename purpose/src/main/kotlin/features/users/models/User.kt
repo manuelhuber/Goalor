@@ -1,3 +1,10 @@
 package features.users.models
 
-data class User(val email: String, val password: String, val id: String)
+import lib.engine.Model
+
+data class User(val email: String,
+                val username: String,
+                val firstName: String,
+                val lastName: String,
+                val password: String,
+                override val id: String) : Model
