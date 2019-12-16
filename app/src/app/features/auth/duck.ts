@@ -35,10 +35,10 @@ export type RegisterRequest = { username: string, password: string, email: strin
 export const register = (req: RegisterRequest): Thunk =>
     async (dispatch) => {
         dispatch(setLoading(true));
-        setTimeout(() => {
+        post("register", {email: req.email, password: req.password}).then(res => {
             dispatch(setLoading(false));
-            dispatch(setToken({token: "fakeToken"}));
-        }, 1000);
+            dispatch(setToken({token: res["token"]}));
+        });
     };
 
 

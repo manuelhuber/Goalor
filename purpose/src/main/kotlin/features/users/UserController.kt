@@ -16,17 +16,20 @@ import lib.engine.NotFound
 class UserController @Inject constructor(private val service: UserService) {
 
     @OpenApi(requestBody = OpenApiRequestBody(content = [OpenApiContent(from = Registration::class)]),
-            responses = [OpenApiResponse(status = "200", content = [OpenApiContent(from = UserTO::class)])])
+            responses = [OpenApiResponse(status = "200",
+                    content = [OpenApiContent(from = RegistrationResponse::class)])])
     fun register(ctx: Context) {
         val foo = ctx.body<Registration>()
-        ctx.json(UserTO.fromUser(service.register(foo)))
+        val user = service.register(foo)
+        val token = service.login(user.email, foo.password)
+        ctx.json(RegistrationResponse(UserTO.fromUser(user), token))
     }
 
     @OpenApi(requestBody = OpenApiRequestBody(content = [OpenApiContent(from = Login::class)]),
             responses = [OpenApiResponse(status = "200", content = [OpenApiContent(from = JWTResponse::class)])])
     fun login(ctx: Context) {
         try {
-            ctx.json(JWTResponse(service.login(ctx.body<Login>())))
+            ctx.json(JWTResponse(service.login(ctx.body<Login>().email, ctx.body<Login>().password)))
         } catch (e: Exception) {
             when (e) {
                 is WrongPassword, is NotFound -> {
@@ -57,3 +60,5 @@ data class UserTO(val email: String, val id: String) {
         }
     }
 }
+
+data class RegistrationResponse(val user: UserTO, val token: String)

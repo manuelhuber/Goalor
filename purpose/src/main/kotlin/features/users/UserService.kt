@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTCreator
 import com.auth0.jwt.algorithms.Algorithm
 import com.google.inject.Inject
-import features.users.models.Login
 import features.users.models.Registration
 import features.users.models.User
 import features.users.models.UserEngine
@@ -46,9 +45,9 @@ class UserService @Inject constructor(private val engine: UserEngine) {
         }
     }
 
-    fun login(reqLogin: Login): String {
-        val user = engine.getByEmail(reqLogin.email)
-        if (validate(reqLogin.password, user.password)) {
+    fun login(mail: String, password: String): String {
+        val user = engine.getByEmail(mail)
+        if (validate(password, user.password)) {
             return generateToken(user)
         } else {
             throw WrongPassword()

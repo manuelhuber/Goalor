@@ -12,16 +12,29 @@ import io.javalin.core.security.SecurityUtil.roles
 import lib.auth.MyAccessManager
 import lib.auth.Roles
 import lib.auth.addAuth
+import lib.engine.NotFound
+import org.slf4j.LoggerFactory
 
-
+private val logger: org.slf4j.Logger? = LoggerFactory.getLogger(Javalin::class.java)
 fun main(args: Array<String>) {
     val app = Javalin.create { config ->
         addSwagger(config)
         config.accessManager(MyAccessManager())
         config.enableCorsForAllOrigins()
+        config.requestLogger { ctx, ms ->
+            logger?.info("{} - Request took {} ms", ctx.url(), ms)
+            logger?.info("Response: {}", ctx.resultString())
+        }
     }
         .start(7000)
     val injector = Guice.createInjector(MyModule())
+    app.exception(Exception::class.java) { exception, ctx ->
+        logger?.error("uncaught", exception)
+    }
+        .exception(NotFound::class.java) { exception, ctx ->
+            logger?.info(exception.message)
+            ctx.status(404)
+        }
 
     val userService = injector.getInstance<UserService>()
     addAuth(app, userService)
