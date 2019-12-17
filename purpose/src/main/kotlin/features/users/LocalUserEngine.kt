@@ -15,8 +15,8 @@ class LocalUserEngine : UserEngine {
             firstName = "First",
             lastName = "Last"))
 
-    override fun getByEmail(email: String): User {
-        return users.values.find { user -> user.email == email } ?: throw NotFound(email, User::class, "email")
+    override fun getByUsername(username: String): User {
+        return users.values.find { user -> user.username == username } ?: throw NotFound(username, User::class, "email")
     }
 
     override fun get(id: String): User {

@@ -24,7 +24,7 @@ class AuthServiceTest {
     fun token() {
         val hash = service.hashPassword(password)
         val user = User(email = "mail", username = "user", lastName = "", firstName = "", id = "my ID", password = hash)
-        Mockito.`when`(engineMock.getByEmail("mail")).thenReturn(user)
+        Mockito.`when`(engineMock.getByUsername("mail")).thenReturn(user)
         val token = service.login("mail", password)
         assertTrue(token.isNotEmpty())
         assertThrows(WrongPassword::class.java, Executable { service.login("mail", "wrong password") })

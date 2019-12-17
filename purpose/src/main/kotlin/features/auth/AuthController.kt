@@ -3,7 +3,6 @@ package features.auth
 import com.google.inject.Inject
 import features.auth.models.Login
 import features.auth.models.WrongPassword
-import features.users.models.Registration
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.http.Context
@@ -27,7 +26,7 @@ class AuthController @Inject constructor(private val service: AuthService) : Con
             responses = [OpenApiResponse(status = "200", content = [OpenApiContent(from = JWTResponse::class)])])
     fun login(ctx: Context) {
         try {
-            ctx.json(JWTResponse(service.login(ctx.body<Registration>().email, ctx.body<Registration>().password)))
+            ctx.json(JWTResponse(service.login(ctx.body<Login>().username, ctx.body<Login>().password)))
         } catch (e: Exception) {
             when (e) {
                 is WrongPassword, is NotFound -> {

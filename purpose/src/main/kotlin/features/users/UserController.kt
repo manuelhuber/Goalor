@@ -42,7 +42,7 @@ class UserController @Inject constructor(private val service: UserService, priva
     @OpenApi(responses = [OpenApiResponse(status = "200", content = [OpenApiContent(from = UserTO::class)])])
     fun getUser(ctx: Context) {
         val mail = ctx.attribute<String>("email")
-        val user = mail?.let { service.getUser(it) }
+        val user = mail?.let { service.getUserByUsername(it) }
         if (user == null) {
             throw NotFound(mail.orEmpty(), User::class, "email")
         } else {

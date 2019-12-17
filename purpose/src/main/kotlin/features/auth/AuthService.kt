@@ -29,7 +29,7 @@ class AuthService @Inject constructor(private val engine: UserEngine, @Named(JWT
     }
 
     fun login(mail: String, password: String): String {
-        val user = engine.getByEmail(mail)
+        val user = engine.getByUsername(mail)
         if (validate(password, user.password)) {
             return generateToken(user)
         } else {

@@ -11,13 +11,13 @@ import lib.engine.NotFound
 
 class UserService @Inject constructor(private val authService: AuthService, private val engine: UserEngine) {
 
-    fun getUser(email: String): User {
-        return engine.getByEmail(email)
+    fun getUserByUsername(username: String): User {
+        return engine.getByUsername(username)
     }
 
     fun register(request: Registration): User {
         try {
-            engine.getByEmail(request.email)
+            engine.getByUsername(request.email)
             throw AccountAlreadyExists()
         } catch (e: NotFound) {
             return engine.create(User(email = request.email,

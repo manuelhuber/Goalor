@@ -21,7 +21,7 @@ export const login = (req: LoginRequest): Thunk =>
             return Promise.resolve();
         } else {
             dispatch(setLoading(true));
-            post("login", {email: req.username, password: req.password})
+            post("login", {username: req.username, password: req.password})
                 .then(res => {
                     dispatch(setLoading(false));
                     let token = res["jwt"];
