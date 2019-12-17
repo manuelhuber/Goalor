@@ -1,0 +1,29 @@
+@import "style/styleConstants";
+
+.root {
+  position: relative;
+}
+
+.bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 8px 24px;
+  background: $black-lighter;
+}
+
+.list {
+  position: absolute;
+  bottom: 100%;
+  background: red;
+  height: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+
+  &.visible {
+    height: auto;
+  }
+
+}
+

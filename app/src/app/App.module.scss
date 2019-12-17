@@ -5,5 +5,13 @@
 }
 
 .app {
+  height: 100vh;
   font-family: $default-font;
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  flex-grow: 1;
+  overflow: auto;
 }

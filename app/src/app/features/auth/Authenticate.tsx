@@ -3,12 +3,11 @@ import {AppState} from "app/Store";
 import React, {useState} from "react";
 import {connect} from "react-redux"
 import {useInput} from "util/inputHook";
-import {jc} from "util/style";
 import {login, register} from "./duck";
 import {bindActionCreators} from "redux";
 
 const mapStateToProps = (state: AppState) => {
-    return {}
+    return {isLoading: state.auth.isLoading}
 };
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
@@ -35,9 +34,10 @@ const Authenticate: React.FC<Props> = props => {
             {isRegistration && <WithLabel label='E-Mail'><input type="email" {...bindEmail}/></WithLabel>}
             <WithLabel label='Username'><input type="text" {...bindUsername}/></WithLabel>
             <WithLabel label='Password'><input type="password" {...bindPassword}/></WithLabel>
-            <input type="submit" value={isRegistration ? "Register" : "Login"} className={jc("button", "-block")}/>
+            <Button type="submit" block={true}
+                    disabled={props.isLoading}>{isRegistration ? "Register" : "Login"}</Button>
         </form>
-        <Button onClick={() => setRegistration(!isRegistration)} type='link' block={true}>
+        <Button onClick={() => setRegistration(!isRegistration)} design='link' block={true}>
             {isRegistration ? "Already registered? Login!" : "New here? Sign up!"}</Button>
     </div>;
 };

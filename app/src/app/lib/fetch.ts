@@ -9,7 +9,10 @@ export const post = (url: string, body?: any, input?: RequestInit) => {
     };
     return fetch(`${process.env.REACT_APP_BASE_URL}/${url}`, {
         ...defaultConfig, ...input
-    }).then(async value => {
-        return await value.json()
+    }).then(async response => {
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
+        return await response.json();
     });
 };

@@ -23,11 +23,10 @@ export const login = (req: LoginRequest): Thunk =>
             dispatch(setLoading(true));
             post("login", {username: req.username, password: req.password})
                 .then(res => {
-                    dispatch(setLoading(false));
-                    let token = res["jwt"];
-                    console.log(token);
-                    dispatch(setToken({token: token}));
-                });
+                    dispatch(setToken({token: res["jwt"]}));
+                }).catch(reason => {
+                console.log(reason.message);
+            }).finally(() => dispatch(setLoading(false)));
         }
     };
 
