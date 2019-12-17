@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
-import {css} from '../../util/Style';
-import style from "./pieChart.module.scss";
+import {css} from "util/style";
+import style from "app/common/PieChart.module.scss";
 
 export interface PieChartEntry {
     percentage: number;
@@ -19,17 +19,17 @@ const PieChart: React.FC<Props> = props => {
         setInitialRender(false);
         let canvas = canvasRef.current;
         if (!canvas) return;
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext("2d");
 
         // double the stroke width you actually want since half of it will be outside & half inside the shape
         // but the outside part won't be drawn because of clipping
         ctx.lineWidth = 4;
         ctx.clearRect(0, 0, props.size, props.size);
-        ctx.strokeStyle = 'rgb(255,255,255)'; // needs to be background color
+        ctx.strokeStyle = "rgb(255,255,255)"; // needs to be background color
 
         for (let i = 0; i < entries.length; i++) {
             const path = entries[i][1];
-            ctx.fillStyle = props.entries[i].color;
+            ctx.fillStyle = entries[i][0].color;
 
             // Save/restore state, so we can do clipping without affecting the other entries
             ctx.save();
@@ -56,11 +56,11 @@ const PieChart: React.FC<Props> = props => {
             if (hit && hit[0].onClick) hit[0].onClick();
         };
 
-    }, [props.size, props.entries, hover]);
+    }, [props.size, entries, hover]);
     return <canvas className={css(style.initial, [style.notInitial, !isInitialRender])}
-        ref={canvasRef}
-        width={props.size}
-        height={props.size}/>;
+                   ref={canvasRef}
+                   width={props.size}
+                   height={props.size}/>;
 };
 export default PieChart;
 

@@ -1,5 +1,5 @@
 import React from "react";
-import {css} from "util/Style";
+import {css} from "util/style";
 
 type Props = {
     type?: "link" | "secondary" | "outlined"

@@ -1,5 +1,6 @@
 import {NamespacedAction} from "model/NamespacedAction";
 import {Reducer} from "redux";
+import {without} from "util/array";
 
 // State
 
@@ -53,7 +54,7 @@ export const filterReducer: Reducer<FilterState, FilterAction> = (state = emptyF
         case "TOGGLE_TAG":
             let selectedTags;
             if (state.selectedTags.includes(action.tag)) {
-                selectedTags = state.selectedTags.without(action.tag);
+                selectedTags = without(state.selectedTags, action.tag);
             } else {
                 selectedTags = state.selectedTags.concat(action.tag);
             }

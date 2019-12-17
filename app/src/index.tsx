@@ -8,7 +8,7 @@ import * as serviceWorker from "./serviceWorker";
 import "./style/common.scss";
 import "./style/cutestrap.scss";
 import "./style/styleConstants.scss";
-import "./util/Extensions";
+import "./util/array";
 
 
 ReactDOM.render(<Provider store={store}><App/></Provider>, document.getElementById("root"));

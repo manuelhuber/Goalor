@@ -1,5 +1,5 @@
 import React from "react";
-import {connect} from 'react-redux'
+import {connect} from "react-redux"
 import {AppState} from "app/Store";
 
 const mapStateToProps = (state: AppState) => {
@@ -9,7 +9,7 @@ const mapStateToProps = (state: AppState) => {
 const mapDispatchToProps = {};
 
 const Menu: React.FC<Props> = props => {
-    
+
     return <div></div>;
 };
 

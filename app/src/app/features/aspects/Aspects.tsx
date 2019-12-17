@@ -1,12 +1,12 @@
 import React from "react";
-import {connect} from 'react-redux'
+import {connect} from "react-redux"
 import {AppState} from "app/Store";
-import {addAspectRequest, removeAspect} from './duck';
-import {useInput} from '../../../util/InputHook';
-import Button from '../../common/Button';
-import {Aspect} from './models';
-import {bindActionCreators} from 'redux';
-import PieChart, {PieChartEntry} from '../../common/pieChart';
+import {addAspectRequest, removeAspect} from "./duck";
+import {useInput} from "util/inputHook";
+import Button from "app/common/Button";
+import {Aspect} from "./models";
+import {bindActionCreators} from "redux";
+import PieChart, {PieChartEntry} from "app/common/PieChart";
 
 const mapStateToProps = (state: AppState) => {
     return {aspects: state.aspects.aspects}
@@ -29,7 +29,7 @@ const Aspects: React.FC<Props> = props => {
         onClick: () => console.log(aspect.name)
     }));
 
-    const {value: newAspect, bind: bindNewAspect} = useInput('');
+    const {value: newAspect, bind: bindNewAspect} = useInput("");
     const {value: newWeight, bind: bindWeight} = useInput(1);
     return <div>
         <div>

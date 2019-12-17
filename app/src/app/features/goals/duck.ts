@@ -1,6 +1,7 @@
 import {Action, Reducer} from "redux";
-import {namespacedReducer, replaceItem} from "util/DuckUtil";
-import {emptyFilterState, FilterAction, filterReducer, FilterState} from "../filter/duck";
+import {namespacedReducer} from "util/duckUtil";
+import {emptyFilterState, FilterAction, filterReducer, FilterState} from "app/features/filter/duck";
+import {replaceItem} from "util/array";
 
 // State
 export interface Step {

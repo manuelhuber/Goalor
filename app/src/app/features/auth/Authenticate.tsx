@@ -2,10 +2,10 @@ import Button from "app/common/Button";
 import {AppState} from "app/Store";
 import React, {useState} from "react";
 import {connect} from "react-redux"
-import {useInput} from "util/InputHook";
-import {jc} from "util/Style";
+import {useInput} from "util/inputHook";
+import {jc} from "util/style";
 import {login, register} from "./duck";
-import {bindActionCreators} from 'redux';
+import {bindActionCreators} from "redux";
 
 const mapStateToProps = (state: AppState) => {
     return {}

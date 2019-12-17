@@ -3,7 +3,7 @@ import SectionTitle from "app/common/SectionTitle";
 import Filter from "app/features/filter/Filter";
 import {addGoal} from "app/features/goals/duck";
 import Goals from "app/features/goals/Goals";
-import Aspects from "app/features/aspects/aspects";
+import Aspects from "app/features/aspects/Aspects";
 import {AppState} from "app/Store";
 import React, {useState} from "react";
 import {connect} from "react-redux"

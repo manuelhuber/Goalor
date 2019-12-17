@@ -1,6 +1,6 @@
 import {Action, Reducer} from "redux";
 import {Thunk} from "app/Store";
-import {post} from '../../lib/fetch';
+import {post} from "app/lib/fetch";
 
 // State
 
@@ -24,7 +24,7 @@ export const login = (req: LoginRequest): Thunk =>
             post("login", {email: req.username, password: req.password})
                 .then(res => {
                     dispatch(setLoading(false));
-                    let token = res['jwt'];
+                    let token = res["jwt"];
                     console.log(token);
                     dispatch(setToken({token: token}));
                 });

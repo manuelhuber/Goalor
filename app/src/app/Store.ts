@@ -2,7 +2,7 @@ import {Action, applyMiddleware, combineReducers, compose, createStore} from "re
 import thunkMiddleware, {ThunkAction} from "redux-thunk"
 import {authReducer} from "./features/auth/duck";
 import {goalReducer} from "./features/goals/duck";
-import {aspectsReducer} from './features/aspects/duck';
+import {aspectsReducer} from "./features/aspects/duck";
 
 const rootReducer = combineReducers({goals: goalReducer, auth: authReducer, aspects: aspectsReducer});
 

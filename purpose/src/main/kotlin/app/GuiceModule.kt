@@ -9,7 +9,7 @@ import features.users.models.UserEngine
 class GuiceModule : KotlinModule() {
     override fun configure() {
         bindConstant().annotatedWith(Names.named(JWT_SECRET))
-            .to(System.getenv("jwt_secret")
+            .to(System.getenv(JWT_SECRET)
                     ?: throw Exception("No secret found in environment - this is needed to use JWT"))
         bind<UserEngine>().to<LocalUserEngine>()
     }
