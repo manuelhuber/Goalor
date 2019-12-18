@@ -1,9 +1,9 @@
+import {clearNotification} from "app/features/notifications/duck";
+import {AppState} from "app/Store";
 import React from "react";
 import {connect} from "react-redux"
-import {AppState} from "app/Store";
-import {clearNotification} from "app/features/notifications/duck";
-import style from "./Notifications.module.scss";
 import {css} from "util/style";
+import style from "./Notifications.module.scss";
 
 const mapStateToProps = (state: AppState) => {
     return {message: state.notifications.message, show: state.notifications.showMessage}

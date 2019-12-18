@@ -1,7 +1,7 @@
-import {Action, Reducer} from "redux";
-import {Aspect} from "./models";
 import {Thunk} from "app/Store";
+import {Action, Reducer} from "redux";
 import {replaceByComp, without} from "util/array";
+import {Aspect} from "./models";
 
 // State
 export type AspectsState = {

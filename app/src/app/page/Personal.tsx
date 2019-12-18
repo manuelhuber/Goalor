@@ -1,13 +1,13 @@
 import Expandable from "app/common/Expandable";
 import SectionTitle from "app/common/SectionTitle";
-import Filter from "app/features/filter/Filter";
-import Goals from "app/features/goals/Goals";
 import Aspects from "app/features/aspects/Aspects";
+import Filter from "app/features/filter/Filter";
+import {ACTIVE_GOALS_NAMESPACE, MAYBE_SOMEDAY_NAMESPACE} from "app/features/goals/duck";
+import Goals from "app/features/goals/Goals";
 import {AppState} from "app/Store";
 import React, {useState} from "react";
 import {connect} from "react-redux"
 import {green, redDark} from "style/styleConstants";
-import {ACTIVE_GOALS_NAMESPACE, MAYBE_SOMEDAY_NAMESPACE} from "app/features/goals/duck";
 
 const mapStateToProps = (state: AppState) => {
     const toGoals = (ids: string[]) => ids.map(id => state.goals.goals[id]);

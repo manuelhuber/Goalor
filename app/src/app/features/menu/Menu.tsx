@@ -1,15 +1,15 @@
-import React, {useState} from "react";
-import {connect} from "react-redux"
+import {logout} from "app/features/auth/duck";
+import {notify} from "app/features/notifications/duck";
 import {AppState} from "app/Store";
-import style from "./Menu.module.scss";
-import commonStyle from "style/Common.module.scss";
-import {css} from "util/style";
-import {Link} from "react-router-dom";
+import React, {useState} from "react";
 import {FaUser,} from "react-icons/fa";
 import {MdClose, MdMenu} from "react-icons/md";
-import {notify} from "app/features/notifications/duck";
-import {logout} from "app/features/auth/duck";
+import {connect} from "react-redux"
+import {Link} from "react-router-dom";
 import {bindActionCreators} from "redux";
+import commonStyle from "style/Common.module.scss";
+import {css} from "util/style";
+import style from "./Menu.module.scss";
 
 const mapStateToProps = (state: AppState) => {
     return {}

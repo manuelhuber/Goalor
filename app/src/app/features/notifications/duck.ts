@@ -1,5 +1,5 @@
-import {Action, Reducer} from "redux";
 import {Thunk} from "app/Store";
+import {Action, Reducer} from "redux";
 
 // State
 

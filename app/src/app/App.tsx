@@ -1,3 +1,6 @@
+import Authenticate from "app/features/auth/Authenticate";
+import Menu from "app/features/menu/Menu";
+import Notifications from "app/features/notifications/Notifications";
 import {AppState} from "app/Store";
 import React from "react";
 import {connect} from "react-redux"
@@ -8,9 +11,6 @@ import Header from "./features/header/Header";
 import Landing from "./page/Landing";
 import NotFound from "./page/NotFound";
 import Personal from "./page/Personal";
-import Menu from "app/features/menu/Menu";
-import Authenticate from "app/features/auth/Authenticate";
-import Notifications from "app/features/notifications/Notifications";
 
 const mapStateToProps = (state: AppState) => {
     return {}

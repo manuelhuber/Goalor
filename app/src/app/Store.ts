@@ -1,9 +1,9 @@
+import {notificationReducer} from "app/features/notifications/duck";
 import {Action, applyMiddleware, combineReducers, compose, createStore} from "redux";
 import thunkMiddleware, {ThunkAction} from "redux-thunk"
+import {aspectsReducer} from "./features/aspects/duck";
 import {authReducer} from "./features/auth/duck";
 import {goalReducer} from "./features/goals/duck";
-import {aspectsReducer} from "./features/aspects/duck";
-import {notificationReducer} from "app/features/notifications/duck";
 
 const rootReducer = combineReducers({
     goals: goalReducer,

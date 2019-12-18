@@ -1,6 +1,6 @@
+import style from "app/common/PieChart.module.scss";
 import React, {useEffect, useState} from "react";
 import {css} from "util/style";
-import style from "app/common/PieChart.module.scss";
 
 export interface PieChartEntry {
     percentage: number;

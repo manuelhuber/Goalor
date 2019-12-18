@@ -2,9 +2,9 @@ import Button from "app/common/buttons/Button";
 import {AppState} from "app/Store";
 import React, {useState} from "react";
 import {connect} from "react-redux"
+import {bindActionCreators} from "redux";
 import {useInput} from "util/inputHook";
 import {login, register} from "./duck";
-import {bindActionCreators} from "redux";
 
 const mapStateToProps = (state: AppState) => {
     return {isLoading: state.auth.isLoading}

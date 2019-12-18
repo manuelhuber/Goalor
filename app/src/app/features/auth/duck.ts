@@ -1,7 +1,7 @@
-import {Action, Reducer} from "redux";
-import {Thunk} from "app/Store";
-import {post} from "app/lib/fetch";
 import {notify} from "app/features/notifications/duck";
+import {post} from "app/lib/fetch";
+import {Thunk} from "app/Store";
+import {Action, Reducer} from "redux";
 
 // State
 
