@@ -1,0 +1,21 @@
+.root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  transition: transform ease 250ms;
+  text-align: center;
+  z-index: 9999;
+}
+
+.hidden {
+  transform: translateY(-100%);
+}
+
+.message {
+  display: inline-block;
+  background: yellow;
+  min-width: 200px;
+  max-width: 90vw;
+  margin: 0 auto;
+}

@@ -30,7 +30,7 @@ class AuthController @Inject constructor(private val service: AuthService) : Con
         } catch (e: Exception) {
             when (e) {
                 is WrongPassword, is NotFound -> {
-                    ctx.res.status = 401
+                    ctx.status(401).result("Wrong username / password")
                 }
                 else -> throw e
             }

@@ -10,6 +10,7 @@ import NotFound from "./page/NotFound";
 import Personal from "./page/Personal";
 import Menu from "app/features/menu/Menu";
 import Authenticate from "app/features/auth/Authenticate";
+import Notifications from "app/features/notifications/Notifications";
 
 const mapStateToProps = (state: AppState) => {
     return {}
@@ -21,6 +22,7 @@ const App: React.FC<Props> = props => {
     console.log(process.env.REACT_APP_BASE_URL);
     return <Router>
         <div className={style.app}>
+            <Notifications/>
             <div className={style.main}>
                 <div className={style.headerWrapper}><Header/></div>
                 <Switch>

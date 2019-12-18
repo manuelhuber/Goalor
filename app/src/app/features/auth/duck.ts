@@ -1,6 +1,7 @@
 import {Action, Reducer} from "redux";
 import {Thunk} from "app/Store";
 import {post} from "app/lib/fetch";
+import {notify} from "app/features/notifications/duck";
 
 // State
 
@@ -10,8 +11,13 @@ export type AuthState = {
     isLoading: boolean;
 };
 
-const initialState: AuthState = {authenticated: false, isLoading: false};
-
+const LOCAL_STORAGE_TOKEN = "GOALOR_KEY";
+const initialToken = localStorage.getItem(LOCAL_STORAGE_TOKEN);
+const initialState: AuthState = {
+    authenticated: !!initialToken,
+    token: initialToken,
+    isLoading: false
+};
 
 // Actions
 export type LoginRequest = { username: string, password: string };
@@ -21,12 +27,17 @@ export const login = (req: LoginRequest): Thunk =>
             return Promise.resolve();
         } else {
             dispatch(setLoading(true));
+            dispatch(notify({message: "LOGGING IN"}, 3000));
+
             post("login", {username: req.username, password: req.password})
                 .then(res => {
                     dispatch(setToken({token: res["jwt"]}));
+                    dispatch(notify({message: "Successfully logged in"}))
                 }).catch(reason => {
-                console.log(reason.message);
-            }).finally(() => dispatch(setLoading(false)));
+                dispatch(notify({message: `Error when logging in: ${reason.message}`}));
+            }).finally(() => {
+                return dispatch(setLoading(false));
+            });
         }
     };
 
@@ -49,7 +60,10 @@ type SetLoading = { loading: boolean };
 type SetLoadingAction = SetLoading & Action<"SET_LOADING">;
 export const setLoading = (value: boolean): SetLoadingAction => ({type: "SET_LOADING", loading: value});
 
-export type AuthAction = SetTokenAction | SetLoadingAction;
+type LogoutAction = Action<"LOGOUT">;
+export const logout = (): LogoutAction => ({type: "LOGOUT"});
+
+export type AuthAction = SetTokenAction | SetLoadingAction | LogoutAction;
 
 // Reducer
 
@@ -58,8 +72,11 @@ export const authReducer: Reducer<AuthState, AuthAction> = (state = initialState
         case "SET_LOADING":
             return {...state, isLoading: action.loading};
         case "SET_TOKEN":
-            localStorage.setItem("GOALOR_KEY", action.token);
+            localStorage.setItem(LOCAL_STORAGE_TOKEN, action.token);
             return {...state, token: action.token, authenticated: !!action.token};
+        case "LOGOUT":
+            localStorage.removeItem(LOCAL_STORAGE_TOKEN);
+            return {...state, token: null, authenticated: false};
         default:
             return state;
     }
