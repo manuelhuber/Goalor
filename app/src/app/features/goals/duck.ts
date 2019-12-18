@@ -1,7 +1,7 @@
 import {Action, Reducer} from "redux";
 import {namespacedReducer} from "util/duckUtil";
 import {emptyFilterState, FilterAction, filterReducer, FilterState} from "app/features/filter/duck";
-import {replaceItem} from "util/array";
+import {replaceByIndex} from "util/array";
 
 // State
 export interface Step {
@@ -137,7 +137,7 @@ export const goalReducer: Reducer<GoalState, GoalAction> = (state = initialState
 };
 
 function completeStep(goal: Goal, step: number, done: boolean): Goal {
-    const steps = replaceItem(goal.steps, step, step => ({...step, done: done}));
+    const steps = replaceByIndex(goal.steps, step, step => ({...step, done: done}));
     return {...goal, steps}
 }
 

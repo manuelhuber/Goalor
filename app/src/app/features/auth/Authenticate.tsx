@@ -1,4 +1,4 @@
-import Button from "app/common/Button";
+import Button from "app/common/buttons/Button";
 import {AppState} from "app/Store";
 import React, {useState} from "react";
 import {connect} from "react-redux"

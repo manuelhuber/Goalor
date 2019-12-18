@@ -1,7 +1,7 @@
 import {Action, Reducer} from "redux";
 import {Aspect} from "./models";
 import {Thunk} from "app/Store";
-import {without} from "util/array";
+import {replaceByComp, without} from "util/array";
 
 // State
 export type AspectsState = {
@@ -20,25 +20,18 @@ const initialState: AspectsState = {
 // Actions
 type AddAspect = { aspect: Aspect };
 type AddAspectAction = AddAspect & Action<"ADD_ASPECT">;
-const addAspect = (aspect: Aspect): AddAspectAction => ({type: "ADD_ASPECT", aspect});
+const addAspectAction = (aspect: Aspect): AddAspectAction => ({type: "ADD_ASPECT", aspect});
 
-export const addAspectRequest = (req: AddAspect): Thunk => async (dispatch) => {
-    const tmp = req.aspect;
+export const addAspect = (tmp: Aspect): Thunk => async (dispatch) => {
     // Instantly add the new aspect to make it snappy
-    dispatch(addAspect(tmp));
+    dispatch(addAspectAction(tmp));
 
     // Call backend
     setTimeout(() => {
         dispatch(removeAspect(tmp));
-        if (false && Math.random() > 0.5) {
-            // Error
-            console.log("ERROR!")
-        } else {
-            // Success
-            dispatch(addAspect(new Aspect(
-                tmp.name + "from backend", tmp.weight, Math.random().toString(), 0
-            )));
-        }
+        dispatch(addAspectAction(new Aspect(
+            tmp.name + "from backend", tmp.weight, Math.random().toString(), 0
+        )));
     }, 2000);
 };
 
@@ -46,7 +39,11 @@ type RemoveAspect = { aspect: Aspect };
 type RemoveAspectAction = RemoveAspect & Action<"REMOVE_ASPECT">;
 export const removeAspect = (aspect: Aspect): RemoveAspectAction => ({type: "REMOVE_ASPECT", aspect});
 
-export type AspectsAction = AddAspectAction | RemoveAspectAction;
+type UpdateAspect = { aspect: Aspect };
+type UpdateAspectAction = UpdateAspect & Action<"UPDATE_ASPECT">;
+export const updateAspect = (aspect: Aspect): UpdateAspectAction => ({type: "UPDATE_ASPECT", aspect});
+
+export type AspectsAction = AddAspectAction | RemoveAspectAction | UpdateAspectAction;
 
 // Reducer
 
@@ -56,6 +53,8 @@ export const aspectsReducer: Reducer<AspectsState, AspectsAction> = (state = ini
             return {...state, aspects: [action.aspect, ...state.aspects]};
         case "REMOVE_ASPECT":
             return {...state, aspects: without(state.aspects, action.aspect)};
+        case "UPDATE_ASPECT":
+            return {...state, aspects: replaceByComp(state.aspects, action.aspect, aspect => aspect.id)};
         default:
             return state;
     }

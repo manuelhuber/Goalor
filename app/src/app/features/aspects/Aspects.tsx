@@ -1,51 +1,77 @@
-import React from "react";
-import {connect} from "react-redux"
+import Button from "app/common/buttons/Button";
+import IconButton from "app/common/buttons/IconButton";
+import PieChart from "app/common/PieChart";
+import EditAspect from "app/features/aspects/EditAspect";
 import {AppState} from "app/Store";
-import {addAspectRequest, removeAspect} from "./duck";
-import {useInput} from "util/inputHook";
-import Button from "app/common/Button";
-import {Aspect} from "./models";
+import React, {useEffect, useState} from "react";
+import {MdEdit} from "react-icons/all";
+import {connect} from "react-redux"
 import {bindActionCreators} from "redux";
-import PieChart, {PieChartEntry} from "app/common/PieChart";
+import style from "./Aspects.module.scss";
+import {addAspect, removeAspect, updateAspect} from "./duck";
+import {Aspect} from "./models";
 
 const mapStateToProps = (state: AppState) => {
     return {aspects: state.aspects.aspects}
 };
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-    addAspectRequest,
-    removeAspect
+    addAspect,
+    removeAspect,
+    updateAspect
 }, dispatch);
 
 type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
 
 const Aspects: React.FC<Props> = props => {
-
     const total = props.aspects.map(a => a.weight).reduce((sum, weight) => sum + weight, 0);
-    const circleEntries: PieChartEntry[] = props.aspects.map((aspect) => ({
+    const createChartEntries = () => props.aspects.map((aspect) => ({
         percentage: aspect.weight / total,
         radius: aspect.completed || 0,
         color: aspect.color || "red",
         onClick: () => console.log(aspect.name)
     }));
 
-    const {value: newAspect, bind: bindNewAspect} = useInput("");
-    const {value: newWeight, bind: bindWeight} = useInput(1);
+    const [edit, setEdit] = useState(-1);
+    const [add, setAdd] = useState(false);
+    const [circleEntries, setCircleEntries] = useState(createChartEntries());
+
+    useEffect(() => {
+        // Recalculate entries only when aspects change
+        setCircleEntries(createChartEntries());
+    }, [props.aspects]);
+
     return <div>
+        <div>All aspects:</div>
+        <div className={style.chartWrapper}><PieChart size={300} entries={circleEntries}/></div>
         <div>
-            All aspects:
-        </div>
-        <div>
-            {props.aspects.map(aspect => <div key={aspect.id || "tmp"}>
-                {aspect.name} ({aspect.weight})
-            </div>)}
-        </div>
-        <PieChart size={300} entries={circleEntries}/>
-        <input type="text" {...bindNewAspect} />
-        <input type="number" {...bindWeight} />
-        <Button onClick={() => props.addAspectRequest({aspect: new Aspect(newAspect, Number(newWeight))})}>Add
-            aspect</Button>
+            {props.aspects.map((aspect, index) =>
+                <AspectWrapper key={aspect.id}
+                               aspect={aspect}
+                               editMode={index === edit}
+                               setEdit={() => setEdit(index)}
+                               onSave={aspect => {
+                                   props.updateAspect(aspect);
+                                   setEdit(-1)
+                               }}
+                               cancelEdit={() => setEdit(-1)}/>)}</div>
+        <Button size="small" onClick={() => setAdd(!add)}>Add aspect</Button>
+        {add && <EditAspect aspect={new Aspect("", 1)}
+                            onSave={aspect => props.addAspect(aspect)}
+                            onCancel={() => setAdd(false)}
+        />}
     </div>;
+};
+
+const AspectWrapper = (props: { aspect: Aspect, editMode: boolean, setEdit: () => void, cancelEdit: () => void, onSave: (a: Aspect) => void }) => {
+    const {aspect, editMode, setEdit, cancelEdit, onSave} = props;
+    if (editMode) {
+        return <EditAspect aspect={aspect} onSave={onSave} onCancel={cancelEdit}/>
+    } else {
+        return <div key={aspect.id || "tmp"}>
+            {aspect.name} ({aspect.weight}) <IconButton onClick={setEdit}> <MdEdit/></IconButton>
+        </div>
+    }
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Aspects);

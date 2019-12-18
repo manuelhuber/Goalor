@@ -19,7 +19,6 @@ const mapStateToProps = (state: AppState) => {
 const mapDispatchToProps = {};
 
 const App: React.FC<Props> = props => {
-    console.log(process.env.REACT_APP_BASE_URL);
     return <Router>
         <div className={style.app}>
             <Notifications/>

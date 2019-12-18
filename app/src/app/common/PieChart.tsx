@@ -9,14 +9,25 @@ export interface PieChartEntry {
     onClick?: () => void
 }
 
-type Props = { entries: PieChartEntry[], size: number }
+type Props = { entries: PieChartEntry[], size: number, animationOnDataChange?: boolean }
 const PieChart: React.FC<Props> = props => {
-    const [isInitialRender, setInitialRender] = useState(true);
+    const {entries, size, animationOnDataChange = false} = props;
+    const [hideChart, setHideChart] = useState(true);
     const [hover, setHover] = useState(-1);
     const canvasRef = React.useRef<HTMLCanvasElement>();
-    const entries = addPaths(props.entries, props.size / 2);
-    useEffect(() => {
-        setInitialRender(false);
+    const entryPaths = addPaths(entries, size / 2);
+
+    const appear = () => {
+        if (!animationOnDataChange) return;
+        setHideChart(true);
+        // this causes the component to be drawn with hideChart=true first, then with hideChart=false which causes
+        // the CSS transition to take effect
+        setTimeout(() => setHideChart(false), 20);
+
+    };
+
+    const redraw = () => {
+        setHideChart(false);
         let canvas = canvasRef.current;
         if (!canvas) return;
         const ctx = canvas.getContext("2d");
@@ -24,12 +35,12 @@ const PieChart: React.FC<Props> = props => {
         // double the stroke width you actually want since half of it will be outside & half inside the shape
         // but the outside part won't be drawn because of clipping
         ctx.lineWidth = 4;
-        ctx.clearRect(0, 0, props.size, props.size);
+        ctx.clearRect(0, 0, size, size);
         ctx.strokeStyle = "rgb(255,255,255)"; // needs to be background color
 
-        for (let i = 0; i < entries.length; i++) {
-            const path = entries[i][1];
-            ctx.fillStyle = entries[i][0].color;
+        for (let i = 0; i < entryPaths.length; i++) {
+            const path = entryPaths[i][1];
+            ctx.fillStyle = entryPaths[i][0].color;
 
             // Save/restore state, so we can do clipping without affecting the other entries
             ctx.save();
@@ -47,17 +58,23 @@ const PieChart: React.FC<Props> = props => {
         }
 
         canvas.onmousemove = ev => {
-            const hit = entries.find(path => ctx.isPointInPath(path[1], ev.offsetX, ev.offsetY));
-            setHover(entries.indexOf(hit));
+            const hit = entryPaths.find(path => ctx.isPointInPath(path[1], ev.offsetX, ev.offsetY));
+            setHover(entryPaths.indexOf(hit));
         };
 
         canvas.onclick = ev => {
-            const hit = entries.find(path => ctx.isPointInPath(path[1], ev.offsetX, ev.offsetY));
+            const hit = entryPaths.find(path => ctx.isPointInPath(path[1], ev.offsetX, ev.offsetY));
             if (hit && hit[0].onClick) hit[0].onClick();
         };
 
-    }, [props.size, entries, hover]);
-    return <canvas className={css(style.initial, [style.notInitial, !isInitialRender])}
+    };
+
+    // Redraw when size, entries or hover changes
+    useEffect(redraw, [size, entries, hover]);
+    // Cause appear animation when entries change (if animationOnDataChange=true)
+    useEffect(appear, [props.entries]);
+
+    return <canvas className={css(style.initial, [style.notInitial, !hideChart])}
                    ref={canvasRef}
                    width={props.size}
                    height={props.size}/>;
