@@ -12,7 +12,6 @@ const EditAspect: React.FC<Props> = props => {
     const {value: name, bind: bindName} = useInput(props.aspect.name);
     const {value: weight, bind: bindWeight} = useInput(props.aspect.weight);
     const save = () => {
-        console.log("save");
         const changed = clone(props.aspect);
         changed.name = name;
         changed.weight = weight;
