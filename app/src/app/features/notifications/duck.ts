@@ -17,12 +17,11 @@ type NotifyAction = Notify & Action<"NOTIFY">;
 const notifyAction = (input: Notify): NotifyAction => ({type: "NOTIFY", ...input});
 
 let timeout = null;
-export const notify = (message: Notify, timeToLive?: number): Thunk =>
-    async (dispatch) => {
-        dispatch(notifyAction(message));
-        clearTimeout(timeout);
-        timeout = timeToLive ? setTimeout(() => dispatch(clearNotification()), timeToLive) : null;
-    };
+export const notify = (message: Notify, timeToLive?: number): Thunk => async (dispatch) => {
+    dispatch(notifyAction(message));
+    clearTimeout(timeout);
+    timeout = timeToLive ? setTimeout(() => dispatch(clearNotification()), timeToLive) : null;
+};
 
 
 type ClearAction = Action<"CLEAR">;

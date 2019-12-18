@@ -95,8 +95,10 @@ export const completeGoal = (input: CompleteGoal): CompleteGoalAction => ({type:
 export type GoalAction = AddGoalAction | CreateGoalAction | CompleteGoalAction | FilterAction;
 
 // Reducer
-const activeGoalsFilterReducer = namespacedReducer(filterReducer, "ACTIVE_GOALS");
-const maybeSomedayFilterReducer = namespacedReducer(filterReducer, "MAYBE_GOALS");
+export const ACTIVE_GOALS_NAMESPACE = "ACTIVE_GOALS";
+const activeGoalsFilterReducer = namespacedReducer(filterReducer, ACTIVE_GOALS_NAMESPACE);
+export const MAYBE_SOMEDAY_NAMESPACE = "MAYBE_GOALS";
+const maybeSomedayFilterReducer = namespacedReducer(filterReducer, MAYBE_SOMEDAY_NAMESPACE);
 
 export const goalReducer: Reducer<GoalState, GoalAction> = (state = initialState, action): GoalState => {
     switch (action.type) {

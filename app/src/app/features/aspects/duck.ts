@@ -22,26 +22,25 @@ type AddAspect = { aspect: Aspect };
 type AddAspectAction = AddAspect & Action<"ADD_ASPECT">;
 const addAspect = (aspect: Aspect): AddAspectAction => ({type: "ADD_ASPECT", aspect});
 
-export const addAspectRequest = (req: AddAspect): Thunk =>
-    async (dispatch) => {
-        const tmp = req.aspect;
-        // Instantly add the new aspect to make it snappy
-        dispatch(addAspect(tmp));
+export const addAspectRequest = (req: AddAspect): Thunk => async (dispatch) => {
+    const tmp = req.aspect;
+    // Instantly add the new aspect to make it snappy
+    dispatch(addAspect(tmp));
 
-        // Call backend
-        setTimeout(() => {
-            dispatch(removeAspect(tmp));
-            if (false && Math.random() > 0.5) {
-                // Error
-                console.log("ERROR!")
-            } else {
-                // Success
-                dispatch(addAspect(new Aspect(
-                    tmp.name + "from backend", tmp.weight, Math.random().toString(), 0
-                )));
-            }
-        }, 2000);
-    };
+    // Call backend
+    setTimeout(() => {
+        dispatch(removeAspect(tmp));
+        if (false && Math.random() > 0.5) {
+            // Error
+            console.log("ERROR!")
+        } else {
+            // Success
+            dispatch(addAspect(new Aspect(
+                tmp.name + "from backend", tmp.weight, Math.random().toString(), 0
+            )));
+        }
+    }, 2000);
+};
 
 type RemoveAspect = { aspect: Aspect };
 type RemoveAspectAction = RemoveAspect & Action<"REMOVE_ASPECT">;
