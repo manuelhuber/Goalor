@@ -20,12 +20,17 @@ dependencies {
     compile 'io.swagger.core.v3:swagger-core:2.0.8'
     compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.9'
     compile 'org.webjars:swagger-ui:3.23.8'
-    compile 'com.google.inject:guice:4.2.0'
     compile "org.slf4j:slf4j-simple:1.8.0-beta4"
-    compile 'io.javalin:javalin:...'
+
+    // JWT
     compile 'com.github.kmehrunes:javalin-jwt:v0.2'
-    compile 'dev.misfitlabs.kotlinguice4:kotlin-guice:1.4.1'
+    // Password hashing
     compile group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
+
+    // GUICE
+    compile 'dev.misfitlabs.kotlinguice4:kotlin-guice:1.4.1'
+
+    // Tests
     testImplementation(
             'org.assertj:assertj-core:3.12.2',
             'org.junit.jupiter:junit-jupiter-api:5.4.2'
