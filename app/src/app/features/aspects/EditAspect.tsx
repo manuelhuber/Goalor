@@ -17,19 +17,14 @@ const EditAspect: React.FC<Props> = props => {
         changed.weight = weight;
         props.onSave(changed);
     };
-    return <div>
-        <Form onSubmit={save} >
-            <Input label="Aspect" type="text" {...bindName}/>
-            <Input label="Weight" type="number" max={10} {...bindWeight}/>
-            <ButtonGroup align="right">
-                <Button size="small" design="secondary" onClick={() => {
-                    console.log("cancel");
-                    props.onCancel();
-                }}>Cancel</Button>
-                <Button size="small" type="submit">Save</Button>
-            </ButtonGroup>
-        </Form>
-    </div>;
+    return <Form onSubmit={save}>
+        <Input label="Aspect" type="text" {...bindName}/>
+        <Input label="Weight" type="number" max={10} {...bindWeight}/>
+        <ButtonGroup align="right">
+            <Button size="small" design="secondary" onClick={props.onCancel}>Cancel</Button>
+            <Button size="small" type="submit">Save</Button>
+        </ButtonGroup>
+    </Form>;
 };
 
 export default EditAspect;
