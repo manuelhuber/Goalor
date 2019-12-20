@@ -2,8 +2,14 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/annotation-processor.iml" filepath="$PROJECT_DIR$/.idea/modules/annotation-processor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/annotation-processor.main.iml" filepath="$PROJECT_DIR$/.idea/modules/annotation-processor.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/annotation-processor.test.iml" filepath="$PROJECT_DIR$/.idea/modules/annotation-processor.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-44926905/annotations.iml" filepath="$PROJECT_DIR$/.idea/modules/-44926905/annotations.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-44926905/annotations.main.iml" filepath="$PROJECT_DIR$/.idea/modules/-44926905/annotations.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-44926905/annotations.test.iml" filepath="$PROJECT_DIR$/.idea/modules/-44926905/annotations.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/purpose/purpose.iml" filepath="$PROJECT_DIR$/purpose/purpose.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/purpose.iml" filepath="$PROJECT_DIR$/.idea/modules/purpose.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/purpose.main.iml" filepath="$PROJECT_DIR$/.idea/modules/purpose.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/purpose.test.iml" filepath="$PROJECT_DIR$/.idea/modules/purpose.test.iml" />
     </modules>
