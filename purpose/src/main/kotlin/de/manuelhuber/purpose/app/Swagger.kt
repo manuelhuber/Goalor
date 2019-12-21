@@ -1,5 +1,6 @@
 package de.manuelhuber.purpose.app
 
+import io.javalin.Javalin
 import io.javalin.core.JavalinConfig
 import io.javalin.plugin.openapi.OpenApiOptions
 import io.javalin.plugin.openapi.OpenApiPlugin
@@ -14,4 +15,29 @@ fun addSwagger(conf: JavalinConfig) {
         .swagger(SwaggerOptions("/swagger").title("My Swagger Documentation"))
 
     conf.registerPlugin(OpenApiPlugin(openApiPlugin))
+}
+
+
+// Add support for JWT
+fun hackSwaggerDoc(app: Javalin) {
+    app.after("/swagger-docs") { ctx ->
+
+        val resultString = ctx.resultString()!!.toString()
+        val inject = """
+  "security": [
+    "bearerAuth": []
+  ],
+        """.trimIndent()
+        val additionalComponent = """
+              "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+"""
+        ctx.result("{${inject}${resultString.substring(1).replace("\"components\":{", additionalComponent)}")
+    }
 }

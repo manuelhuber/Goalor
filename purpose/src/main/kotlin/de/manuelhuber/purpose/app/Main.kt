@@ -9,6 +9,7 @@ import de.manuelhuber.purpose.features.auth.MyAccessManager
 import de.manuelhuber.purpose.features.auth.addAuth
 import de.manuelhuber.purpose.features.auth.models.WrongPassword
 import de.manuelhuber.purpose.features.users.UserControllerWrapper
+import de.manuelhuber.purpose.features.users.UserService
 import de.manuelhuber.purpose.lib.engine.NotFound
 import dev.misfitlabs.kotlinguice4.getInstance
 import io.javalin.Javalin
@@ -24,9 +25,8 @@ fun main(args: Array<String>) {
             logger?.info("{} - Request took {} ms", ctx.url(), ms)
             logger?.info("Response: {}", ctx.resultString())
         }
-    }
-        .start(7000)
-
+    }.start(7000)
+    hackSwaggerDoc(app)
     app.exception(Exception::class.java) { exception, _ ->
         logger?.error("uncaught", exception)
     }
@@ -38,7 +38,7 @@ fun main(args: Array<String>) {
         .exception(WrongPassword::class.java) { _, ctx -> ctx.status(401).result("Wrong password") }
 
     val injector = Guice.createInjector(GuiceModule())
-    addAuth(app, injector.getInstance<AuthService>().provider)
+    addAuth(app, injector.getInstance<AuthService>().provider, injector.getInstance<UserService>())
     createRoutes(app, injector)
 }
 

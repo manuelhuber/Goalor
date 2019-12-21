@@ -1,21 +1,19 @@
 package de.manuelhuber.purpose.features.auth
 
 import com.auth0.jwt.interfaces.DecodedJWT
+import de.manuelhuber.purpose.features.users.UserService
 import io.javalin.Javalin
-import io.javalin.core.security.Role
 import javalinjwt.JWTProvider
 import javalinjwt.JavalinJWT
 
 
-
-
 enum class Claims {
-    USER_LEVEL, ID,
+    USER_LEVEL, ID, USER
 }
 
 const val JWT_SECRET = "jwt_secret"
 
-fun addAuth(app: Javalin, jwtProvider: JWTProvider) {
+fun addAuth(app: Javalin, jwtProvider: JWTProvider, userService: UserService) {
     // decrypt JWT
     app.before(JavalinJWT.createHeaderDecodeHandler(jwtProvider))
 
@@ -26,6 +24,7 @@ fun addAuth(app: Javalin, jwtProvider: JWTProvider) {
             val userId = jwt!!.getClaim(Claims.ID.name)
             if (!userId.isNull) {
                 ctx.attribute(Claims.ID.name, userId.asString())
+                ctx.attribute(Claims.USER.name, userService.getUserById(userId.asString()))
             }
         }
     }

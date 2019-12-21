@@ -195,12 +195,12 @@ class AnnotationProcessor : AbstractProcessor() {
         return annotation.build()
     }
 
-    data class AnnotationData(val routeFunction: MemberName, val path: String, val roles: List<String>) {
+    data class AnnotationData(val routeFunction: MemberName, val path: String) {
         companion object {
             fun fromAnnotation(x: Any?): AnnotationData? {
                 return when (x) {
-                    is Get -> AnnotationData(get, x.path, x.roles.toList())
-                    is Post -> AnnotationData(post, x.path, x.roles.toList())
+                    is Get -> AnnotationData(get, x.path)
+                    is Post -> AnnotationData(post, x.path)
                     else -> null
                 }
             }

@@ -25,8 +25,8 @@ class LocalUserEngine : UserEngine {
         return users.getOrElse(id) { throw NotFound(id, User::class) }
     }
 
-    override fun create(update: User): User {
-        val user = update.copy(id = users.count().toString())
+    override fun create(model: User): User {
+        val user = model.copy(id = users.count().toString())
         users[user.id] = user
         return user
     }
@@ -34,6 +34,10 @@ class LocalUserEngine : UserEngine {
     override fun update(id: String, model: User): User {
         users[id] = model
         return model
+    }
+
+    override fun delete(id: String): Boolean {
+        return users.remove(id) != null
     }
 
 }

@@ -14,6 +14,9 @@ class UserService @Inject constructor(private val authService: AuthService, priv
     fun getUserByUsername(username: String): User {
         return engine.getByUsername(username)
     }
+    fun getUserById(id: String): User {
+        return engine.get(id)
+    }
 
     fun register(request: Registration): User {
         try {
