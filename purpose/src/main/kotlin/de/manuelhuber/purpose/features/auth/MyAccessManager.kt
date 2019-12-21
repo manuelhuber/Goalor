@@ -1,5 +1,6 @@
 package de.manuelhuber.purpose.features.auth
 
+import de.manuelhuber.annotations.Roles
 import io.javalin.core.security.AccessManager
 import io.javalin.core.security.Role
 import io.javalin.http.Context

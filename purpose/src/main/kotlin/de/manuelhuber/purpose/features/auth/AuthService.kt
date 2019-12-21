@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTCreator
 import com.auth0.jwt.algorithms.Algorithm
 import com.google.inject.Inject
 import com.google.inject.name.Named
+import de.manuelhuber.annotations.Roles
 import de.manuelhuber.purpose.features.auth.models.WrongPassword
 import de.manuelhuber.purpose.features.users.models.User
 import de.manuelhuber.purpose.features.users.models.UserEngine

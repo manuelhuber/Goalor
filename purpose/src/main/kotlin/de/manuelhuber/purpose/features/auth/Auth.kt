@@ -7,13 +7,10 @@ import javalinjwt.JWTProvider
 import javalinjwt.JavalinJWT
 
 
-internal enum class Roles : Role {
-    ANYONE, USER,
-}
+
 
 enum class Claims {
     USER_LEVEL, ID,
-
 }
 
 const val JWT_SECRET = "jwt_secret"

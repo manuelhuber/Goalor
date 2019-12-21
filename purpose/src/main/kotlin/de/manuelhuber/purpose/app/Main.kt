@@ -7,7 +7,8 @@ import de.manuelhuber.purpose.features.auth.AuthControllerWrapper
 import de.manuelhuber.purpose.features.auth.AuthService
 import de.manuelhuber.purpose.features.auth.MyAccessManager
 import de.manuelhuber.purpose.features.auth.addAuth
-import de.manuelhuber.purpose.features.users.UserController
+import de.manuelhuber.purpose.features.auth.models.WrongPassword
+import de.manuelhuber.purpose.features.users.UserControllerWrapper
 import de.manuelhuber.purpose.lib.engine.NotFound
 import dev.misfitlabs.kotlinguice4.getInstance
 import io.javalin.Javalin
@@ -34,6 +35,7 @@ fun main(args: Array<String>) {
             ctx.status(404)
                 .result(exception.message.orEmpty())
         }
+        .exception(WrongPassword::class.java) { _, ctx -> ctx.status(401).result("Wrong password") }
 
     val injector = Guice.createInjector(GuiceModule())
     addAuth(app, injector.getInstance<AuthService>().provider)
@@ -41,10 +43,11 @@ fun main(args: Array<String>) {
 }
 
 fun createRoutes(app: Javalin, injector: Injector) {
-    val controllers = listOf(AuthControllerWrapper::class, AspectsControllerWrapper::class, UserController::class)
+    val controllers = listOf(AuthControllerWrapper::class,
+            AspectsControllerWrapper::class,
+            UserControllerWrapper::class)
     controllers.forEach { kClass ->
         val instance = injector.getInstance(kClass.java)
         instance.addRoutes(app)
     }
 }
-
