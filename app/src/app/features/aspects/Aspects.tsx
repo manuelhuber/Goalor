@@ -24,21 +24,14 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
 type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
 
 const Aspects: React.FC<Props> = props => {
-    const total = props.aspects.map(a => a.weight).reduce((sum, weight) => sum + weight, 0);
-    const createChartEntries = () => props.aspects.map((aspect) => ({
-        percentage: aspect.weight / total,
-        radius: aspect.completed || 0,
-        color: aspect.color || "red",
-        onClick: () => console.log(aspect.name)
-    }));
 
     const [edit, setEdit] = useState(-1);
     const [add, setAdd] = useState(false);
-    const [circleEntries, setCircleEntries] = useState(createChartEntries());
+    const [circleEntries, setCircleEntries] = useState(createChartEntries(props.aspects));
 
     useEffect(() => {
         // Recalculate entries only when aspects change
-        setCircleEntries(createChartEntries());
+        setCircleEntries(createChartEntries(props.aspects));
     }, [props.aspects]);
 
     return <div>
@@ -46,7 +39,7 @@ const Aspects: React.FC<Props> = props => {
         <div className={style.chartWrapper}><PieChart size={300} entries={circleEntries}/></div>
         <div>
             {props.aspects.map((aspect, index) =>
-                <AspectWrapper key={aspect.id}
+                <EditableAspect key={aspect.id}
                                aspect={aspect}
                                editMode={index === edit}
                                setEdit={() => setEdit(index)}
@@ -63,7 +56,17 @@ const Aspects: React.FC<Props> = props => {
     </div>;
 };
 
-const AspectWrapper = (props: { aspect: Aspect, editMode: boolean, setEdit: () => void, cancelEdit: () => void, onSave: (a: Aspect) => void }) => {
+const createChartEntries = (aspects: Aspect[]) => {
+    const total = aspects.map(a => a.weight).reduce((sum, weight) => sum + weight, 0);
+    return aspects.map((aspect) => ({
+        percentage: aspect.weight / total,
+        radius: aspect.completed || 0,
+        color: aspect.color || "red",
+        onClick: () => console.log(aspect.name)
+    }));
+};
+
+const EditableAspect = (props: { aspect: Aspect, editMode: boolean, setEdit: () => void, cancelEdit: () => void, onSave: (a: Aspect) => void }) => {
     const {aspect, editMode, setEdit, cancelEdit, onSave} = props;
     if (editMode) {
         return <EditAspect aspect={aspect} onSave={onSave} onCancel={cancelEdit}/>
