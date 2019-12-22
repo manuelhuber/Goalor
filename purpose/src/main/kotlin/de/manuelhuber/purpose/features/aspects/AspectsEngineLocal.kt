@@ -4,10 +4,12 @@ import de.manuelhuber.purpose.features.aspects.model.AspectsEngine
 
 class AspectsEngineLocal : AspectsEngine {
     private val aspects = hashMapOf(
-            "0" to Aspect(id = "0", name = "Health", color = "", completed = 0, owner = "0", weight = 1),
-            "1" to Aspect(id = "1", name = "Career", color = "", completed = 0, owner = "0", weight = 1),
-            "2" to Aspect(id = "2", name = "Charity", color = "", completed = 0, owner = "0", weight = 1),
-            "3" to Aspect(id = "3", name = "Social", color = "", completed = 0, owner = "0", weight = 1))
+            "0" to Aspect(id = "0", name = "Health", color = "blue", completed = 50, owner = "0", weight = 2),
+            "1" to Aspect(id = "1", name = "Career", color = "red", completed = 75, owner = "0", weight = 3),
+            "2" to Aspect(id = "2", name = "Charity", color = "green", completed = 0, owner = "0", weight = 1),
+            "3" to Aspect(id = "3", name = "Social", color = "pink", completed = 0, owner = "0", weight = 3))
+
+    var id = 10
 
     override fun getAllForOwner(owner: String): List<Aspect> {
         return aspects.values.filter { aspect -> aspect.owner == owner }
@@ -23,8 +25,8 @@ class AspectsEngineLocal : AspectsEngine {
     }
 
     override fun create(model: Aspect): Aspect {
-        val m = model.copy(id = aspects.count().toString())
-        aspects[model.id] = m
+        val m = model.copy(id = id++.toString())
+        aspects[m.id] = m
         return m
     }
 

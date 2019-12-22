@@ -25,6 +25,7 @@ const Personal: React.FC<Props> = props => {
     const [isPersonalFilterOpen, setPersonalFilterOpen] = useState(false);
     const [isMaybeFiltersOpen, setMaybeFiltersOpen] = useState(false);
     return <div style={{padding: "5px"}}>
+        <SectionTitle title="Aspects" color={redDark}/>
         <Aspects/>
         <SectionTitle title="My Goals" color={redDark}/>
         <Expandable expanded={isPersonalFilterOpen} onChange={open => setPersonalFilterOpen(open)} label="Filters">

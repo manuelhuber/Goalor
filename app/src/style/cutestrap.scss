@@ -1,4 +1,4 @@
-@import "style/styleConstants";
+@import "styleConstants";
 
 * {
   /* Sets our Baseline Grid */
@@ -8,10 +8,55 @@
   --line-height-ratio: 1.4;
 }
 
+* {
+  /* Sets our Baseline Grid */
+  --rhythm: 2rem;
+
+  /* Sets font-size relative to rhythm */
+  --line-height-ratio: 1.4;
+}
+
+@media (max-width: 55rem) {
+  * {
+    --rhythm: 1.7rem;
+  }
+}
+
+@media (min-width: 110rem) {
+  * {
+    --rhythm: 2.3rem;
+  }
+}
+
+/* Theme Specific Styles */
+
 html {
-  --color-primary-tint1: #{$red-lighter};
-  --color-primary: #{$red};
-  --color-primary-shade1: #{$red-dark};
+  --color-primary-shade1: hsl(350, 80%, 60%);
+  --color-primary: hsl(350, 80%, 45%);
+  --color-primary-tint1: hsl(350, 80%, 35%);
+  --color-accent-shade1: hsl(170, 80%, 60%);
+  --color-accent: hsl(170, 80%, 45%);
+  --color-accent-tint1: hsl(170, 80%, 35%);
+  --color-link: hsl(230, 80%, 60%);
+  --color-link-visited: hsl(290, 80%, 60%);
+  --color-link-hover: hsl(230, 60%, 50%);
+  --color-link-active: hsl(350, 60%, 50%);
+  --color-neutral-shade4: hsl(170, 10%, 98%);
+  --color-neutral-shade3: hsl(170, 10%, 94%);
+  --color-neutral-shade2: hsl(170, 10%, 85%);
+  --color-neutral-shade1: hsl(170, 10%, 68%);
+  --color-neutral: hsl(170, 10%, 55%);
+  --color-neutral-tint1: hsl(170, 10%, 41%);
+  --color-neutral-tint2: hsl(170, 10%, 30%);
+  --color-neutral-tint3: hsl(170, 10%, 18%);
+  --color-neutral-tint4: hsl(170, 10%, 2%);
+}
+
+html {
+  //--color-primary-tint1: #{$red-lighter};
+  //--color-primary: #{$red};
+  //--color-primary-shade1: #{$red-dark};
+  //--color-neutral-tint4: #{$background-color}
 }
 
 .toolbar-button {
@@ -77,7 +122,7 @@ html {
 [data-theme="dark"] .toolbar-button.-dark,
 [data-grid="on"] .toolbar-button.-on,
 [data-grid="off"] .toolbar-button.-off {
-  cursor: normal;
+  cursor: default;
   opacity: .5;
   pointer-events: none;
 }

@@ -1,10 +1,11 @@
 import style from "app/common/PieChart.module.scss";
 import React, {useEffect, useState} from "react";
 import {css} from "util/style";
+import {backgroundColor} from "style/styleConstants";
 
 export interface PieChartEntry {
-    percentage: number;
-    radius: number; // percentage
+    percentage: number; // percentage number between 0 and 1
+    radius: number; // percentage number between 0 and 1
     color: string;
     onClick?: () => void
 }
@@ -34,27 +35,26 @@ const PieChart: React.FC<Props> = props => {
 
         // double the stroke width you actually want since half of it will be outside & half inside the shape
         // but the outside part won't be drawn because of clipping
-        ctx.lineWidth = 4;
+        ctx.lineWidth = 2;
         ctx.clearRect(0, 0, size, size);
-        ctx.strokeStyle = "rgb(255,255,255)"; // needs to be background color
+        ctx.strokeStyle = backgroundColor;
 
         for (let i = 0; i < entryPaths.length; i++) {
             const path = entryPaths[i][1];
             ctx.fillStyle = entryPaths[i][0].color;
-
-            // Save/restore state, so we can do clipping without affecting the other entries
-            ctx.save();
-            if (hover === i) {
-                ctx.strokeStyle = ctx.fillStyle;
-            }
-            // We want to have a border that's only on the inside so it doesn't overlap with the other regions
-            // The element of the pie chart is now a clipping area - nothing outside of it gets drawn
-            ctx.clip(path);
-            // Paint the area
             ctx.fill(path);
             ctx.stroke(path);
-            ctx.restore();
-
+        }
+        if (hover !== -1) {
+            // Draw the hovered element again, since it's bigger and on top
+            const path = entryPaths[hover][1];
+            ctx.fillStyle = entryPaths[hover][0].color;
+            ctx.lineWidth = 4;
+            ctx.stroke(path);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = ctx.fillStyle;
+            ctx.fill(path);
+            ctx.stroke(path);
         }
 
         canvas.onmousemove = ev => {
@@ -83,8 +83,8 @@ export default PieChart;
 
 
 function addPaths(entries: PieChartEntry[], halfSize: number): [PieChartEntry, Path2D][] {
-    const minRadius = halfSize * .2; // entries with complete=0 still should show a bit
-    const flexibleRadius = halfSize * .75; // This is added to the radius depending on the completed amount
+    const minRadius = halfSize * .33; // entries with complete=0 still should show a bit
+    const flexibleRadius = halfSize * .65; // This is added to the radius depending on the completed amount
     // The max radius is minRadius+flexibleRadius (which should be less than halfSize to avoid clipping issues)
     const fullAngle = 2 * Math.PI;
     let start = -.25 * fullAngle; // 0 is the 3 o'clock position. To start at 12 o'clock we need to go back by 25%
@@ -96,6 +96,10 @@ function addPaths(entries: PieChartEntry[], halfSize: number): [PieChartEntry, P
             (entry.radius * flexibleRadius) + minRadius,
             start, end);
         path.lineTo(halfSize, halfSize);
+        // To make the center-corner stroke nice we have to draw that corner full (l_ != L)
+        path.arc(halfSize, halfSize,
+            (entry.radius * flexibleRadius) + minRadius,
+            start, end);
         start = end;
         return [entry, path];
     });

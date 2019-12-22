@@ -142,7 +142,8 @@ function completeStep(goal: Goal, step: number, done: boolean): Goal {
 }
 
 function filterGoal(filters: FilterState, goal: Goal) {
-    const tagsPass = filters.selectedTags.length === 0 || goal.types.some(value => filters.selectedTags.includes(value));
+    const tagsPass = filters.selectedTags.length === 0 ||
+        goal.types.some(value => filters.selectedTags.includes(value));
     const termPass = filters.searchTerm.length === 0 || goal.title.includes(filters.searchTerm);
     return tagsPass && termPass;
 }

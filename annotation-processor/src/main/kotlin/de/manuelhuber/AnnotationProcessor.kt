@@ -3,6 +3,7 @@ package de.manuelhuber
 import com.google.auto.service.AutoService
 import com.google.inject.Inject
 import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import de.manuelhuber.annotations.*
 import io.javalin.Javalin
 import io.javalin.http.Context
@@ -14,7 +15,6 @@ import javax.lang.model.element.Element
 import javax.lang.model.element.ElementKind
 import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.TypeElement
-import javax.lang.model.type.TypeMirror
 import javax.lang.model.util.ElementFilter
 import javax.tools.Diagnostic
 
@@ -27,13 +27,20 @@ class AnnotationProcessor : AbstractProcessor() {
         const val KAPT_KOTLIN_GENERATED_OPTION_NAME = "kapt.kotlin.generated"
         val post = MemberName("io.javalin.apibuilder.ApiBuilder", "post")
         val get = MemberName("io.javalin.apibuilder.ApiBuilder", "get")
+        val put = MemberName("io.javalin.apibuilder.ApiBuilder", "put")
+        val delete = MemberName("io.javalin.apibuilder.ApiBuilder", "delete")
     }
 
-    override fun getSupportedAnnotationTypes(): MutableSet<String> = mutableSetOf(APIController::class.java.name)
+    override fun getSupportedAnnotationTypes(): MutableSet<String> = mutableSetOf(
+            APIController::class.java.name,
+            APIConfig::class.java.name)
 
     override fun getSupportedSourceVersion(): SourceVersion = SourceVersion.latest()
 
     override fun process(annotations: MutableSet<out TypeElement>?, roundEnv: RoundEnvironment): Boolean {
+        val configElement = roundEnv.getElementsAnnotatedWith(APIConfig::class.java).firstOrNull()
+        val config = configElement?.getAnnotation(APIConfig::class.java)
+
         roundEnv.getElementsAnnotatedWith(APIController::class.java)
             .forEach {
                 if (it.kind != ElementKind.CLASS) {
@@ -41,12 +48,12 @@ class AnnotationProcessor : AbstractProcessor() {
                             "Only classes can be annotated with ${APIController::class.simpleName}")
                     return false
                 }
-                processAnnotation(it)
+                processAnnotation(it, config)
             }
         return false
     }
 
-    private fun processAnnotation(element: Element) {
+    private fun processAnnotation(element: Element, config: APIConfig?) {
 
         val controllerName = element.simpleName.toString()
         val controllerType = element.asType().asTypeName()
@@ -69,7 +76,10 @@ class AnnotationProcessor : AbstractProcessor() {
         val mapping = mutableListOf<CodeBlock>()
 
         for (func in ElementFilter.methodsIn(element.enclosedElements)) {
-            val annotation = listOf(func.getAnnotation(Get::class.java), func.getAnnotation(Post::class.java))
+            val annotation = listOf(
+                    func.getAnnotation(Get::class.java), func.getAnnotation(Post::class.java),
+                    func.getAnnotation(Put::class.java), func.getAnnotation(Delete::class.java)
+            )
                 .map { annotation -> AnnotationData.fromAnnotation(annotation) }
                 .firstOrNull { annotation -> annotation !== null }
             if (annotation === null) continue
@@ -79,7 +89,9 @@ class AnnotationProcessor : AbstractProcessor() {
                     annotation,
                     joinPaths(rootPath, annotation.path),
                     controllerMember,
-                    func.getAnnotation(Authorized::class.java) != null
+                    func.getAnnotation(Authorized::class.java) != null,
+                    rootPath,
+                    config?.errorClass
             )
             if (gen != null) {
                 classBuilder.addFunction(gen.first)
@@ -95,7 +107,7 @@ class AnnotationProcessor : AbstractProcessor() {
     }
 
     private fun joinPaths(root: String, end: String): String {
-        val final = StringBuilder();
+        val final = StringBuilder()
         if (!root.isBlank()) {
             if (!root.startsWith("/")) final.append("/")
             final.append(root)
@@ -122,34 +134,41 @@ class AnnotationProcessor : AbstractProcessor() {
                                  annotation: AnnotationData,
                                  path: String,
                                  controllerMember: MemberName,
-                                 authorized: Boolean): Pair<FunSpec, CodeBlock>? {
+                                 authorized: Boolean,
+                                 rootPath: String,
+                                 errorClass: String?): Pair<FunSpec, CodeBlock>? {
         var callParams = ""
-        var inputType: TypeMirror? = null
+        var inputType: TypeName? = null
         if (func.parameters.size > 2) {
             processingEnv.messager.printMessage(Diagnostic.Kind.ERROR,
                     "function ${func.simpleName} has more than 2 parameters\n")
-            return null;
+            return null
         }
         if (func.parameters.size > 0) {
             val firstParam = func.parameters[0]
             if (firstParam.asType().asTypeName().toString() != Context::class.qualifiedName) {
                 processingEnv.messager.printMessage(Diagnostic.Kind.ERROR,
                         "function ${func.simpleName} has wrong parameters: First parameter should be Javalin context\n")
-                return null;
+                return null
             }
             callParams = "ctx"
         }
         if (func.parameters.size > 1) {
-            inputType = func.parameters[1].asType()
+            inputType = fixTypes(func.parameters[1].asType().asTypeName())
             callParams += ", input"
         }
 
-        val returnType = func.returnType.asTypeName()
+        val returnType = fixTypes(func.returnType.asTypeName())
         val functionName = func.simpleName.toString()
         val wrapperFunctionName = "${functionName}Endpoint"
 
         val wrapper = FunSpec.builder(wrapperFunctionName)
-            .addAnnotation(getSwaggerAnnotation(returnType, inputType?.asTypeName(), authorized))
+            .addAnnotation(getSwaggerAnnotation(returnType,
+                    inputType,
+                    authorized,
+                    listOf(rootPath),
+                    errorClass,
+                    annotation))
             .addParameter("ctx", Context::class)
         if (inputType !== null) {
             wrapper.addStatement("val input = ctx.body<%T>()", inputType)
@@ -169,15 +188,24 @@ class AnnotationProcessor : AbstractProcessor() {
 
     private fun getSwaggerAnnotation(responseType: TypeName,
                                      requestType: TypeName?,
-                                     authorized: Boolean): AnnotationSpec {
-        val annotation = AnnotationSpec.builder(OpenApi::class)
+                                     authorized: Boolean,
+                                     tags: List<String>,
+                                     errorClass: String?,
+                                     annotationData: AnnotationData): AnnotationSpec {
+        val tagsString = tags.map { s -> s.removePrefix("/").removeSuffix("/") }.joinToString(", ") { s -> "\"${s}\"" }
+        val annotation = AnnotationSpec.builder(OpenApi::class).addMember("tags = [%L]", tagsString)
 
-        val responseContent = AnnotationSpec.builder(OpenApiContent::class).addMember("from = %T::class", responseType)
-            .build()
-        val response = AnnotationSpec.builder(OpenApiResponse::class)
-            .addMember("status = %S", "200")
-            .addMember("content = [%L]", responseContent).build()
-        annotation.addMember("responses = [%L]", response)
+        val response = getMainResponseAnnotation(responseType, annotationData)
+
+        if (errorClass != null) {
+            val errorResponseContent = AnnotationSpec.builder(OpenApiContent::class)
+                .addMember("from = %L::class", errorClass).build()
+            val errorResponse = AnnotationSpec.builder(OpenApiResponse::class).addMember("status = %S", "default")
+                .addMember("content = [%L]", errorResponseContent).build()
+            annotation.addMember("responses = [%L, %L]", response, errorResponse)
+        } else {
+            annotation.addMember("responses = [%L]", response)
+        }
 
         if (authorized) {
             val header = AnnotationSpec.builder(OpenApiParam::class).addMember("name = %S", "Authorization").build()
@@ -195,12 +223,42 @@ class AnnotationProcessor : AbstractProcessor() {
         return annotation.build()
     }
 
-    data class AnnotationData(val routeFunction: MemberName, val path: String) {
+    private fun getMainResponseAnnotation(responseType: TypeName,
+                                          annotationData: AnnotationData): AnnotationSpec {
+        val responseContent = AnnotationSpec.builder(OpenApiContent::class).addMember("from = %T::class", responseType)
+            .build()
+        val status = when (annotationData.annotation) {
+            is Delete -> "204"
+            else -> "200"
+        }
+
+        val response = AnnotationSpec.builder(OpenApiResponse::class).addMember("status = %S", status)
+        if (annotationData.annotation !is Delete) {
+            response.addMember("content = [%L]", responseContent)
+        }
+        return response.build()
+    }
+
+    private fun fixTypes(typeName: TypeName): TypeName {
+        if (typeName.toString() == "java.lang.String") {
+            return STRING
+        } else if (typeName is ParameterizedTypeName) {
+            if (typeName.rawType.toString() == "java.util.List") {
+                val array = ClassName("kotlin", "Array")
+                return array.parameterizedBy(typeName.typeArguments)
+            }
+        }
+        return typeName
+    }
+
+    data class AnnotationData(val routeFunction: MemberName, val path: String, val annotation: Any) {
         companion object {
             fun fromAnnotation(x: Any?): AnnotationData? {
                 return when (x) {
-                    is Get -> AnnotationData(get, x.path)
-                    is Post -> AnnotationData(post, x.path)
+                    is Get -> AnnotationData(get, x.path, x)
+                    is Post -> AnnotationData(post, x.path, x)
+                    is Delete -> AnnotationData(delete, x.path, x)
+                    is Put -> AnnotationData(put, x.path, x)
                     else -> null
                 }
             }

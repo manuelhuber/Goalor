@@ -30,3 +30,5 @@ export const redLighter = "#f0a3a8";
 export const whiteLighter = "#fcf6e6";
 export const blueLighter = "#b0abd2";
 export const blackLighter = "#aeb0a8";
+
+export const backgroundColor = "#111";

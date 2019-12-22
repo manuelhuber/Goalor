@@ -1,20 +1,24 @@
 import {Thunk} from "app/Store";
 import {Action, Reducer} from "redux";
-import {replaceByComp, without} from "util/array";
 import {Aspect} from "./models";
+import {aspectApi, get} from "app/lib/fetch";
+import {clone} from "util/object";
 
 // State
 export type AspectsState = {
-    aspects: Aspect[]
+    aspectsById: { [id: string]: Aspect }
 };
 
 const initialState: AspectsState = {
-    aspects: [
-        {name: "Health", weight: 3, completed: .50, id: "1", color: "red"},
-        {name: "Career", weight: 4, completed: 1, id: "2", color: "blue"},
-        {name: "Hobbies", weight: 2, completed: .33, id: "3", color: "green"},
-        {name: "Charity", weight: 1, completed: .0, id: "4", color: "purple"}
-    ]
+    aspectsById: {}
+};
+
+let counter = 0;
+
+export const loadAllAspects = (): Thunk => async (dispatch) => {
+    get("aspects").then((aspects: Aspect[]) =>
+        aspects.forEach(aspect => dispatch(addAspectAction(aspect)))
+    );
 };
 
 // Actions
@@ -22,39 +26,55 @@ type AddAspect = { aspect: Aspect };
 type AddAspectAction = AddAspect & Action<"ADD_ASPECT">;
 const addAspectAction = (aspect: Aspect): AddAspectAction => ({type: "ADD_ASPECT", aspect});
 
-export const addAspect = (tmp: Aspect): Thunk => async (dispatch) => {
-    // Instantly add the new aspect to make it snappy
-    dispatch(addAspectAction(tmp));
-
-    // Call backend
-    setTimeout(() => {
-        dispatch(removeAspect(tmp));
-        dispatch(addAspectAction(new Aspect(
-            tmp.name + "from backend", tmp.weight, Math.random().toString(), 0
-        )));
-    }, 2000);
-};
-
-type RemoveAspect = { aspect: Aspect };
+type RemoveAspect = { id: string };
 type RemoveAspectAction = RemoveAspect & Action<"REMOVE_ASPECT">;
-export const removeAspect = (aspect: Aspect): RemoveAspectAction => ({type: "REMOVE_ASPECT", aspect});
+export const removeAspect = (id: string): RemoveAspectAction => ({type: "REMOVE_ASPECT", id});
 
 type UpdateAspect = { aspect: Aspect };
 type UpdateAspectAction = UpdateAspect & Action<"UPDATE_ASPECT">;
-export const updateAspect = (aspect: Aspect): UpdateAspectAction => ({type: "UPDATE_ASPECT", aspect});
+export const updateAspectAction = (aspect: Aspect): UpdateAspectAction => ({type: "UPDATE_ASPECT", aspect});
 
 export type AspectsAction = AddAspectAction | RemoveAspectAction | UpdateAspectAction;
+
+export const updateAspect = (aspect: Aspect): Thunk => async (dispatch) => {
+    aspectApi.putAspectsWithId({id: aspect.id, createAspect: aspect})
+        .then((value: Aspect) => dispatch(updateAspectAction(value)));
+};
+
+export const deleteAspect = (id: string): Thunk => async (dispatch) => {
+    aspectApi.deleteAspectsWithId({id}).then(() => {
+        dispatch(removeAspect(id));
+    });
+};
+
+export const createAspect = (tmp: Aspect): Thunk => async (dispatch) => {
+    tmp.id = `tmp${counter++}`;
+    // Instantly add the new aspect to make it snappy
+    dispatch(addAspectAction(tmp));
+    const a = clone(tmp);
+    a.id = null;
+    aspectApi.postAspects({
+        createAspect: a
+    }).then(x => {
+        dispatch(removeAspect(tmp.id));
+        dispatch(addAspectAction(x));
+    });
+};
 
 // Reducer
 
 export const aspectsReducer: Reducer<AspectsState, AspectsAction> = (state = initialState, action): AspectsState => {
+    const newAspects = {...state.aspectsById};
     switch (action.type) {
         case "ADD_ASPECT":
-            return {...state, aspects: [action.aspect, ...state.aspects]};
+            newAspects[action.aspect.id] = action.aspect;
+            return {...state, aspectsById: newAspects};
         case "REMOVE_ASPECT":
-            return {...state, aspects: without(state.aspects, action.aspect)};
+            delete newAspects[action.id];
+            return {...state, aspectsById: newAspects};
         case "UPDATE_ASPECT":
-            return {...state, aspects: replaceByComp(state.aspects, action.aspect, aspect => aspect.id)};
+            newAspects[action.aspect.id] = action.aspect;
+            return {...state, aspectsById: newAspects};
         default:
             return state;
     }

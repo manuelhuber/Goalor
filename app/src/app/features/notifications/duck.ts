@@ -31,7 +31,10 @@ export type NotificationAction = NotifyAction | ClearAction;
 
 // Reducer
 
-export const notificationReducer: Reducer<NotificationState, NotificationAction> = (state = initialState, action): NotificationState => {
+export const notificationReducer: Reducer<NotificationState, NotificationAction> = (
+    state = initialState,
+    action
+): NotificationState => {
     switch (action.type) {
         case "NOTIFY":
             return {...state, message: action.message, showMessage: true};

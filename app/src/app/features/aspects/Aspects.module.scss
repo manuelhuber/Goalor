@@ -1,3 +1,18 @@
+@import "style/styleConstants";
+
 .chartWrapper {
   text-align: center;
+}
+
+.aspectLine {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 8px;
+  padding: 6px 8px;
+  border-bottom: 2px solid $white-dark;
+
+  &:last-child {
+    border-bottom: none;
+  }
 }

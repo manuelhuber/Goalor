@@ -1,5 +1,6 @@
 package de.manuelhuber.purpose.app
 
+import com.google.gson.GsonBuilder
 import com.google.inject.Guice
 import com.google.inject.Injector
 import de.manuelhuber.purpose.features.aspects.AspectsControllerWrapper
@@ -7,38 +8,37 @@ import de.manuelhuber.purpose.features.auth.AuthControllerWrapper
 import de.manuelhuber.purpose.features.auth.AuthService
 import de.manuelhuber.purpose.features.auth.MyAccessManager
 import de.manuelhuber.purpose.features.auth.addAuth
-import de.manuelhuber.purpose.features.auth.models.WrongPassword
 import de.manuelhuber.purpose.features.users.UserControllerWrapper
-import de.manuelhuber.purpose.features.users.UserService
-import de.manuelhuber.purpose.lib.engine.NotFound
 import dev.misfitlabs.kotlinguice4.getInstance
 import io.javalin.Javalin
+import io.javalin.plugin.json.FromJsonMapper
+import io.javalin.plugin.json.JavalinJson.fromJsonMapper
+import io.javalin.plugin.json.JavalinJson.toJsonMapper
+import io.javalin.plugin.json.ToJsonMapper
 import org.slf4j.LoggerFactory
 
-private val logger: org.slf4j.Logger? = LoggerFactory.getLogger(Javalin::class.java)
-fun main(args: Array<String>) {
+private val logger: org.slf4j.Logger = LoggerFactory.getLogger(Javalin::class.java)
+
+fun main() {
     val app = Javalin.create { config ->
         addSwagger(config)
         config.accessManager(MyAccessManager())
         config.enableCorsForAllOrigins()
-        config.requestLogger { ctx, ms ->
-            logger?.info("{} - Request took {} ms", ctx.url(), ms)
-            logger?.info("Response: {}", ctx.resultString())
-        }
+        config.enableDevLogging()
     }.start(7000)
     hackSwaggerDoc(app)
-    app.exception(Exception::class.java) { exception, _ ->
-        logger?.error("uncaught", exception)
+    addErrorHandling(app, logger)
+
+    val gson = GsonBuilder().create()
+    fromJsonMapper = object : FromJsonMapper {
+        override fun <T> map(json: String, targetClass: Class<T>): T = gson.fromJson(json, targetClass)
     }
-        .exception(NotFound::class.java) { exception, ctx ->
-            logger?.info(exception.message)
-            ctx.status(404)
-                .result(exception.message.orEmpty())
-        }
-        .exception(WrongPassword::class.java) { _, ctx -> ctx.status(401).result("Wrong password") }
+    toJsonMapper = object : ToJsonMapper {
+        override fun map(obj: Any): String = gson.toJson(obj)
+    }
 
     val injector = Guice.createInjector(GuiceModule())
-    addAuth(app, injector.getInstance<AuthService>().provider, injector.getInstance<UserService>())
+    addAuth(app, injector.getInstance<AuthService>().provider, injector.getInstance())
     createRoutes(app, injector)
 }
 

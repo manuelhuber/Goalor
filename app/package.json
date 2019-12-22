@@ -24,7 +24,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "genClient": "openapi-generator generate -i http://localhost:7000/swagger-docs -o src/generated/ -g typescript-fetch && sed -i 's/GlobalFetch/WindowOrWorkerGlobalScope/g' src/generated/runtime.ts"
   },
   "eslintConfig": {
     "extends": "react-app"

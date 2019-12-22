@@ -1,5 +1,5 @@
 import {notify} from "app/features/notifications/duck";
-import {post} from "app/lib/fetch";
+import {authApi, post} from "app/lib/fetch";
 import {Thunk} from "app/Store";
 import {Action, Reducer} from "redux";
 
@@ -28,12 +28,12 @@ export const login = (req: LoginRequest): Thunk => async (dispatch, getState) =>
         dispatch(setLoading(true));
         dispatch(notify({message: "LOGGING IN"}, 3000));
 
-        post("login", {username: req.username, password: req.password})
-            .then(res => {
-                dispatch(setToken({token: res["jwt"]}));
-                dispatch(notify({message: "Successfully logged in"}))
-            }).catch(reason => {
-            dispatch(notify({message: `Error when logging in: ${reason.message}`}));
+        authApi.postAuthLogin({login: {username: req.username, password: req.password}}).then(res => {
+            dispatch(setToken({token: res["jwt"]}));
+            dispatch(notify({message: "Successfully logged in"}))
+        }).catch(async (reason: Response) => {
+            const x = await reason.text();
+            dispatch(notify({message: `Error when logging in: ${x}`}));
         }).finally(() => {
             return dispatch(setLoading(false));
         });

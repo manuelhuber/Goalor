@@ -20,9 +20,10 @@ const EditAspect: React.FC<Props> = props => {
     return <Form onSubmit={save}>
         <Input label="Aspect" type="text" {...bindName}/>
         <Input label="Weight" type="number" max={10} {...bindWeight}/>
+        {props.aspect.color}
         <ButtonGroup align="right">
-            <Button size="small" design="secondary" onClick={props.onCancel}>Cancel</Button>
-            <Button size="small" type="submit">Save</Button>
+            <Button design="secondary" onClick={props.onCancel}>Cancel</Button>
+            <Button type="submit">Save</Button>
         </ButtonGroup>
     </Form>;
 };

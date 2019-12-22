@@ -1,20 +1,38 @@
 package de.manuelhuber.purpose.features.aspects
 
 import com.google.inject.Inject
-import de.manuelhuber.annotations.APIController
-import de.manuelhuber.annotations.Get
-import de.manuelhuber.purpose.features.aspects.model.AspectsEngine
+import de.manuelhuber.annotations.*
+import de.manuelhuber.purpose.features.aspects.model.CreateAspect
 import de.manuelhuber.purpose.features.auth.Claims
 import de.manuelhuber.purpose.features.users.models.User
+import de.manuelhuber.purpose.lib.controller.getId
 import io.javalin.http.Context
 
 @APIController(path = "aspects/")
-class AspectsController @Inject constructor(private val engine: AspectsEngine) {
+class AspectsController @Inject constructor(private val service: AspectService) {
 
-    @Get("")
-    fun getMyAspects(ctx: Context): Array<Aspect> {
+    @Get
+    fun getMyAspects(ctx: Context): List<Aspect> {
         val owner = ctx.attribute<User>(Claims.USER.name)!!
-        return engine.getAllForOwner(owner.id).toTypedArray()
+        return service.getAspectsByOwner(owner.id)
+    }
+
+    @Post
+    @Authorized
+    fun createNewAspect(ctx: Context, create: CreateAspect): Aspect {
+        return service.createNewAspect(create, ctx.getId())
+    }
+
+    @Delete(":id")
+    @Authorized
+    fun deleteAspect(ctx: Context) {
+        service.deleteAspect(ctx.pathParam("id"), ctx.getId())
+    }
+
+    @Put(":id")
+    fun updateAspect(ctx: Context, aspect: CreateAspect): Aspect {
+        return service.updateAspect(ctx.pathParam("id"), aspect, ctx.getId())
     }
 
 }
+
