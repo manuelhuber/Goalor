@@ -1,3 +1,5 @@
+@import "style/responsive";
+
 .root {
   position: fixed;
   top: 0;
@@ -6,6 +8,7 @@
   transition: transform ease 250ms;
   text-align: center;
   z-index: 9999;
+
 }
 
 .hidden {
@@ -14,8 +17,20 @@
 
 .message {
   display: inline-block;
-  background: yellow;
+  background: var(--color-neutral-shade3);
   min-width: 200px;
   max-width: 90vw;
+  width: 95%;
+
   margin: 0 auto;
+  padding: 8px;
+  border-radius: 0 0 4px 4px;
+  color: var(--color-neutral-tint3);
+  @include md {
+    width: auto;
+  }
+}
+
+.closeWrapper {
+  float: right;
 }

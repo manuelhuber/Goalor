@@ -1,5 +1,11 @@
 @import "style/styleConstants";
 
+
+$buttonShadow: 0 0 4px 1px var(--color-neutral-tint4);
+.button {
+  box-shadow: $buttonShadow;
+}
+
 .buttonGroup {
   &.alignLeft {
     text-align: left
@@ -35,8 +41,18 @@
   width: 40px;
   border-radius: 50%;
   margin: 0 4px;
-  border: 1px solid $black-dark;
-  background: $black;
+  box-shadow: $buttonShadow;
+  background: var(--color-neutral-tint2);
   text-align: center;
   vertical-align: center;
+}
+
+.buttonGroupShadow {
+  display: inline-block;
+  box-shadow: $buttonShadow;
+
+  .button {
+    box-shadow: none;
+
+  }
 }

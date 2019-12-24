@@ -3,6 +3,7 @@ import {Action, Reducer} from "redux";
 import {Aspect} from "./models";
 import {aspectApi, get} from "app/lib/fetch";
 import {clone} from "util/object";
+import {notify} from "app/features/notifications/duck";
 
 // State
 export type AspectsState = {
@@ -11,14 +12,6 @@ export type AspectsState = {
 
 const initialState: AspectsState = {
     aspectsById: {}
-};
-
-let counter = 0;
-
-export const loadAllAspects = (): Thunk => async (dispatch) => {
-    get("aspects").then((aspects: Aspect[]) =>
-        aspects.forEach(aspect => dispatch(addAspectAction(aspect)))
-    );
 };
 
 // Actions
@@ -36,29 +29,34 @@ export const updateAspectAction = (aspect: Aspect): UpdateAspectAction => ({type
 
 export type AspectsAction = AddAspectAction | RemoveAspectAction | UpdateAspectAction;
 
+export const loadAllAspects = (): Thunk => async (dispatch) =>
+    get("aspects")
+        .then((aspects: Aspect[]) =>
+            aspects.forEach(aspect => dispatch(addAspectAction(aspect)))
+        ).catch(x => dispatch(notify({message: "Error loading aspect"})));
+
 export const updateAspect = (aspect: Aspect): Thunk => async (dispatch) => {
     aspectApi.putAspectsWithId({id: aspect.id, createAspect: aspect})
         .then((value: Aspect) => dispatch(updateAspectAction(value)));
 };
 
 export const deleteAspect = (id: string): Thunk => async (dispatch) => {
-    aspectApi.deleteAspectsWithId({id}).then(() => {
-        dispatch(removeAspect(id));
-    });
+    aspectApi.deleteAspectsWithId({id})
+        .then(() => dispatch(removeAspect(id)));
 };
 
+let counter = 0;
 export const createAspect = (tmp: Aspect): Thunk => async (dispatch) => {
     tmp.id = `tmp${counter++}`;
     // Instantly add the new aspect to make it snappy
     dispatch(addAspectAction(tmp));
     const a = clone(tmp);
     a.id = null;
-    aspectApi.postAspects({
-        createAspect: a
-    }).then(x => {
-        dispatch(removeAspect(tmp.id));
-        dispatch(addAspectAction(x));
-    });
+    aspectApi.postAspects({createAspect: a})
+        .then(x => {
+            dispatch(removeAspect(tmp.id));
+            dispatch(addAspectAction(x));
+        }).catch(x => dispatch(notify({message: "Error creating aspect"})));
 };
 
 // Reducer

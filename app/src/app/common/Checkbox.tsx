@@ -10,7 +10,7 @@ type Props = {
     noMargin?: boolean;
 }
 const Checkbox: React.FC<Props> = props =>
-    <label className={css("field", (props.noMargin, "mb-zero"))}>
+    <label className={css("field", ["mb-zero", props.noMargin])}>
         <input type="checkbox"
                disabled={props.disable}
                value={props.value}

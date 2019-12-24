@@ -3,7 +3,7 @@ import {notify} from "app/features/notifications/duck";
 import {AppState} from "app/Store";
 import React, {useState} from "react";
 import {FaUser,} from "react-icons/fa";
-import {MdClose, MdMenu} from "react-icons/md";
+import {MdChat, MdClose, MdMenu} from "react-icons/md";
 import {connect} from "react-redux"
 import {Link} from "react-router-dom";
 import {bindActionCreators} from "redux";
@@ -27,7 +27,9 @@ const Menu: React.FC<Props> = props => {
             <div onClick={props.logout}>Logout</div>
         </div>
         <div className={style.bar}>
-            <div onClick={event => props.notify({message: "Heyho!"}, 750)}>Something</div>
+            <div onClick={event => props.notify({message: "Heyho!"}, 750)}>
+                <MdChat/>
+            </div>
             <Link to="/me"><FaUser className={commonStyle.icon}/></Link>
             <div onClick={() => setShow(!show)}>{show ? <MdClose/> : <MdMenu/>}</div>
         </div>

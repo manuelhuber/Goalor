@@ -18,8 +18,8 @@ const mapStateToProps = (state: AppState) => {
 
 const mapDispatchToProps = {};
 
-const App: React.FC<Props> = props => {
-    return <Router>
+const App: React.FC<Props> = () =>
+    <Router>
         <div className={style.app}>
             <Notifications/>
             <div className={style.main}>
@@ -33,8 +33,7 @@ const App: React.FC<Props> = props => {
             </div>
             <div className={style.menuWrapper}><Menu/></div>
         </div>
-    </Router>
-};
+    </Router>;
 
 type Props = typeof mapDispatchToProps & ReturnType<typeof mapStateToProps>;
 export default connect(mapStateToProps, mapDispatchToProps)(App);

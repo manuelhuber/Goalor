@@ -10,6 +10,7 @@ import style from "./Aspects.module.scss";
 import {createAspect, deleteAspect, loadAllAspects, updateAspect} from "./duck";
 import {Aspect} from "./models";
 import {jc} from "util/style";
+import Button from "app/common/buttons/Button";
 
 const mapStateToProps = (state: AppState) => {
     return {aspects: Object.values(state.aspects.aspectsById)}
@@ -40,7 +41,7 @@ const Aspects: React.FC<Props> = props => {
         setCircleEntries(createChartEntries(props.aspects));
     }, [props.aspects]);
     return <div>
-        <div className={style.chartWrapper}><PieChart size={300} entries={circleEntries}/></div>
+        <div className={style.chartWrapper}><PieChart size={250} entries={circleEntries}/></div>
         <div>{props.aspects.map((aspect, index) =>
                 <EditableAspect key={aspect.id}
                                 aspect={aspect}

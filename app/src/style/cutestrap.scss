@@ -47,82 +47,20 @@ html {
   --color-neutral-shade1: hsl(170, 10%, 68%);
   --color-neutral: hsl(170, 10%, 55%);
   --color-neutral-tint1: hsl(170, 10%, 41%);
-  --color-neutral-tint2: hsl(170, 10%, 30%);
-  --color-neutral-tint3: hsl(170, 10%, 18%);
-  --color-neutral-tint4: hsl(170, 10%, 2%);
+  --color-neutral-tint2: hsl(0, 0%, 29%);
+  --color-neutral-tint3: hsl(0, 0%, 15%);
+  --color-neutral-tint4: hsl(0, 0%, 2%);
+}
+
+body {
+  background-color: var(--color-neutral-tint3);
 }
 
 html {
-  //--color-primary-tint1: #{$red-lighter};
-  //--color-primary: #{$red};
-  //--color-primary-shade1: #{$red-dark};
-  //--color-neutral-tint4: #{$background-color}
+  height: 100%;
+  overflow: auto;
 }
 
-.toolbar-button {
-  border: 1px solid var(--color-neutral-tint1);
-  background-color: var(--color-neutral-tint3);
-  border-radius: 2px;
-  color: var(--color-neutral-shade3);
-  cursor: pointer;
-  display: inline-block;
-  padding: var(--rhythm-eighth) var(--rhythm-half);
-  vertical-align: middle;
-}
-
-.toolbar-button:hover,
-.toolbar-button:focus {
-  background-color: var(--color-neutral-tint2);
-}
-
-.toolbar-label + .toolbar-button {
-  margin-left: var(--rhythm-half);
-}
-
-.toolbar-button.-small {
-  --line-height-ratio: 2;
-
-  font-size: var(--font-size);
-}
-
-.toolbar-button.-large {
-  --line-height-ratio: 1;
-
-  font-size: var(--font-size);
-}
-
-.toolbar-button.-light {
-  background-color: var(--color-neutral-tint4);
-  color: var(--color-neutral-shade2);
-}
-
-.toolbar-button.-dark {
-  background-color: var(--color-neutral-shade2);
-  color: var(--color-neutral-tint4);
-}
-
-.toolbar-button.-on {
-  text-decoration: underline overline;
-}
-
-[data-theme="dark"] .toolbar-button.-light {
-  background-color: var(--color-neutral-shade2);
-  color: var(--color-neutral-tint4);
-}
-
-[data-theme="dark"] .toolbar-button.-dark {
-  background-color: var(--color-neutral-tint4);
-  color: var(--color-neutral-shade2);
-}
-
-[data-rhythm="small"] .toolbar-button.-small,
-[data-rhythm="normal"] .toolbar-button.-normal,
-[data-rhythm="large"] .toolbar-button.-large,
-[data-theme="light"] .toolbar-button.-light,
-[data-theme="dark"] .toolbar-button.-dark,
-[data-grid="on"] .toolbar-button.-on,
-[data-grid="off"] .toolbar-button.-off {
-  cursor: default;
-  opacity: .5;
-  pointer-events: none;
+body {
+  height: 100%
 }

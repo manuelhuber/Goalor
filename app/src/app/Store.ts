@@ -16,9 +16,11 @@ export type AppState = ReturnType<typeof rootReducer>
 
 export type Thunk<R = void> = ThunkAction<Promise<R>, AppState, {}, Action>;
 
-const store = createStore(rootReducer, compose(
-    applyMiddleware(thunkMiddleware),
-    (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__())
-);
+const store =
+    (window as any).__REDUX_DEVTOOLS_EXTENSION__ ?
+        createStore(rootReducer, compose(
+            applyMiddleware(thunkMiddleware),
+            (window as any).__REDUX_DEVTOOLS_EXTENSION__())
+        ) : createStore(rootReducer, applyMiddleware(thunkMiddleware));
 
 export default store;

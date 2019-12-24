@@ -27,28 +27,24 @@ export const login = (req: LoginRequest): Thunk => async (dispatch, getState) =>
     } else {
         dispatch(setLoading(true));
         dispatch(notify({message: "LOGGING IN"}, 3000));
-
-        authApi.postAuthLogin({login: {username: req.username, password: req.password}}).then(res => {
+        let password = req.password;
+        let username = req.username;
+        authApi.postAuthLogin({login: {username, password}}).then(res => {
             dispatch(setToken({token: res["jwt"]}));
-            dispatch(notify({message: "Successfully logged in"}))
-        }).catch(async (reason: Response) => {
-            const x = await reason.text();
-            dispatch(notify({message: `Error when logging in: ${x}`}));
-        }).finally(() => {
-            return dispatch(setLoading(false));
-        });
+            dispatch(notify({message: "Successfully logged in"}, 1500))
+        }).catch(async (reason: Response) =>
+            dispatch(notify({message: `Error when logging in: ${(await reason.json()).message}`}))
+        ).finally(() => dispatch(setLoading(false)));
     }
 };
 
 export type RegisterRequest = { username: string, password: string, email: string };
 export const register = (req: RegisterRequest): Thunk => async (dispatch) => {
-    dispatch(setLoading(true));
     post("register", {email: req.email, password: req.password}).then(res => {
         dispatch(setLoading(false));
         dispatch(setToken({token: res["token"]}));
     });
 };
-
 
 type SetToken = { token: string };
 type SetTokenAction = SetToken & Action<"SET_TOKEN">;
