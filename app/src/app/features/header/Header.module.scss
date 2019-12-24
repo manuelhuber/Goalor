@@ -2,7 +2,6 @@
 @import "style/responsive";
 
 .title {
-  --rhythm: 1.5rem;
   color: var(--color-neutral-tint4);
   font-family: $fancy-font;
   font-weight: normal;
@@ -10,7 +9,6 @@
 
 .header {
   padding: 0 5px 5px 5px;
-  border-bottom: 2px solid $red;
   text-align: right;
   background: var(--color-primary);
 }

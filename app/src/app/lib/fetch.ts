@@ -1,4 +1,4 @@
-import {AspectsApi, AuthApi} from "generated/apis";
+import {AspectsApi, AuthApi, GoalsApi} from "generated/apis";
 import {Configuration} from "generated";
 
 export const post = (url: string, body?: any, input?: RequestInit) => {
@@ -14,6 +14,7 @@ let configuration = new Configuration({
 });
 
 export const aspectApi = new AspectsApi(configuration);
+export const goalApi = new GoalsApi(configuration);
 export const authApi = new AuthApi(configuration);
 
 export const myFetch = (url: string, method: "POST" | "GET" | "PUT" | "DELETE", body?: any, input?: RequestInit) => {

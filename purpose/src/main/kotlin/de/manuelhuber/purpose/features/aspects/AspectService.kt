@@ -11,6 +11,10 @@ class AspectService @Inject constructor(val engine: AspectsEngine) {
         return engine.create(Aspect("", create.name, create.weight, create.color, create.completed, owner))
     }
 
+    fun getAspects(id: String): Aspect {
+        return engine.get(id)
+    }
+
     fun getAspectsByOwner(ownerId: String): List<Aspect> {
         return engine.getAllForOwner(ownerId)
     }
@@ -28,7 +32,7 @@ class AspectService @Inject constructor(val engine: AspectsEngine) {
 
     private fun checkAuthorization(aspect: Aspect, updaterId: String) {
         if (aspect.owner != updaterId) {
-            throw NotAuthorized("You're not the owner of the Aspect")
+            throw NotAuthorized("You're not the owner of the Aspect id=${aspect.id}")
         }
     }
 }

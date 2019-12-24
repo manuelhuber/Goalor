@@ -1,6 +1,7 @@
 package de.manuelhuber.purpose.features.aspects
 
 import de.manuelhuber.purpose.features.aspects.model.AspectsEngine
+import de.manuelhuber.purpose.lib.exceptions.NotFound
 
 class AspectsEngineLocal : AspectsEngine {
     private val aspects = hashMapOf(
@@ -12,11 +13,15 @@ class AspectsEngineLocal : AspectsEngine {
     var id = 10
 
     override fun getAllForOwner(owner: String): List<Aspect> {
-        return aspects.values.filter { aspect -> aspect.owner == owner }
+        return aspects.values.filter { it.owner == owner }
     }
 
     override fun get(id: String): Aspect {
-        return aspects[id] ?: throw Exception()
+        return aspects[id] ?: throw NotFound(id, Aspect::class)
+    }
+
+    override fun get(ids: List<String>): List<Aspect> {
+        return ids.map(::get)
     }
 
     override fun delete(id: String): Boolean {
@@ -31,6 +36,9 @@ class AspectsEngineLocal : AspectsEngine {
     }
 
     override fun update(id: String, model: Aspect): Aspect {
+        if (!aspects.containsKey(id)) {
+            throw NotFound(id, Aspect::class)
+        }
         aspects[id] = model
         return model
     }

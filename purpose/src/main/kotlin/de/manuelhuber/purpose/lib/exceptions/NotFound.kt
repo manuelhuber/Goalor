@@ -1,4 +1,4 @@
-package de.manuelhuber.purpose.lib.engine
+package de.manuelhuber.purpose.lib.exceptions
 
 import kotlin.reflect.KClass
 

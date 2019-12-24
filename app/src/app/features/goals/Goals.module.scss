@@ -1,11 +1,43 @@
 @import "style/styleConstants";
 
+.root {
+  margin-top: 24px;
+  overflow: hidden;
+}
+
 .goals {
-  margin-top: 10px;
-  padding: 8px;
+  width: 200%;
+  transform: translateX(-50%);
+  transition: transform 200ms;
+
+  &.showActions {
+    transform: none;
+  }
 }
 
 .cardWrapper {
-  float: left;
-  width: 25%;
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+}
+
+.goalRow {
+  display: flex;
+  margin: 8px;
+  border: 4px dashed var(--color-neutral-tint2);
+  padding: 8px;
+  border-radius: var(--border-radius);
+}
+
+.actionColumn {
+  flex: 1;
+}
+
+.goalColumn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

@@ -1,9 +1,8 @@
 import {Thunk} from "app/Store";
 import {Action, Reducer} from "redux";
-import {Aspect} from "./models";
 import {aspectApi, get} from "app/lib/fetch";
-import {clone} from "util/object";
 import {notify} from "app/features/notifications/duck";
+import {Aspect, CreateAspect} from "generated/models";
 
 // State
 export type AspectsState = {
@@ -31,32 +30,24 @@ export type AspectsAction = AddAspectAction | RemoveAspectAction | UpdateAspectA
 
 export const loadAllAspects = (): Thunk => async (dispatch) =>
     get("aspects")
-        .then((aspects: Aspect[]) =>
-            aspects.forEach(aspect => dispatch(addAspectAction(aspect)))
-        ).catch(x => dispatch(notify({message: "Error loading aspect"})));
+    .then((aspects: Aspect[]) =>
+        aspects.forEach(aspect => dispatch(addAspectAction(aspect)))
+    ).catch(x => dispatch(notify({message: "Error loading aspect"})));
 
 export const updateAspect = (aspect: Aspect): Thunk => async (dispatch) => {
     aspectApi.putAspectsWithId({id: aspect.id, createAspect: aspect})
-        .then((value: Aspect) => dispatch(updateAspectAction(value)));
+             .then((value: Aspect) => dispatch(updateAspectAction(value)));
 };
 
 export const deleteAspect = (id: string): Thunk => async (dispatch) => {
     aspectApi.deleteAspectsWithId({id})
-        .then(() => dispatch(removeAspect(id)));
+             .then(() => dispatch(removeAspect(id)));
 };
 
-let counter = 0;
-export const createAspect = (tmp: Aspect): Thunk => async (dispatch) => {
-    tmp.id = `tmp${counter++}`;
-    // Instantly add the new aspect to make it snappy
-    dispatch(addAspectAction(tmp));
-    const a = clone(tmp);
-    a.id = null;
-    aspectApi.postAspects({createAspect: a})
-        .then(x => {
-            dispatch(removeAspect(tmp.id));
-            dispatch(addAspectAction(x));
-        }).catch(x => dispatch(notify({message: "Error creating aspect"})));
+export const createAspect = (create: CreateAspect): Thunk => async (dispatch) => {
+    aspectApi.postAspects({createAspect: create})
+             .then(x => dispatch(addAspectAction(x)))
+             .catch(() => dispatch(notify({message: "Error creating aspect"})));
 };
 
 // Reducer

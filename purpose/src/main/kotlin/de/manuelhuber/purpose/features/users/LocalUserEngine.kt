@@ -3,7 +3,7 @@ package de.manuelhuber.purpose.features.users
 import com.google.inject.Singleton
 import de.manuelhuber.purpose.features.users.models.User
 import de.manuelhuber.purpose.features.users.models.UserEngine
-import de.manuelhuber.purpose.lib.engine.NotFound
+import de.manuelhuber.purpose.lib.exceptions.NotFound
 
 @Singleton
 class LocalUserEngine : UserEngine {
@@ -16,13 +16,21 @@ class LocalUserEngine : UserEngine {
             lastName = "Last"))
 
     override fun getByUsername(username: String): User {
-        return users.values.find { user -> user.username == username } ?: throw NotFound(username,
+        return users.values.find { user -> user.username == username } ?: throw NotFound(
+                username,
                 User::class,
                 "username")
     }
 
     override fun get(id: String): User {
-        return users.getOrElse(id) { throw NotFound(id, User::class) }
+        return users.getOrElse(id) {
+            throw NotFound(id,
+                    User::class)
+        }
+    }
+
+    override fun get(ids: List<String>): List<User> {
+        return ids.map(::get)
     }
 
     override fun create(model: User): User {

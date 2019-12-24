@@ -2,12 +2,12 @@ import Button from "app/common/buttons/Button";
 import ButtonGroup from "app/common/buttons/ButtonGroup";
 import Form from "app/common/input/Form";
 import Input from "app/common/input/Input";
-import {Aspect} from "app/features/aspects/models";
 import React from "react";
 import {useInput} from "util/inputHook";
 import {clone} from "util/object";
+import {CreateAspect} from "generated/models";
 
-type Props = { aspect: Aspect, onSave: (aspect: Aspect) => void, onCancel: () => void }
+type Props = { aspect: CreateAspect, onSave: (aspect: CreateAspect) => void, onCancel: () => void }
 const EditAspect: React.FC<Props> = props => {
     const {value: name, bind: bindName} = useInput(props.aspect.name);
     const {value: weight, bind: bindWeight} = useInput(props.aspect.weight);

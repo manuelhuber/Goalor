@@ -6,12 +6,7 @@ import {FilterState, resetFilter, setSearchTerm, toggleTag} from "./duck";
 
 const mapStateToProps = (state: AppState, props: { filters: FilterState, namespace: string }) => {
     const tags = new Set<string>();
-    for (let goal of Object.values(state.goals.goals)) {
-        goal.types.forEach(tag => tags.add(tag));
-    }
-
     const selected = props.filters.selectedTags;
-
     return {
         namespace: props.namespace,
         tags: tags,

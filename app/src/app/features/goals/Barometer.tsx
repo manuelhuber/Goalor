@@ -3,22 +3,16 @@ import React from "react";
 import {connect} from "react-redux"
 import {css, jc} from "util/style";
 import style from "./Barometer.module.scss";
-import {completeGoal, Step} from "./duck";
+import {Goal} from "generated/models";
 
-const mapStateToProps = (state: AppState, props: { steps: Step[], goalId: string }) => {
+const mapStateToProps = (state: AppState, props: { steps: Goal[], goalId: string }) => {
     return {...props};
 };
 
-const mapDispatchToProps = {completeGoal};
+const mapDispatchToProps = {};
 
 const Barometer: React.FC<Props> = props => {
-    const toggle = (step: Step, stepNumber: number, done: boolean) => {
-        props.completeGoal({
-            id: props.goalId,
-            step: stepNumber,
-            done: done
-        });
-    };
+    const toggle = (step: Goal, stepNumber: number, done: boolean) => console.log("TODO");
     const stepCount = props.steps.length;
 
     const pipeClass = (stepNumber: number): string => {
@@ -35,7 +29,7 @@ const Barometer: React.FC<Props> = props => {
                 <div className={style.barometerColumn}>
                     <div className={css(style.dot, [style.full, step.done], [style.empty, !step.done])}/>
                 </div>
-                {step.text}
+                {step.title}
             </div>
             {stepNumber > 0 && <div className={style.barometerColumn}>
                 <div className={jc(style.pipe, pipeClass(stepNumber))}/>

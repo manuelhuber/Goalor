@@ -3,7 +3,7 @@ package de.manuelhuber.purpose.app
 import de.manuelhuber.purpose.features.auth.models.NotAuthorized
 import de.manuelhuber.purpose.features.auth.models.WrongPassword
 import de.manuelhuber.purpose.lib.controller.ErrorResponse
-import de.manuelhuber.purpose.lib.engine.NotFound
+import de.manuelhuber.purpose.lib.exceptions.NotFound
 import io.javalin.Javalin
 import org.slf4j.Logger
 

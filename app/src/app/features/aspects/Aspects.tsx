@@ -8,9 +8,8 @@ import {connect} from "react-redux"
 import {bindActionCreators} from "redux";
 import style from "./Aspects.module.scss";
 import {createAspect, deleteAspect, loadAllAspects, updateAspect} from "./duck";
-import {Aspect} from "./models";
 import {jc} from "util/style";
-import Button from "app/common/buttons/Button";
+import {Aspect} from "generated/models";
 
 const mapStateToProps = (state: AppState) => {
     return {aspects: Object.values(state.aspects.aspectsById)}
@@ -20,17 +19,11 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
     createAspect,
     deleteAspect,
     updateAspect,
-    loadAllAspects,
 }, dispatch);
 
 type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
 
 const Aspects: React.FC<Props> = props => {
-
-    useEffect(() => {
-        props.loadAllAspects()
-        // No dependency = only called once
-    }, [props.loadAllAspects]);
 
     const [edit, setEdit] = useState(-1);
     const [add, setAdd] = useState(false);
@@ -43,22 +36,22 @@ const Aspects: React.FC<Props> = props => {
     return <div>
         <div className={style.chartWrapper}><PieChart size={250} entries={circleEntries}/></div>
         <div>{props.aspects.map((aspect, index) =>
-                <EditableAspect key={aspect.id}
-                                aspect={aspect}
-                                editMode={index === edit}
-                                setEdit={() => setEdit(index)}
-                                onSave={aspect => {
-                                    props.updateAspect(aspect);
-                                    setEdit(-1);
-                                }}
-                                cancelEdit={() => setEdit(-1)}
-                                onDelete={() => props.deleteAspect(aspect.id)}/>)}
+            <EditableAspect key={aspect.id}
+                            aspect={aspect}
+                            editMode={index === edit}
+                            setEdit={() => setEdit(index)}
+                            onSave={aspect => {
+                                props.updateAspect(aspect);
+                                setEdit(-1);
+                            }}
+                            cancelEdit={() => setEdit(-1)}
+                            onDelete={() => props.deleteAspect(aspect.id)}/>)}
             <div className={jc(style.addButtonWrapper, style.aspectLine)}>
                 <div/>
                 {!add && <IconButton onClick={() => setAdd(!add)}><MdAdd/></IconButton>}
             </div>
         </div>
-        {add && <EditAspect aspect={new Aspect("", 1, "red", null, 0)}
+        {add && <EditAspect aspect={{name: "", weight: 1, color: "red", completed: 0}}
                             onSave={aspect => {
                                 props.createAspect(aspect);
                                 setAdd(false);

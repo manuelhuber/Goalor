@@ -6,7 +6,7 @@ import de.manuelhuber.purpose.features.users.models.AccountAlreadyExists
 import de.manuelhuber.purpose.features.users.models.Registration
 import de.manuelhuber.purpose.features.users.models.User
 import de.manuelhuber.purpose.features.users.models.UserEngine
-import de.manuelhuber.purpose.lib.engine.NotFound
+import de.manuelhuber.purpose.lib.exceptions.NotFound
 
 
 class UserService @Inject constructor(private val authService: AuthService, private val engine: UserEngine) {

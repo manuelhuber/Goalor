@@ -9,7 +9,7 @@ import de.manuelhuber.purpose.features.users.models.Registration
 import de.manuelhuber.purpose.features.users.models.RegistrationResponse
 import de.manuelhuber.purpose.features.users.models.User
 import de.manuelhuber.purpose.features.users.models.UserTO
-import de.manuelhuber.purpose.lib.engine.NotFound
+import de.manuelhuber.purpose.lib.exceptions.NotFound
 import io.javalin.http.Context
 
 @APIController("user")
@@ -28,7 +28,9 @@ class UserController @Inject constructor(private val service: UserService, priva
         val mail = ctx.attribute<String>("email")
         val user = mail?.let { service.getUserByUsername(it) }
         if (user == null) {
-            throw NotFound(mail.orEmpty(), User::class, "email")
+            throw NotFound(mail.orEmpty(),
+                    User::class,
+                    "email")
         } else {
             return UserTO.fromUser(user)
         }

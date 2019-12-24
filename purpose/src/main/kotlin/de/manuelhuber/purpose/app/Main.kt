@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import com.google.inject.Guice
 import com.google.inject.Injector
 import de.manuelhuber.purpose.features.aspects.AspectsControllerWrapper
+import de.manuelhuber.purpose.features.aspects.GoalControllerWrapper
 import de.manuelhuber.purpose.features.auth.AuthControllerWrapper
 import de.manuelhuber.purpose.features.auth.AuthService
 import de.manuelhuber.purpose.features.auth.MyAccessManager
@@ -45,7 +46,8 @@ fun main() {
 fun createRoutes(app: Javalin, injector: Injector) {
     val controllers = listOf(AuthControllerWrapper::class,
             AspectsControllerWrapper::class,
-            UserControllerWrapper::class)
+            UserControllerWrapper::class,
+            GoalControllerWrapper::class);
     controllers.forEach { kClass ->
         val instance = injector.getInstance(kClass.java)
         instance.addRoutes(app)
