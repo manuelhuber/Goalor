@@ -1,5 +1,7 @@
 package de.manuelhuber.purpose.lib.engine
 
 interface Model {
-    val id: String
+    val id: Id
 }
+
+inline class Id(val value: String)

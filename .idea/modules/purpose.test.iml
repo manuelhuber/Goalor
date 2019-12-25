@@ -71,6 +71,8 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="annotations.main" />
+    <orderEntry type="module" module-name="purpose.main" />
     <orderEntry type="library" name="Gradle: io.javalin:javalin:3.6.0" level="project" />
     <orderEntry type="library" name="Gradle: io.swagger.core.v3:swagger-core:2.0.8" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.module:jackson-module-kotlin:2.9.9" level="project" />
@@ -113,10 +115,10 @@
     <orderEntry type="library" scope="RUNTIME" name="Gradle: net.bytebuddy:byte-buddy:1.4.26" level="project" />
     <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-client:9.4.20.v20190813" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: net.bytebuddy:byte-buddy-agent:1.4.26" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.objenesis:objenesis:2.4" level="project" />
     <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-http:9.4.20.v20190813" level="project" />
-    <orderEntry type="library" name="Gradle: org.eclipse.jetty.websocket:websocket-common:9.4.20.v20190813" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.objenesis:objenesis:2.4" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: org.junit.platform:junit-platform-engine:1.4.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.eclipse.jetty.websocket:websocket-common:9.4.20.v20190813" level="project" />
     <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-io:9.4.20.v20190813" level="project" />
     <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-xml:9.4.20.v20190813" level="project" />
     <orderEntry type="library" name="Gradle: org.yaml:snakeyaml:1.23" level="project" />

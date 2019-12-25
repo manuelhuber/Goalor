@@ -60,7 +60,7 @@ class AnnotationProcessor : AbstractProcessor() {
         val pack = processingEnv.elementUtils.getPackageOf(element).toString()
         val rootPath = element.getAnnotation(APIController::class.java).path
 
-        processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "Processing class $controllerName\n")
+        processingEnv.messager.printMessage(Diagnostic.Kind.NOTE, "Processing class $controllerName\n")
 
         val wrapperName = "${controllerName}Wrapper"
 
@@ -83,7 +83,7 @@ class AnnotationProcessor : AbstractProcessor() {
                 .map { annotation -> AnnotationData.fromAnnotation(annotation) }
                 .firstOrNull { annotation -> annotation !== null }
             if (annotation === null) continue
-            processingEnv.messager.printMessage(Diagnostic.Kind.WARNING,
+            processingEnv.messager.printMessage(Diagnostic.Kind.NOTE,
                     "Processing function ${func.simpleName} in class $controllerName\n")
             val gen = generateFunction(func,
                     annotation,
@@ -147,7 +147,7 @@ class AnnotationProcessor : AbstractProcessor() {
         if (func.parameters.size > 0) {
             val firstParam = func.parameters[0]
             if (firstParam.asType().asTypeName().toString() != Context::class.qualifiedName) {
-                processingEnv.messager.printMessage(Diagnostic.Kind.ERROR,
+                processingEnv.messager.printMessage(Diagnostic.Kind.NOTE,
                         "function ${func.simpleName} has wrong parameters: First parameter should be Javalin context\n")
                 return null
             }

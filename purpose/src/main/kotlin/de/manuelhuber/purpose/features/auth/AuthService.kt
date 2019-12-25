@@ -9,6 +9,7 @@ import de.manuelhuber.annotations.Roles
 import de.manuelhuber.purpose.features.auth.models.WrongPassword
 import de.manuelhuber.purpose.features.users.models.User
 import de.manuelhuber.purpose.features.users.models.UserEngine
+import de.manuelhuber.purpose.features.users.models.Username
 import javalinjwt.JWTGenerator
 import javalinjwt.JWTProvider
 import org.mindrot.jbcrypt.BCrypt
@@ -22,7 +23,7 @@ class AuthService @Inject constructor(private val engine: UserEngine, @Named(
     init {
         val algorithm = Algorithm.HMAC256(secret)
         val generator: JWTGenerator<User> = JWTGenerator { user: User, alg: Algorithm? ->
-            val token: JWTCreator.Builder = JWT.create().withClaim(Claims.ID.name, user.id)
+            val token: JWTCreator.Builder = JWT.create().withClaim(Claims.ID.name, user.id.value)
                 .withClaim(Claims.USER_LEVEL.name, Roles.USER.name)
             token.sign(alg)
         }
@@ -30,8 +31,8 @@ class AuthService @Inject constructor(private val engine: UserEngine, @Named(
         provider = JWTProvider(algorithm, generator, verifier)
     }
 
-    fun login(mail: String, password: String): String {
-        val user = engine.getByUsername(mail)
+    fun login(username: Username, password: String): String {
+        val user = engine.getByUsername(username)
         if (validate(password, user.password)) {
             return generateToken(user)
         } else {

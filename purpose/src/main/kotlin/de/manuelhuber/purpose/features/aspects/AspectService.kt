@@ -4,34 +4,35 @@ import com.google.inject.Inject
 import de.manuelhuber.purpose.features.aspects.model.AspectsEngine
 import de.manuelhuber.purpose.features.aspects.model.CreateAspect
 import de.manuelhuber.purpose.features.auth.models.NotAuthorized
+import de.manuelhuber.purpose.lib.engine.Id
 
 class AspectService @Inject constructor(val engine: AspectsEngine) {
 
-    fun createNewAspect(create: CreateAspect, owner: String): Aspect {
-        return engine.create(Aspect("", create.name, create.weight, create.color, create.completed, owner))
+    fun createNewAspect(create: CreateAspect, owner: Id): Aspect {
+        return engine.create(Aspect(Id(""), create.name, create.weight, create.color, create.completed, owner.value))
     }
 
-    fun getAspects(id: String): Aspect {
+    fun getAspects(id: Id): Aspect {
         return engine.get(id)
     }
 
-    fun getAspectsByOwner(ownerId: String): List<Aspect> {
-        return engine.getAllForOwner(ownerId)
+    fun getAspectsByOwner(ownerId: Id): List<Aspect> {
+        return engine.getAllForOwner(ownerId.value)
     }
 
-    fun deleteAspect(id: String, updaterId: String): Boolean {
+    fun deleteAspect(id: Id, updaterId: Id): Boolean {
         checkAuthorization(engine.get(id), updaterId)
         return engine.delete(id)
     }
 
-    fun updateAspect(id: String, update: CreateAspect, updaterId: String): Aspect {
+    fun updateAspect(id: Id, update: CreateAspect, updaterId: Id): Aspect {
         val aspect = engine.get(id)
         checkAuthorization(engine.get(id), updaterId)
         return engine.update(id, aspect.update(update))
     }
 
-    private fun checkAuthorization(aspect: Aspect, updaterId: String) {
-        if (aspect.owner != updaterId) {
+    private fun checkAuthorization(aspect: Aspect, updaterId: Id) {
+        if (aspect.owner != updaterId.value) {
             throw NotAuthorized("You're not the owner of the Aspect id=${aspect.id}")
         }
     }

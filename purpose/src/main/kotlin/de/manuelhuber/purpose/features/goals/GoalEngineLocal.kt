@@ -2,20 +2,26 @@ package de.manuelhuber.purpose.features.goals
 
 import de.manuelhuber.purpose.features.aspects.Goal
 import de.manuelhuber.purpose.features.aspects.model.GoalsEngine
+import de.manuelhuber.purpose.lib.engine.Id
 import de.manuelhuber.purpose.lib.exceptions.NotFound
 
 class GoalsEngineLocal : GoalsEngine {
     private val goals = hashMapOf(
-            "1" to Goal(id = "1",
+            Id("1") to Goal(id = Id("1"),
                     title = "Create this site",
                     aspect = "0",
                     children = listOf("3", "4", "6"),
                     owner = "0"),
-            "2" to Goal(id = "2", aspect = "3", title = "Learn Violine", children = listOf("5"), owner = "0"),
-            "3" to Goal(id = "3", parent = "1", title = "Setup React boilerplate", aspect = "0", owner = "0"),
-            "4" to Goal(id = "4", parent = "1", title = "Add redux", aspect = "0", children = listOf(), owner = "0"),
-            "5" to Goal(id = "5", parent = "2", title = "Design a My-GoalCard page", aspect = "0", owner = "0"),
-            "6" to Goal(id = "6", parent = "1", title = "Refactoring / Cleanup", aspect = "0", owner = "0")
+            Id("2") to Goal(id = Id("2"), aspect = "3", title = "Learn Violine", children = listOf("5"), owner = "0"),
+            Id("3") to Goal(id = Id("3"), parent = "1", title = "Setup React boilerplate", aspect = "0", owner = "0"),
+            Id("4") to Goal(id = Id("4"),
+                    parent = "1",
+                    title = "Add redux",
+                    aspect = "0",
+                    children = listOf(),
+                    owner = "0"),
+            Id("5") to Goal(id = Id("5"), parent = "2", title = "Design a My-GoalCard page", aspect = "0", owner = "0"),
+            Id("6") to Goal(id = Id("6"), parent = "1", title = "Refactoring / Cleanup", aspect = "0", owner = "0")
     )
 
     var id = 10
@@ -25,28 +31,28 @@ class GoalsEngineLocal : GoalsEngine {
     }
 
 
-    override fun get(id: String): Goal {
-        return goals[id] ?: throw NotFound(id, Goal::class)
+    override fun get(id: Id): Goal {
+        return goals[id] ?: throw NotFound(id.value, Goal::class)
     }
 
-    override fun get(ids: List<String>): List<Goal> {
+    override fun get(ids: List<Id>): List<Goal> {
         return ids.map(::get)
     }
 
-    override fun delete(id: String): Boolean {
+    override fun delete(id: Id): Boolean {
         val removed = goals.remove(id)
         return removed == null
     }
 
     override fun create(model: Goal): Goal {
-        val m = model.copy(id = id++.toString())
+        val m = model.copy(id = Id(id++.toString()))
         goals[m.id] = m
         return m
     }
 
-    override fun update(id: String, model: Goal): Goal {
+    override fun update(id: Id, model: Goal): Goal {
         if (!goals.containsKey(id)) {
-            throw NotFound(id, Goal::class)
+            throw NotFound(id.value, Goal::class)
         }
         goals[id] = model
         return model

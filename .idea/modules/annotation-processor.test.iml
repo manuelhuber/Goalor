@@ -72,6 +72,8 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="annotations.main" />
+    <orderEntry type="module" module-name="annotation-processor.main" />
     <orderEntry type="library" name="Gradle: io.javalin:javalin:3.6.0" level="project" />
     <orderEntry type="library" name="Gradle: io.swagger.core.v3:swagger-core:2.0.8" level="project" />
     <orderEntry type="library" name="Gradle: com.google.inject:guice:4.2.1" level="project" />

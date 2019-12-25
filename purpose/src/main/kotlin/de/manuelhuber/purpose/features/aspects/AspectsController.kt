@@ -6,6 +6,7 @@ import de.manuelhuber.purpose.features.aspects.model.CreateAspect
 import de.manuelhuber.purpose.features.auth.Claims
 import de.manuelhuber.purpose.features.users.models.User
 import de.manuelhuber.purpose.lib.controller.getId
+import de.manuelhuber.purpose.lib.engine.Id
 import io.javalin.http.Context
 
 @APIController(path = "aspects/")
@@ -27,13 +28,13 @@ class AspectsController @Inject constructor(private val service: AspectService) 
     @Delete(":id")
     @Authorized
     fun deleteAspect(ctx: Context) {
-        service.deleteAspect(ctx.pathParam("id"), ctx.getId())
+        service.deleteAspect(Id(ctx.pathParam("id")), ctx.getId())
     }
 
     @Put(":id")
     @Authorized
     fun updateAspect(ctx: Context, aspect: CreateAspect): Aspect {
-        return service.updateAspect(ctx.pathParam("id"), aspect, ctx.getId())
+        return service.updateAspect(Id(ctx.pathParam("id")), aspect, ctx.getId())
     }
 
 }
