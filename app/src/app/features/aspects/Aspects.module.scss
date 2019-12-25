@@ -16,3 +16,25 @@
     border-bottom: none;
   }
 }
+
+.flexCenter {
+  display: flex;
+  align-items: center;
+}
+
+.colorPicker {
+  font-size: var(--rhythm);
+  display: flex;
+  justify-content: space-between;
+  margin: 24px 8px;
+}
+
+.colorBox {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+
+  &.selected {
+    box-shadow: 0 0 10px 0 var(--color-neutral-shade2);
+  }
+}

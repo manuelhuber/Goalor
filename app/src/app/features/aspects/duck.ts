@@ -1,6 +1,6 @@
 import {Thunk} from "app/Store";
 import {Action, Reducer} from "redux";
-import {aspectApi} from "app/lib/fetch";
+import {aspectApi} from "util/fetch";
 import {notify} from "app/features/notifications/duck";
 import {Aspect, CreateAspect} from "generated/models";
 
@@ -14,9 +14,12 @@ const initialState: AspectsState = {
 };
 
 // Actions
-type AddAspect = { aspect: Aspect };
+type AddAspect = { aspect: Aspect[] };
 type AddAspectAction = AddAspect & Action<"ADD_ASPECT">;
-const addAspectAction = (aspect: Aspect): AddAspectAction => ({type: "ADD_ASPECT", aspect});
+const addAspectAction = (aspect: Aspect | Aspect[]): AddAspectAction => ({
+    type: "ADD_ASPECT",
+    aspect: Array.isArray(aspect) ? aspect : [aspect]
+});
 
 type RemoveAspect = { id: string };
 type RemoveAspectAction = RemoveAspect & Action<"REMOVE_ASPECT">;
@@ -30,9 +33,10 @@ export type AspectsAction = AddAspectAction | RemoveAspectAction | UpdateAspectA
 
 export const loadAllAspects = (): Thunk => async (dispatch) =>
     aspectApi.getAspects({})
-             .then((aspects: Aspect[]) =>
-                 aspects.forEach(aspect => dispatch(addAspectAction(aspect)))
-             ).catch(x => dispatch(notify({message: "Error loading aspect"})));
+             .then((aspects: Aspect[]) => {
+                 dispatch(addAspectAction(aspects));
+             })
+             .catch(x => dispatch(notify({message: "Error loading aspect"})));
 
 export const updateAspect = (aspect: Aspect): Thunk => async (dispatch) => {
     aspectApi.putAspectsWithId({id: aspect.id, createAspect: aspect})
@@ -56,7 +60,7 @@ export const aspectsReducer: Reducer<AspectsState, AspectsAction> = (state = ini
     const newAspects = {...state.aspectsById};
     switch (action.type) {
         case "ADD_ASPECT":
-            newAspects[action.aspect.id] = action.aspect;
+            action.aspect.forEach(aspect => newAspects[aspect.id] = aspect);
             return {...state, aspectsById: newAspects};
         case "REMOVE_ASPECT":
             delete newAspects[action.id];

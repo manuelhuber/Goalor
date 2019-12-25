@@ -31,7 +31,7 @@ const App: React.FC = () =>
                     <Switch>
                         <RestrictedRoute path='/me' component={Personal}/>
                         <Route path='/login' component={Authenticate}/>
-                        <Route path='/' component={Landing}/>
+                        <Route path='/' exact component={Landing}/>
                         <Route component={NotFound}/>
                     </Switch>
                 </div>

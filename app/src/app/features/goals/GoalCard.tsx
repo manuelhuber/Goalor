@@ -13,7 +13,7 @@ const GoalCard: React.FC<Props> = props => {
     const {title, content} = props;
 
     return <div className={jc(styles.card, styles.border)}>
-        <div onClick={() => setToggle(!isToggled)}><h6 className={styles.title}>{title}</h6></div>
+        <div onClick={() => setToggle(!isToggled)} className={styles.title}>{title}</div>
         {isToggled && <div>{content}</div>}
     </div>;
 };

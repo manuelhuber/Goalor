@@ -3,12 +3,11 @@ import PieChart from "app/common/PieChart";
 import EditAspect from "app/features/aspects/EditAspect";
 import {AppState} from "app/Store";
 import React, {useEffect, useState} from "react";
-import {MdAdd, MdDelete, MdEdit} from "react-icons/all";
+import {MdAdd, MdBrightness1, MdDelete, MdEdit} from "react-icons/all";
 import {connect} from "react-redux"
 import {bindActionCreators} from "redux";
 import style from "./Aspects.module.scss";
-import {createAspect, deleteAspect, loadAllAspects, updateAspect} from "./duck";
-import {jc} from "util/style";
+import {createAspect, deleteAspect, updateAspect} from "./duck";
 import {Aspect} from "generated/models";
 
 const mapStateToProps = (state: AppState) => {
@@ -46,8 +45,8 @@ const Aspects: React.FC<Props> = props => {
                             }}
                             cancelEdit={() => setEdit(-1)}
                             onDelete={() => props.deleteAspect(aspect.id)}/>)}
-            <div className={jc(style.addButtonWrapper, style.aspectLine)}>
-                <div/>
+            <div className={style.aspectLine}>
+                <div> {/* An empty diff for layout purposes (flexbox + space between) */} </div>
                 {!add && <IconButton onClick={() => setAdd(!add)}><MdAdd/></IconButton>}
             </div>
         </div>
@@ -83,11 +82,14 @@ const EditableAspect = (props: {
         return <EditAspect aspect={aspect} onSave={onSave} onCancel={cancelEdit}/>
     } else {
         return <div key={aspect.id || "tmp"} className={style.aspectLine}>
-            <span>{aspect.name} ({aspect.weight})</span>
-            <span>
+            <div className={style.flexCenter}>
+                <div className={style.flexCenter} style={{color: aspect.color}}><MdBrightness1/></div>
+                {aspect.name} ({aspect.weight})
+            </div>
+            <div className={style.flexCenter}>
                 <IconButton onClick={setEdit}><MdEdit/></IconButton>
                 <IconButton onClick={onDelete}><MdDelete/></IconButton>
-            </span>
+            </div>
         </div>
     }
 };

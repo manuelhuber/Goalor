@@ -1,6 +1,6 @@
 import {Action, Reducer} from "redux";
 import {Thunk} from "app/Store";
-import {goalApi} from "app/lib/fetch";
+import {goalApi} from "util/fetch";
 import {Goal} from "generated/models";
 
 export type GoalState = {

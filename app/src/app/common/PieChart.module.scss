@@ -1,11 +1,11 @@
 .initial {
   transition: none;
   opacity: 0;
-  transform: rotate(-45deg);
+  transform: rotate(-55deg);
 }
 
 .notInitial {
-  transition: all 500ms;
+  transition: all 1000ms ease;
   opacity: 1;
   transform: rotate(0);
 }

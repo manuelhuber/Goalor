@@ -1,5 +1,5 @@
 import {notify} from "app/features/notifications/duck";
-import {authApi, userhApi} from "app/lib/fetch";
+import {authApi, userhApi} from "util/fetch";
 import {Thunk} from "app/Store";
 import {Action, Reducer} from "redux";
 import {loadAllAspects} from "app/features/aspects/duck";
@@ -48,6 +48,8 @@ export const register = (req: Registration): Thunk => async (dispatch) =>
             .then(res => {
                 dispatch(setLoading(false));
                 dispatch(setToken({token: res["token"]}));
+                dispatch(loadAllAspects());
+                dispatch(loadAllGoals());
             });
 
 type SetToken = { token: string };
