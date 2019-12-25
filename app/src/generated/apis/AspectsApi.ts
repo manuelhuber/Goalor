@@ -31,6 +31,10 @@ export interface DeleteAspectsWithIdRequest {
     authorization?: string;
 }
 
+export interface GetAspectsRequest {
+    authorization?: string;
+}
+
 export interface PostAspectsRequest {
     authorization?: string;
     createAspect?: CreateAspect;
@@ -38,6 +42,7 @@ export interface PostAspectsRequest {
 
 export interface PutAspectsWithIdRequest {
     id: string;
+    authorization?: string;
     createAspect?: CreateAspect;
 }
 
@@ -90,10 +95,14 @@ export class AspectsApi extends runtime.BaseAPI {
     /**
      * Get aspects
      */
-    async getAspectsRaw(): Promise<runtime.ApiResponse<Array<Aspect>>> {
+    async getAspectsRaw(requestParameters: GetAspectsRequest): Promise<runtime.ApiResponse<Array<Aspect>>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (requestParameters.authorization !== undefined && requestParameters.authorization !== null) {
+            headerParameters['Authorization'] = String(requestParameters.authorization);
+        }
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -116,8 +125,8 @@ export class AspectsApi extends runtime.BaseAPI {
     /**
      * Get aspects
      */
-    async getAspects(): Promise<Array<Aspect>> {
-        const response = await this.getAspectsRaw();
+    async getAspects(requestParameters: GetAspectsRequest): Promise<Array<Aspect>> {
+        const response = await this.getAspectsRaw(requestParameters);
         return await response.value();
     }
 
@@ -175,6 +184,10 @@ export class AspectsApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
+
+        if (requestParameters.authorization !== undefined && requestParameters.authorization !== null) {
+            headerParameters['Authorization'] = String(requestParameters.authorization);
+        }
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;

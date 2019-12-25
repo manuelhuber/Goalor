@@ -27,3 +27,9 @@
     @content;
   }
 }
+
+@mixin largeMenu {
+  @include xl {
+    @content
+  }
+}

@@ -24,16 +24,24 @@ const Authenticate: React.FC<Props> = props => {
     const {value: username, bind: bindUsername} = useInput("");
     const {value: password, bind: bindPassword} = useInput("");
     const {value: email, bind: bindEmail} = useInput("");
+    const {value: firstName, bind: bindFirstName} = useInput("");
+    const {value: lastName, bind: bindLastName} = useInput("");
 
     const submit = (event) => {
-        isRegistration ? props.register({username, password, email}) : props.login({username, password});
+        isRegistration ?
+            props.register({username, password, email, firstName, lastName}) :
+            props.login({username, password});
         event.preventDefault();
     };
     return <div className='wrapper' style={{maxWidth: "25rem"}}>
         <form action="" onSubmit={submit}>
-            {isRegistration && <WithLabel label='E-Mail'><input type="email" {...bindEmail}/></WithLabel>}
             <WithLabel label='Username'><input type="text" {...bindUsername}/></WithLabel>
             <WithLabel label='Password'><input type="password" {...bindPassword}/></WithLabel>
+            {isRegistration && <>
+                <WithLabel label='E-Mail'><input type="email" {...bindEmail}/></WithLabel>
+                <WithLabel label='First name'><input type="text" {...bindFirstName}/></WithLabel>
+                <WithLabel label='Last name'><input type="text" {...bindLastName}/></WithLabel>
+            </>}
             <Button type="submit" block={true}
                     disabled={props.isLoading}>{isRegistration ? "Register" : "Login"}</Button>
         </form>

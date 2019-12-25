@@ -4,6 +4,10 @@ $buttonShadow: 0 0 4px 1px var(--color-neutral-tint4);
 
 .button {
   box-shadow: $buttonShadow;
+
+  &.noShadow {
+    box-shadow: none;
+  }
 }
 
 .buttonGroup {

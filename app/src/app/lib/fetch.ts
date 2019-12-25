@@ -1,4 +1,4 @@
-import {AspectsApi, AuthApi, GoalsApi} from "generated/apis";
+import {AspectsApi, AuthApi, GoalsApi, UserApi} from "generated/apis";
 import {Configuration} from "generated";
 
 export const post = (url: string, body?: any, input?: RequestInit) => {
@@ -9,13 +9,14 @@ export const get = (url: string, input?: RequestInit) => {
 };
 
 let configuration = new Configuration({
-    accessToken: localStorage.getItem("GOALOR_KEY"),
+    accessToken: () => localStorage.getItem("GOALOR_KEY"),
     basePath: process.env.REACT_APP_BASE_URL,
 });
 
 export const aspectApi = new AspectsApi(configuration);
 export const goalApi = new GoalsApi(configuration);
 export const authApi = new AuthApi(configuration);
+export const userhApi = new UserApi(configuration);
 
 export const myFetch = (url: string, method: "POST" | "GET" | "PUT" | "DELETE", body?: any, input?: RequestInit) => {
     const defaultConfig = {

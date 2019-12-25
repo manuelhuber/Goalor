@@ -1,6 +1,6 @@
 import {Thunk} from "app/Store";
 import {Action, Reducer} from "redux";
-import {aspectApi, get} from "app/lib/fetch";
+import {aspectApi} from "app/lib/fetch";
 import {notify} from "app/features/notifications/duck";
 import {Aspect, CreateAspect} from "generated/models";
 
@@ -29,10 +29,10 @@ export const updateAspectAction = (aspect: Aspect): UpdateAspectAction => ({type
 export type AspectsAction = AddAspectAction | RemoveAspectAction | UpdateAspectAction;
 
 export const loadAllAspects = (): Thunk => async (dispatch) =>
-    get("aspects")
-    .then((aspects: Aspect[]) =>
-        aspects.forEach(aspect => dispatch(addAspectAction(aspect)))
-    ).catch(x => dispatch(notify({message: "Error loading aspect"})));
+    aspectApi.getAspects({})
+             .then((aspects: Aspect[]) =>
+                 aspects.forEach(aspect => dispatch(addAspectAction(aspect)))
+             ).catch(x => dispatch(notify({message: "Error loading aspect"})));
 
 export const updateAspect = (aspect: Aspect): Thunk => async (dispatch) => {
     aspectApi.putAspectsWithId({id: aspect.id, createAspect: aspect})

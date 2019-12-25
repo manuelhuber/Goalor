@@ -12,6 +12,7 @@ import io.javalin.http.Context
 class AspectsController @Inject constructor(private val service: AspectService) {
 
     @Get
+    @Authorized
     fun getMyAspects(ctx: Context): List<Aspect> {
         val owner = ctx.attribute<User>(Claims.USER.name)!!
         return service.getAspectsByOwner(owner.id)
@@ -30,6 +31,7 @@ class AspectsController @Inject constructor(private val service: AspectService) 
     }
 
     @Put(":id")
+    @Authorized
     fun updateAspect(ctx: Context, aspect: CreateAspect): Aspect {
         return service.updateAspect(ctx.pathParam("id"), aspect, ctx.getId())
     }

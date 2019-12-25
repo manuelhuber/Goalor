@@ -11,6 +11,7 @@ import io.javalin.http.Context
 class GoalController @Inject constructor(private val service: GoalService) {
 
     @Get
+    @Authorized
     fun getMyGoals(ctx: Context): List<Goal> {
         val owner = ctx.attribute<User>(Claims.USER.name)!!
         return service.getGoalsByOwner(owner.id)
@@ -29,6 +30,7 @@ class GoalController @Inject constructor(private val service: GoalService) {
     }
 
     @Put(":id")
+    @Authorized
     fun updateGoal(ctx: Context, aspect: GoalData): Goal {
         return service.updateGoal(ctx.pathParam("id"), aspect, ctx.getId())
     }

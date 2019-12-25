@@ -14,8 +14,10 @@ import Personal from "./page/Personal";
 import {loadAllGoals} from "app/features/goals/duck";
 import {loadAllAspects} from "app/features/aspects/duck";
 
-loadAllAspects()(store.dispatch, null, null);
-loadAllGoals()(store.dispatch, null, null);
+if (store.getState().auth.authenticated) {
+    loadAllAspects()(store.dispatch, null, null);
+    loadAllGoals()(store.dispatch, null, null);
+}
 
 const App: React.FC = () =>
     <Provider store={store}>
@@ -23,7 +25,9 @@ const App: React.FC = () =>
             <div className={style.app}>
                 <Notifications/>
                 <div className={style.main}>
-                    <div className={style.headerWrapper}><Header/></div>
+                    <header className={style.headerWrapper}>
+                        <Header/>
+                    </header>
                     <Switch>
                         <RestrictedRoute path='/me' component={Personal}/>
                         <Route path='/login' component={Authenticate}/>

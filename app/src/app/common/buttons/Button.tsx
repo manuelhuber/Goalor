@@ -10,7 +10,7 @@ type Props = {
 }
 const Button: React.FC<Props & React.ButtonHTMLAttributes<HTMLButtonElement>> = props => {
     // These CSS classes are from cutestrap
-    let cssString = css(style.button, "button", ["-block", props.block]);
+    let cssString = css(style.button, "button", ["-block", props.block], [style.noShadow, props.design === "link"]);
     if (props.design) {
         cssString += ` -${props.design}`;
     }

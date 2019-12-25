@@ -1,7 +1,21 @@
 @import "style/styleConstants";
+@import "style/responsive";
 
 .root {
   position: relative;
+  height: 100%;
+  @include largeMenu {
+    display: flex;
+    min-width: 300px;
+    flex-direction: column;
+  }
+}
+
+.header {
+  display: none;
+  @include largeMenu {
+    display: block;
+  }
 }
 
 .bar {
@@ -11,20 +25,87 @@
   padding: 8px 24px;
   background: var(--color-neutral-shade2);
   color: var(--color-neutral-tint4);
+  @include largeMenu {
+    display: none;
+  }
 }
 
-.list {
+.menuList {
   position: absolute;
   bottom: 100%;
-  background: red;
+  background: var(--color-neutral-tint4);
   height: 0;
   left: 0;
   right: 0;
   overflow: hidden;
 
+  display: flex;
+  flex-direction: column-reverse;
+
   &.visible {
     height: auto;
   }
 
+  @include largeMenu {
+    // Get back to non-absolute behaviour
+    height: auto;
+    position: relative;
+    bottom: auto;
+
+    padding: 4px;
+    box-sizing: border-box;
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+  }
+
 }
 
+.itemList {
+  margin: 0;
+  display: flex;
+  flex-direction: column-reverse;
+  @include largeMenu {
+    flex-direction: column;
+  }
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background 200ms ease;
+
+  &:hover {
+    background: var(--color-neutral-tint3);
+  }
+
+  $itemBorder: 1px solid var(--color-neutral-tint3);
+  padding: var(--rhythm-third) 0;
+  border-top: $itemBorder;
+
+  &:only-child {
+    border-top: none;
+    border-bottom: none;
+  }
+
+  @include largeMenu {
+    &:last-child {
+      border-bottom: $itemBorder;
+    }
+    &:first-child {
+      border-top: none;
+    }
+  }
+
+  &.largeOnly {
+    display: none;
+    @include largeMenu {
+      display: block;
+    }
+  }
+}

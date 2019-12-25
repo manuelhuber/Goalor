@@ -1,4 +1,5 @@
 @import "style/styleConstants";
+@import "style/responsive";
 
 .header {
   height: 20px;
@@ -9,6 +10,9 @@
   font-family: $default-font;
   display: flex;
   flex-direction: column;
+  @include largeMenu {
+    flex-direction: row-reverse;
+  }
 }
 
 .main {

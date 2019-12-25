@@ -28,7 +28,7 @@ export const removeGoal = (id: string): RemoveGoalAction => ({type: 'REMOVE_GOAL
 export type GoalAction = AddGoalsAction | UpdateGoalAction | RemoveGoalAction;
 
 export const loadAllGoals = (): Thunk => async (dispatch) => {
-    goalApi.getGoals().then(goals => dispatch(addGoals(goals)))
+    goalApi.getGoals({}).then(goals => dispatch(addGoals(goals)))
 };
 // Reducer
 

@@ -7,20 +7,21 @@ import Button from "app/common/buttons/Button";
 import {css} from "util/style";
 import commonStyle from "style/Common.module.scss";
 import GoalCard from "app/features/goals/GoalCard";
+import {Goal} from "generated/models";
 
-const mapStateToProps = (state: AppState, props: { goals: string[] }) => {
-    const toGoals = (ids: string[]) => ids.map(id => state.goals.goals[id]);
-    return {
-        allGoals: state.goals.goals,
-        goals: toGoals(props.goals)
-    };
-};
+const mapStateToProps = (state: AppState, props: { goals: string[] }) => ({
+    aspects: state.aspects.aspectsById,
+    allGoals: state.goals.goals,
+    goals: props.goals.map(id => state.goals.goals[id])
+});
 const mapDispatchToProps = {addGoals};
-
 type Props = typeof mapDispatchToProps & ReturnType<typeof mapStateToProps>;
 
 const Goals: React.FC<Props> = props => {
     const [index, setIndex] = useState(1);
+
+    const color = (goal: Goal) => props.aspects[goal.aspect] && props.aspects[goal.aspect].color;
+
     return <div className={styles.root}>
 
         <div className={css(styles.headerRow, commonStyle.padding)}>
@@ -29,7 +30,9 @@ const Goals: React.FC<Props> = props => {
         </div>
 
         <div className={css(styles.goals, [styles.showActions, index === 0])}>
-            {props.goals.map(goal => <div className={styles.goalRow} key={goal.id}>
+            {props.goals.map(goal => <div className={styles.goalRow}
+                                          style={{borderColor: color(goal)}}
+                                          key={goal.id}>
                 <div className={styles.actionColumn}>
                     {goal.children
                          .map(id => props.allGoals[id])

@@ -8,14 +8,6 @@
   --line-height-ratio: 1.4;
 }
 
-* {
-  /* Sets our Baseline Grid */
-  --rhythm: 2rem;
-
-  /* Sets font-size relative to rhythm */
-  --line-height-ratio: 1.4;
-}
-
 @media (max-width: 55rem) {
   * {
     --rhythm: 1.7rem;

@@ -1,4 +1,5 @@
 @import "style/styleConstants";
+@import "style/responsive";
 
 .root {
   margin-top: 24px;
@@ -13,6 +14,11 @@
   &.showActions {
     transform: none;
   }
+
+  @include lg {
+    width: 100%;
+    transform: none;
+  }
 }
 
 .cardWrapper {
@@ -21,6 +27,9 @@
 .headerRow {
   display: flex;
   justify-content: space-between;
+  @include lg {
+    display: none;
+  }
 }
 
 .goalRow {
