@@ -10,10 +10,6 @@
 
 .header {
   padding: 0 4px 8px 4px;
-  text-align: right;
+  min-height: var(--rhythm);
   background: var(--color-primary);
-
-  &.center {
-    text-align: center;
-  }
 }

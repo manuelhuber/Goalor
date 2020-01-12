@@ -13,6 +13,7 @@ import NotFound from "./page/NotFound";
 import Personal from "./page/Personal";
 import {loadAllGoals} from "app/features/goals/duck";
 import {loadAllAspects} from "app/features/aspects/duck";
+import {APP_TITLE} from "app/constants";
 
 if (store.getState().auth.authenticated) {
     loadAllAspects()(store.dispatch, null, null);
@@ -25,9 +26,9 @@ const App: React.FC = () =>
             <div className={style.app}>
                 <Notifications/>
                 <div className={style.main}>
-                    <header className={style.headerWrapper}>
-                        <Header/>
-                    </header>
+                    <Header>
+                        <div className={style.header}>{APP_TITLE}</div>
+                    </Header>
                     <Switch>
                         <RestrictedRoute path='/me' component={Personal}/>
                         <Route path='/login' component={Authenticate}/>

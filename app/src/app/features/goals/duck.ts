@@ -2,6 +2,7 @@ import {Action, Reducer} from "redux";
 import {Thunk} from "app/Store";
 import {goalApi} from "util/fetch";
 import {Goal} from "generated/models";
+import {clone} from "util/object";
 
 export type GoalState = {
     goals: { [key: string]: Goal };
@@ -20,8 +21,13 @@ export const addGoals = (goal: Goal | Goal[]): AddGoalsAction => ({
 });
 
 type UpdateGoalAction = { goal: Goal } & Action<'UPDATE_GOAL'>;
-export const updateGoal = (goal: Goal): UpdateGoalAction => ({type: 'UPDATE_GOAL', goal});
+const updateGoalAction = (goal: Goal): UpdateGoalAction => ({type: 'UPDATE_GOAL', goal: clone(goal)});
 
+
+export const updateGoal = (goal: Goal): Thunk => async (dispatch) => {
+    // make call
+    dispatch(updateGoalAction(goal));
+};
 type RemoveGoalAction = { id: string } & Action<'REMOVE_GOAL'>;
 export const removeGoal = (id: string): RemoveGoalAction => ({type: 'REMOVE_GOAL', id});
 

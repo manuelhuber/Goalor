@@ -1,3 +1,3 @@
-export function clone<T>(orig: T): T {
-    return Object.assign(Object.create(Object.getPrototypeOf(orig)), orig)
+export function clone<T>(orig: T, override?: object): T {
+    return {...Object.assign(Object.create(Object.getPrototypeOf(orig)), orig), ...override}
 }

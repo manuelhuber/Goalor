@@ -2,7 +2,10 @@
 @import "style/responsive";
 
 .header {
-  height: 20px;
+  text-align: right;
+  @include largeMenu {
+    display: none;
+  }
 }
 
 .app {

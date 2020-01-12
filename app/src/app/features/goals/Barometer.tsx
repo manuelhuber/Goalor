@@ -1,7 +1,7 @@
 import {AppState} from "app/Store";
 import React from "react";
 import {connect} from "react-redux"
-import {css, jc} from "util/style";
+import {css} from "util/style";
 import style from "./Barometer.module.scss";
 import {Goal} from "generated/models";
 
@@ -32,7 +32,7 @@ const Barometer: React.FC<Props> = props => {
                 {step.title}
             </div>
             {stepNumber > 0 && <div className={style.barometerColumn}>
-                <div className={jc(style.pipe, pipeClass(stepNumber))}/>
+                <div className={css(style.pipe, pipeClass(stepNumber))}/>
             </div>}
         </div>
     })}

@@ -1,7 +1,7 @@
 package de.manuelhuber.purpose.features.goals
 
-import de.manuelhuber.purpose.features.aspects.Goal
-import de.manuelhuber.purpose.features.aspects.model.GoalsEngine
+import de.manuelhuber.purpose.features.goals.model.Goal
+import de.manuelhuber.purpose.features.goals.model.GoalsEngine
 import de.manuelhuber.purpose.lib.engine.Id
 import de.manuelhuber.purpose.lib.exceptions.NotFound
 
@@ -11,15 +11,16 @@ class GoalsEngineLocal : GoalsEngine {
                     title = "Create this site",
                     aspect = "0",
                     children = listOf("3", "4", "6"),
-                    owner = "0"),
+                    owner = "0",
+                    description = "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque doloribus eius eligendi eum illum, itaque labore laboriosam molestias, nam nihil porro quasi? Blanditiis placeat quisquam quo! Cum mollitia nobis voluptatibus."),
             Id("2") to Goal(id = Id("2"), aspect = "3", title = "Learn Violine", children = listOf("5"), owner = "0"),
             Id("3") to Goal(id = Id("3"), parent = "1", title = "Setup React boilerplate", aspect = "0", owner = "0"),
             Id("4") to Goal(id = Id("4"),
                     parent = "1",
                     title = "Add redux",
                     aspect = "0",
-                    children = listOf(),
-                    owner = "0"),
+                    owner = "0",
+                    description = "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque doloribus eius eligendi eum illum, itaque labore laboriosam molestias, nam nihil porro quasi? Blanditiis placeat quisquam quo! Cum mollitia nobis voluptatibus.\n"),
             Id("5") to Goal(id = Id("5"), parent = "2", title = "Design a My-GoalCard page", aspect = "0", owner = "0"),
             Id("6") to Goal(id = Id("6"), parent = "1", title = "Refactoring / Cleanup", aspect = "0", owner = "0")
     )

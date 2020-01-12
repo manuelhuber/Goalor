@@ -14,6 +14,16 @@
 
 }
 
+.titleRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: start;
+  --sub-rhythm: 2rem;
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+}
+
 .title {
-  margin: 0 auto;
+  //margin: 0 auto;
 }

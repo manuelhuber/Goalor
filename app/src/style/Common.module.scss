@@ -2,10 +2,18 @@
   cursor: pointer;
 }
 
+.inline {
+  display: inline-block;
+}
+
 .icon {
   color: black;
 }
 
 .padding {
   padding: 8px;
+}
+
+.divider {
+  border-bottom: 1px solid var(--color-neutral);
 }

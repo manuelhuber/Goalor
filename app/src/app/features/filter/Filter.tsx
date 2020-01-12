@@ -1,4 +1,4 @@
-import Checkbox from "app/common/Checkbox";
+import Checkbox from "app/common/input/Checkbox";
 import {AppState} from "app/Store";
 import React from "react";
 import {connect} from "react-redux"

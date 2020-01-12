@@ -4,11 +4,11 @@ import com.google.gson.GsonBuilder
 import com.google.inject.Guice
 import com.google.inject.Injector
 import de.manuelhuber.purpose.features.aspects.AspectsControllerWrapper
-import de.manuelhuber.purpose.features.aspects.GoalControllerWrapper
 import de.manuelhuber.purpose.features.auth.AuthControllerWrapper
 import de.manuelhuber.purpose.features.auth.AuthService
 import de.manuelhuber.purpose.features.auth.MyAccessManager
 import de.manuelhuber.purpose.features.auth.addAuth
+import de.manuelhuber.purpose.features.goals.GoalControllerWrapper
 import de.manuelhuber.purpose.features.users.UserControllerWrapper
 import dev.misfitlabs.kotlinguice4.getInstance
 import io.javalin.Javalin

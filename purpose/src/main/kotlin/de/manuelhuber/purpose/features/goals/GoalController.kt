@@ -1,9 +1,10 @@
-package de.manuelhuber.purpose.features.aspects
+package de.manuelhuber.purpose.features.goals
 
 import com.google.inject.Inject
 import de.manuelhuber.annotations.*
 import de.manuelhuber.purpose.features.auth.Claims
-import de.manuelhuber.purpose.features.goals.GoalService
+import de.manuelhuber.purpose.features.goals.model.Goal
+import de.manuelhuber.purpose.features.goals.model.GoalData
 import de.manuelhuber.purpose.features.users.models.User
 import de.manuelhuber.purpose.lib.controller.getId
 import de.manuelhuber.purpose.lib.engine.Id

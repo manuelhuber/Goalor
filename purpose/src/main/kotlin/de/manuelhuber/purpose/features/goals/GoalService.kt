@@ -2,10 +2,10 @@ package de.manuelhuber.purpose.features.goals
 
 import com.google.inject.Inject
 import de.manuelhuber.purpose.features.aspects.AspectService
-import de.manuelhuber.purpose.features.aspects.Goal
-import de.manuelhuber.purpose.features.aspects.GoalData
-import de.manuelhuber.purpose.features.aspects.model.GoalsEngine
 import de.manuelhuber.purpose.features.auth.models.NotAuthorized
+import de.manuelhuber.purpose.features.goals.model.Goal
+import de.manuelhuber.purpose.features.goals.model.GoalData
+import de.manuelhuber.purpose.features.goals.model.GoalsEngine
 import de.manuelhuber.purpose.lib.engine.Id
 import de.manuelhuber.purpose.lib.exceptions.NotFound
 import de.manuelhuber.purpose.lib.exceptions.ValidationError

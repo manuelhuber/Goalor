@@ -25,9 +25,8 @@ type RemoveAspect = { id: string };
 type RemoveAspectAction = RemoveAspect & Action<"REMOVE_ASPECT">;
 export const removeAspect = (id: string): RemoveAspectAction => ({type: "REMOVE_ASPECT", id});
 
-type UpdateAspect = { aspect: Aspect };
-type UpdateAspectAction = UpdateAspect & Action<"UPDATE_ASPECT">;
-export const updateAspectAction = (aspect: Aspect): UpdateAspectAction => ({type: "UPDATE_ASPECT", aspect});
+type UpdateAspectAction = { aspect: Aspect } & Action<"UPDATE_ASPECT">;
+const updateAspectAction = (aspect: Aspect): UpdateAspectAction => ({type: "UPDATE_ASPECT", aspect});
 
 export type AspectsAction = AddAspectAction | RemoveAspectAction | UpdateAspectAction;
 

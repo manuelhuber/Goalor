@@ -11,6 +11,7 @@ import style from "./Menu.module.scss";
 import Header from "app/features/header/Header";
 import {useHistory} from "react-router";
 import {AppState} from "app/Store";
+import {APP_TITLE} from "app/constants";
 
 const mapStateToProps = (state: AppState) => ({isLoggedIn: state.auth.authenticated});
 const mapDispatchToProps = (dispatch) => bindActionCreators({
@@ -27,7 +28,7 @@ const Menu: React.FC<Props> = props => {
 
     return <div className={style.root}>
         <div className={style.header}>
-            <Header center={true}/>
+            <Header>{APP_TITLE}</Header>
         </div>
         <nav className={css(style.menuList, [style.visible, show])}>
             <ul className={style.itemList}>

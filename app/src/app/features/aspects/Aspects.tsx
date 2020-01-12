@@ -5,21 +5,20 @@ import {AppState} from "app/Store";
 import React, {useEffect, useState} from "react";
 import {MdAdd, MdBrightness1, MdDelete, MdEdit} from "react-icons/all";
 import {connect} from "react-redux"
-import {bindActionCreators} from "redux";
 import style from "./Aspects.module.scss";
 import {createAspect, deleteAspect, updateAspect} from "./duck";
 import {Aspect} from "generated/models";
+import {bindActions} from "util/duckUtil";
 
 const mapStateToProps = (state: AppState) => {
     return {aspects: Object.values(state.aspects.aspectsById)}
 };
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({
+const mapDispatchToProps = bindActions({
     createAspect,
     deleteAspect,
     updateAspect,
-}, dispatch);
-
+});
 type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
 
 const Aspects: React.FC<Props> = props => {

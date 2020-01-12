@@ -1,4 +1,4 @@
-package de.manuelhuber.purpose.features.aspects
+package de.manuelhuber.purpose.features.goals.model
 
 data class GoalData(
         val title: String,

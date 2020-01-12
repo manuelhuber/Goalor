@@ -1,4 +1,4 @@
-package de.manuelhuber.purpose.features.aspects
+package de.manuelhuber.purpose.features.goals.model
 
 import de.manuelhuber.purpose.lib.engine.Id
 import de.manuelhuber.purpose.lib.engine.Model
