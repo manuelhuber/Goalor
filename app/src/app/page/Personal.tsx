@@ -9,7 +9,7 @@ import commonStyle from "style/Common.module.scss";
 
 const mapStateToProps = (state: AppState) => {
     return {
-        rootGoals: Object.values(state.goals.goals).filter(goal => !goal.parent).map(goal => goal.id)
+        rootGoals: Object.values(state.goals.goalsById).filter(goal => !goal.parent).map(goal => goal.id)
     };
 };
 const mapDispatchToProps = {};
@@ -20,7 +20,7 @@ const Personal: React.FC<Props> = props => {
         <div className={commonStyle.padding}><SectionTitle title="Aspects" color={redDark}/></div>
         <Aspects/>
         <div className={commonStyle.padding}><SectionTitle title="My Goals" color={redDark}/></div>
-        <Goals goals={props.rootGoals}/>
+        <Goals rootGoals={props.rootGoals}/>
     </div>;
 };
 
