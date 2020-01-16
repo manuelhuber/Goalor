@@ -7,7 +7,6 @@ import de.manuelhuber.purpose.lib.exceptions.NotFound
 import io.javalin.Javalin
 import org.slf4j.Logger
 
-// TODO use ErrorResponse
 fun addErrorHandling(app: Javalin, logger: Logger) {
     app
         .exception(Exception::class.java) { exception, ctx ->

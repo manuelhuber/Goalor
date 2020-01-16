@@ -21,6 +21,9 @@ import org.slf4j.LoggerFactory
 private val logger: org.slf4j.Logger = LoggerFactory.getLogger(Javalin::class.java)
 
 fun main() {
+    val injector = Guice.createInjector(GuiceModule())
+    injector.getInstance<DatabaseInitiator>().init()
+
     val app = Javalin.create { config ->
         addSwagger(config)
         config.accessManager(MyAccessManager())
@@ -38,7 +41,6 @@ fun main() {
         override fun map(obj: Any): String = gson.toJson(obj)
     }
 
-    val injector = Guice.createInjector(GuiceModule())
     addAuth(app, injector.getInstance<AuthService>().provider, injector.getInstance())
     createRoutes(app, injector)
 }

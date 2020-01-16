@@ -8,14 +8,13 @@ import com.google.inject.name.Named
 import de.manuelhuber.annotations.Roles
 import de.manuelhuber.purpose.features.auth.models.WrongPassword
 import de.manuelhuber.purpose.features.users.models.User
-import de.manuelhuber.purpose.features.users.models.UserEngine
+import de.manuelhuber.purpose.features.users.engine.UserEngine
 import de.manuelhuber.purpose.features.users.models.Username
 import javalinjwt.JWTGenerator
 import javalinjwt.JWTProvider
 import org.mindrot.jbcrypt.BCrypt
 
-class AuthService @Inject constructor(private val engine: UserEngine, @Named(
-        JWT_SECRET) secret: String) {
+class AuthService @Inject constructor(private val engine: UserEngine, @Named(JWT_SECRET) secret: String) {
 
     internal var provider: JWTProvider
         private set

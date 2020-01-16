@@ -1,5 +1,6 @@
-package de.manuelhuber.purpose.features.goals.model
+package de.manuelhuber.purpose.features.goals.engine
 
+import de.manuelhuber.purpose.features.goals.model.Goal
 import de.manuelhuber.purpose.lib.engine.Engine
 
 interface GoalsEngine : Engine<Goal> {

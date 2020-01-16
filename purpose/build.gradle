@@ -12,6 +12,7 @@ version '1.0'
 
 repositories {
     mavenCentral()
+    jcenter()
     maven { url 'https://jitpack.io' }
 }
 
@@ -28,11 +29,8 @@ task fatJar(type: Jar) {
 }
 
 sourceSets {
-    main {
-        java {
-            srcDir "${buildDir.absolutePath}/generated/source/kaptKotlin/"
-        }
-    }
+    // This might actually not be necessary
+    main.java.srcDirs += "${buildDir.absolutePath}/generated/source/kaptKotlin/"
 }
 
 jar {
@@ -62,6 +60,12 @@ dependencies {
     compile 'com.github.kmehrunes:javalin-jwt:v0.2'
     // Password hashing
     compile group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
+
+    // DB connection
+    compile("org.jetbrains.exposed:exposed-core:0.20.1")
+    compile("org.jetbrains.exposed:exposed-dao:0.20.1")
+    compile("org.jetbrains.exposed:exposed-jdbc:0.20.1")
+    implementation 'org.postgresql:postgresql:42.2.8.jre7'
 
     // GUICE
     compile 'dev.misfitlabs.kotlinguice4:kotlin-guice:1.4.1'

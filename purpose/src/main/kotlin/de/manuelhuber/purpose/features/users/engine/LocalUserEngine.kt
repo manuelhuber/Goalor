@@ -1,9 +1,8 @@
-package de.manuelhuber.purpose.features.users
+package de.manuelhuber.purpose.features.users.engine
 
 import com.google.inject.Singleton
 import de.manuelhuber.purpose.features.users.models.Email
 import de.manuelhuber.purpose.features.users.models.User
-import de.manuelhuber.purpose.features.users.models.UserEngine
 import de.manuelhuber.purpose.features.users.models.Username
 import de.manuelhuber.purpose.lib.engine.Id
 import de.manuelhuber.purpose.lib.exceptions.NotFound

@@ -2,6 +2,7 @@ package de.manuelhuber.purpose.features.users
 
 import com.google.inject.Inject
 import de.manuelhuber.purpose.features.auth.AuthService
+import de.manuelhuber.purpose.features.users.engine.UserEngine
 import de.manuelhuber.purpose.features.users.models.*
 import de.manuelhuber.purpose.lib.engine.Id
 import de.manuelhuber.purpose.lib.exceptions.NotFound

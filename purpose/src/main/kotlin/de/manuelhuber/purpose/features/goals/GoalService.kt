@@ -5,12 +5,13 @@ import de.manuelhuber.purpose.features.aspects.AspectService
 import de.manuelhuber.purpose.features.auth.models.NotAuthorized
 import de.manuelhuber.purpose.features.goals.model.Goal
 import de.manuelhuber.purpose.features.goals.model.GoalData
-import de.manuelhuber.purpose.features.goals.model.GoalsEngine
+import de.manuelhuber.purpose.features.goals.engine.GoalsEngine
 import de.manuelhuber.purpose.lib.engine.Id
 import de.manuelhuber.purpose.lib.exceptions.NotFound
 import de.manuelhuber.purpose.lib.exceptions.ValidationError
 
-class GoalService @Inject constructor(private val engine: GoalsEngine, private val aspectsService: AspectService) {
+class GoalService @Inject constructor(private val engine: GoalsEngine,
+                                      private val aspectsService: AspectService) {
 
     fun createNewGoal(create: GoalData, owner: Id): Goal {
         validateGoal(create, owner)
@@ -39,15 +40,34 @@ class GoalService @Inject constructor(private val engine: GoalsEngine, private v
         }
     }
 
+    private fun getParentDiffs(update: Goal): List<Goal> {
+        val current = engine.get(update.id)
+        val modifiedGoals = mutableListOf<Goal>()
+        if (current.parent == update.parent) {
+            return modifiedGoals
+        }
+        if (current.parent != null) {
+            val oldParent = engine.get(current.parent)
+            val updatedChildren = oldParent.children.filter { id -> id != current.id }
+            oldParent.copy(children = updatedChildren)
+        }
+        if (update.parent != null) {
+            val newParent = engine.get(update.parent)
+            val updatedChildren = newParent.children + update.parent
+            newParent.copy(children = updatedChildren)
+        }
+        return modifiedGoals
+    }
+
     private fun validateGoal(goal: GoalData, owner: Id) {
-        val goalMustExist = mutableListOf<String>()
+        val goalMustExist = mutableListOf<Id>()
         if (goal.parent != null) {
             goalMustExist.add(goal.parent)
         }
         goalMustExist.addAll(goal.children)
 
         try {
-            engine.get(goalMustExist.map(::Id)).forEach {
+            engine.get(goalMustExist).forEach {
                 if (it.owner != owner.value)
                     throw ValidationError("You're referencing a goal id=${it.id} of which you're not the owner")
             }
