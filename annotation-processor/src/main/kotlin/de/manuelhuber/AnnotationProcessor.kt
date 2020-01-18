@@ -174,7 +174,12 @@ class AnnotationProcessor : AbstractProcessor() {
             wrapper.addStatement("val input = ctx.body<%T>()", inputType)
         }
         wrapper.addStatement("val res = %M.${functionName}(${callParams})", controllerMember)
-            .addStatement("ctx.json(res)")
+
+        if (annotation.annotation is Delete) {
+            wrapper.addStatement("ctx.status(204)")
+        } else {
+            wrapper.addStatement("ctx.json(res)")
+        }
 
         val authCode = CodeBlock.of(", %M(%L)",
                 MemberName("io.javalin.core.security.SecurityUtil", "roles"),
