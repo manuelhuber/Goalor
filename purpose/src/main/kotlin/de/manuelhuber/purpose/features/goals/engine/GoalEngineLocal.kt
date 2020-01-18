@@ -8,37 +8,41 @@ class GoalsEngineLocal : GoalsEngine {
     private val goals = hashMapOf(
             Id("1") to Goal(id = Id("1"),
                     title = "Create this site",
-                    aspect = "0",
+                    aspect = Id("0"),
                     children = listOf(Id("3"), Id("4"), Id("6")),
-                    owner = "0",
+                    owner = Id("0"),
                     description = "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque doloribus eius eligendi eum illum, itaque labore laboriosam molestias, nam nihil porro quasi? Blanditiis placeat quisquam quo! Cum mollitia nobis voluptatibus."),
             Id("2") to Goal(id = Id("2"),
-                    aspect = "3",
+                    aspect = Id("3"),
                     title = "Learn Violine",
                     children = listOf(Id("5")),
-                    owner = "0"),
+                    owner = Id("0")),
             Id("3") to Goal(id = Id("3"),
                     parent = Id("1"),
                     title = "Setup React boilerplate",
-                    aspect = "0",
-                    owner = "0"),
+                    aspect = Id("0"),
+                    owner = Id("0")),
             Id("4") to Goal(id = Id("4"),
                     parent = Id("1"),
                     title = "Add redux",
-                    aspect = "0",
-                    owner = "0",
+                    aspect = Id("0"),
+                    owner = Id("0"),
                     description = "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque doloribus eius eligendi eum illum, itaque labore laboriosam molestias, nam nihil porro quasi? Blanditiis placeat quisquam quo! Cum mollitia nobis voluptatibus.\n"),
             Id("5") to Goal(id = Id("5"),
                     parent = Id("2"),
                     title = "Design a My-GoalCard page",
-                    aspect = "0",
-                    owner = "0"),
-            Id("6") to Goal(id = Id("6"), parent = Id("1"), title = "Refactoring / Cleanup", aspect = "0", owner = "0")
+                    aspect = Id("0"),
+                    owner = Id("0")),
+            Id("6") to Goal(id = Id("6"),
+                    parent = Id("1"),
+                    title = "Refactoring / Cleanup",
+                    aspect = Id("0"),
+                    owner = Id("0"))
     )
 
     var id = 10
 
-    override fun getAllForOwner(owner: String): List<Goal> {
+    override fun getAllForOwner(owner: Id): List<Goal> {
         return goals.values.filter { it.owner == owner }
     }
 

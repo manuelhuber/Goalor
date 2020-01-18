@@ -11,12 +11,13 @@ export const get = (url: string, input?: RequestInit) => {
 let configuration = new Configuration({
     accessToken: () => localStorage.getItem("GOALOR_KEY"),
     basePath: process.env.REACT_APP_BASE_URL,
+    // middleware: [{post: context => context.response.status == 404 ? }]
 });
 
 export const aspectApi = new AspectsApi(configuration);
 export const goalApi = new GoalsApi(configuration);
 export const authApi = new AuthApi(configuration);
-export const userhApi = new UserApi(configuration);
+export const userApi = new UserApi(configuration);
 
 export const myFetch = (url: string, method: "POST" | "GET" | "PUT" | "DELETE", body?: any, input?: RequestInit) => {
     const defaultConfig = {

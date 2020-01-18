@@ -3,10 +3,11 @@ package de.manuelhuber.purpose.features.goals
 import com.google.inject.Inject
 import de.manuelhuber.purpose.features.aspects.AspectService
 import de.manuelhuber.purpose.features.auth.models.NotAuthorized
+import de.manuelhuber.purpose.features.goals.engine.GoalsEngine
 import de.manuelhuber.purpose.features.goals.model.Goal
 import de.manuelhuber.purpose.features.goals.model.GoalData
-import de.manuelhuber.purpose.features.goals.engine.GoalsEngine
 import de.manuelhuber.purpose.lib.engine.Id
+import de.manuelhuber.purpose.lib.engine.toId
 import de.manuelhuber.purpose.lib.exceptions.NotFound
 import de.manuelhuber.purpose.lib.exceptions.ValidationError
 
@@ -19,7 +20,7 @@ class GoalService @Inject constructor(private val engine: GoalsEngine,
     }
 
     fun getGoalsByOwner(ownerId: Id): List<Goal> {
-        return engine.getAllForOwner(ownerId.value)
+        return engine.getAllForOwner(ownerId)
     }
 
     fun deleteGoal(id: Id, updaterId: Id): Boolean {
@@ -35,40 +36,21 @@ class GoalService @Inject constructor(private val engine: GoalsEngine,
     }
 
     private fun checkAuthorization(goal: Goal, updaterId: Id) {
-        if (goal.owner != updaterId.value) {
+        if (goal.owner != updaterId) {
             throw NotAuthorized("You're not the owner of the goal id=${goal.id}")
         }
-    }
-
-    private fun getParentDiffs(update: Goal): List<Goal> {
-        val current = engine.get(update.id)
-        val modifiedGoals = mutableListOf<Goal>()
-        if (current.parent == update.parent) {
-            return modifiedGoals
-        }
-        if (current.parent != null) {
-            val oldParent = engine.get(current.parent)
-            val updatedChildren = oldParent.children.filter { id -> id != current.id }
-            oldParent.copy(children = updatedChildren)
-        }
-        if (update.parent != null) {
-            val newParent = engine.get(update.parent)
-            val updatedChildren = newParent.children + update.parent
-            newParent.copy(children = updatedChildren)
-        }
-        return modifiedGoals
     }
 
     private fun validateGoal(goal: GoalData, owner: Id) {
         val goalMustExist = mutableListOf<Id>()
         if (goal.parent != null) {
-            goalMustExist.add(goal.parent)
+            goalMustExist.add(goal.parent.toId())
         }
-        goalMustExist.addAll(goal.children)
+        goalMustExist.addAll(goal.children.map(String::toId))
 
         try {
             engine.get(goalMustExist).forEach {
-                if (it.owner != owner.value)
+                if (it.owner != owner)
                     throw ValidationError("You're referencing a goal id=${it.id} of which you're not the owner")
             }
         } catch (e: NotFound) {
@@ -76,7 +58,7 @@ class GoalService @Inject constructor(private val engine: GoalsEngine,
         }
 
         try {
-            if (aspectsService.getAspects(Id(goal.aspect)).owner != owner.value) {
+            if (goal.aspect != null && aspectsService.getAspects(Id(goal.aspect)).owner != owner) {
                 throw ValidationError("You're referencing an aspect id=${goal.aspect} of which you're not the owner")
             }
         } catch (e: NotFound) {

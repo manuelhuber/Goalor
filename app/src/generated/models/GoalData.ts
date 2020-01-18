@@ -30,7 +30,7 @@ export interface GoalData {
      * @type {string}
      * @memberof GoalData
      */
-    aspect: string;
+    aspect?: string;
     /**
      * 
      * @type {string}
@@ -74,7 +74,7 @@ export function GoalDataFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
     return {
         
         'title': json['title'],
-        'aspect': json['aspect'],
+        'aspect': !exists(json, 'aspect') ? undefined : json['aspect'],
         'parent': !exists(json, 'parent') ? undefined : json['parent'],
         'children': json['children'],
         'done': json['done'],

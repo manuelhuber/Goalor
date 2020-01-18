@@ -1,12 +1,12 @@
-package features.auth
+package de.manuelhuber.purpose.features.auth
 
-import features.auth.models.WrongPassword
-import features.users.models.User
-import features.users.models.UserEngine
+import de.manuelhuber.purpose.features.auth.models.WrongPassword
+import de.manuelhuber.purpose.features.testUser
+import de.manuelhuber.purpose.features.users.engine.UserEngine
+import de.manuelhuber.purpose.features.users.models.Username
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.function.Executable
 import org.mockito.Mockito
 
 class AuthServiceTest {
@@ -23,14 +23,14 @@ class AuthServiceTest {
     @Test
     fun token() {
         val hash = service.hashPassword(password)
-        val user = User(email = "mail", username = "user", lastName = "", firstName = "", id = "my ID", password = hash)
-        Mockito.`when`(engineMock.getByUsername("mail")).thenReturn(user)
-        val token = service.login("mail", password)
+        val user = testUser(password = hash)
+        Mockito.`when`(engineMock.getByUsername(Username("user"))).thenReturn(user)
+        val token = service.login(Username("user"), password)
         assertTrue(token.isNotEmpty())
-        assertThrows(WrongPassword::class.java, Executable { service.login("mail", "wrong password") })
+        assertThrows(WrongPassword::class.java) { service.login(Username("user"), "wrong password") }
         val validateToken = service.provider.validateToken(token)
         assertTrue(validateToken.isPresent)
-        assertEquals(validateToken.get().claims[Claims.ID.name]?.asString(), "my ID")
+        assertEquals(validateToken.get().claims[Claims.ID.name]?.asString(), "0")
 
     }
 }

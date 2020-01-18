@@ -2,6 +2,7 @@ package de.manuelhuber.purpose.features.aspects
 
 import com.google.inject.Inject
 import de.manuelhuber.annotations.*
+import de.manuelhuber.purpose.features.aspects.model.Aspect
 import de.manuelhuber.purpose.features.aspects.model.CreateAspect
 import de.manuelhuber.purpose.features.auth.Claims
 import de.manuelhuber.purpose.features.users.models.User

@@ -3,6 +3,7 @@ import {Thunk} from "app/Store";
 import {goalApi} from "util/fetch";
 import {Goal} from "generated/models";
 import {clone} from "util/object";
+import {notify} from "app/features/notifications/duck";
 
 export type GoalState = {
     goalsById: { [key: string]: Goal };
@@ -20,9 +21,10 @@ const addGoalsAction = (goal: Goal | Goal[]): AddGoalsAction => ({
     goal: Array.isArray(goal) ? goal : [goal]
 });
 export const addGoals = (goal: Goal): Thunk => async (dispatch) => {
-    goal.id = Date.now().toString();
     goal.children = [];
-    dispatch(addGoalsAction(goal));
+    goalApi.postGoals({goalData: {...goal}})
+           .then(x => dispatch(addGoalsAction(x)))
+           .catch((e) => dispatch(notify({message: "Error creating goals"})));
 };
 
 type UpdateGoalAction = { goal: Goal } & Action<'UPDATE_GOAL'>;

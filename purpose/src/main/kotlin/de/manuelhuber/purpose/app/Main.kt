@@ -33,7 +33,7 @@ fun main() {
     hackSwaggerDoc(app)
     addErrorHandling(app, logger)
 
-    val gson = GsonBuilder().create()
+    val gson = getGson()
     fromJsonMapper = object : FromJsonMapper {
         override fun <T> map(json: String, targetClass: Class<T>): T = gson.fromJson(json, targetClass)
     }

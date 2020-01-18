@@ -21,7 +21,6 @@ const Button: React.FC<Props & React.ButtonHTMLAttributes<HTMLButtonElement>> = 
     // Override all props that cause an error, when passing it to the underlying button
     const {block, ...passOn} = props;
 
-    // @ts-ignore the type of 'type' is wrongly typed
     return <button {...passOn} className={cssString}>{props.children}</button>;
 };
 

@@ -1,5 +1,5 @@
 import {notify} from "app/features/notifications/duck";
-import {authApi, userhApi} from "util/fetch";
+import {authApi, userApi} from "util/fetch";
 import {Thunk} from "app/Store";
 import {Action, Reducer} from "redux";
 import {loadAllAspects} from "app/features/aspects/duck";
@@ -44,8 +44,8 @@ export const login = (req: LoginRequest): Thunk => async (dispatch, getState) =>
 };
 
 export const register = (req: Registration): Thunk => async (dispatch) =>
-    userhApi.postUserRegister({registration: req})
-            .then(res => {
+    userApi.postUserRegister({registration: req})
+           .then(res => {
                 dispatch(setLoading(false));
                 dispatch(setToken({token: res["token"]}));
                 dispatch(loadAllAspects());
