@@ -21,7 +21,7 @@ const addGoalsAction = (goal: Goal | Goal[]): AddGoalsAction => ({
     goal: Array.isArray(goal) ? goal : [goal]
 });
 export const addGoals = (goal: Goal): Thunk => async (dispatch) => {
-    goal.children = [];
+    goal.children = goal.children || [];
     goalApi.postGoals({goalData: {...goal}})
            .then(x => dispatch(addGoalsAction(x)))
            .catch((e) => dispatch(notify({message: "Error creating goals"})));
@@ -30,17 +30,25 @@ export const addGoals = (goal: Goal): Thunk => async (dispatch) => {
 type UpdateGoalAction = { goal: Goal } & Action<'UPDATE_GOAL'>;
 const updateGoalAction = (goal: Goal): UpdateGoalAction => ({type: 'UPDATE_GOAL', goal: clone(goal)});
 export const updateGoal = (goal: Goal): Thunk => async (dispatch) => {
-    // make call
-    dispatch(updateGoalAction(goal));
+    goalApi.putGoalsWithId({id: goal.id, goalData: {...goal}}).then((update) => {
+        dispatch(loadAllGoals())
+    });
 };
-type RemoveGoalAction = { id: string } & Action<'REMOVE_GOAL'>;
-export const removeGoal = (id: string): RemoveGoalAction => ({type: 'REMOVE_GOAL', id});
 
-export type GoalAction = AddGoalsAction | UpdateGoalAction | RemoveGoalAction;
+type DeleteGoalAction = { id: string } & Action<'REMOVE_GOAL'>;
+const deleteGoalAction = (id: string): DeleteGoalAction => ({type: 'REMOVE_GOAL', id});
+export const deleteGoal = (id: string): Thunk => async (dispatch) => {
+    goalApi.deleteGoalsWithId({id: id}).then(() => {
+        dispatch(loadAllGoals())
+    });
+};
+
+export type GoalAction = AddGoalsAction | UpdateGoalAction | DeleteGoalAction;
 
 export const loadAllGoals = (): Thunk => async (dispatch) => {
     goalApi.getGoals({}).then(goals => dispatch(addGoalsAction(goals)))
 };
+
 // Reducer
 
 export const goalReducer: Reducer<GoalState, GoalAction> = (state = initialState, action): GoalState => {

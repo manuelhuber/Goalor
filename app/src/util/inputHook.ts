@@ -6,8 +6,10 @@ import {useState} from "react";
  */
 function fixType<T>(reference: T, value: string) {
     const t = typeof reference;
-    if (t === "string") {
-        return String(value);
+    if (value === null) {
+        return null
+    } else if (t === "string") {
+        return String(value) || null;
     } else if (t === "number") {
         return Number(value);
     } else {

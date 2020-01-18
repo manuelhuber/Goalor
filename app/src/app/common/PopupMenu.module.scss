@@ -1,0 +1,36 @@
+.root {
+  display: inline-block;
+  position: relative;
+}
+
+.popup {
+  position: absolute;
+  //background: black;
+  background-color: var(--color-neutral-tint3);
+  box-shadow: 0 0 4px 1px var(--color-neutral-tint4);
+  padding: 4px;
+
+  &.bottom {
+    top: 100%;
+  }
+
+  &.top {
+    bottom: 100%;
+  }
+
+  &.left {
+    right: 100%;
+  }
+
+  &.right {
+    left: 100%;
+  }
+
+}
+
+
+.row {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}

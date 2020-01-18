@@ -1,7 +1,7 @@
 import {AppState} from "app/Store";
 import React, {useState} from "react";
 import {connect} from "react-redux"
-import {addGoals} from "./duck";
+import {addGoals, updateGoal} from "./duck";
 import styles from "./Goals.module.scss";
 import Button from "app/common/buttons/Button";
 import {css} from "util/style";
@@ -17,7 +17,7 @@ const mapStateToProps = (state: AppState, props: { rootGoals: string[] }) => ({
     allGoals: state.goals.goalsById,
     rootGoals: props.rootGoals.map(id => state.goals.goalsById[id])
 });
-const mapDispatchToProps = bindActions({addGoals});
+const mapDispatchToProps = bindActions({addGoals, updateGoal});
 type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
 
 const Goals: React.FC<Props> = props => {
@@ -25,12 +25,23 @@ const Goals: React.FC<Props> = props => {
     const [modalOpen, setModalOpen] = useState(false);
     const [modalTitle, setModalTitle] = useState('');
     const [onSave, setOnSave] = useState(() => () => null);
+    const [goalInEdit, setGoalInEdit] = useState(null);
     const toggleAddNew = () => {
         setModalTitle("Create Goal");
         setOnSave(() => (goal) => {
             props.addGoals(goal);
             setModalOpen(false);
         });
+        setGoalInEdit(null);
+        setModalOpen(true);
+    };
+    const toggleEdit = (goal) => {
+        setModalTitle("Edit Goal");
+        setOnSave(() => (goal) => {
+            props.updateGoal(goal);
+            setModalOpen(false);
+        });
+        setGoalInEdit(goal);
         setModalOpen(true);
     };
 
@@ -39,9 +50,12 @@ const Goals: React.FC<Props> = props => {
     return <div className={styles.root}>
         <Button onClick={toggleAddNew}>Add Goal</Button>
         <EditGoal title={modalTitle}
+            // Key to re-instantiate EditGoal on goalInEdit change
+                  key={goalInEdit && goalInEdit.id}
                   open={modalOpen}
+                  goal={goalInEdit}
                   aspects={props.allAspects}
-                  potentialParents={props.rootGoals}
+                  potentialParents={props.rootGoals.filter(goal => !goalInEdit || goal.id !== goalInEdit.id)}
                   onAttemptClose={() => setModalOpen(false)}
                   onSave={onSave}/>
         <div className={css(styles.headerRow, commonStyle.padding)}>
@@ -57,10 +71,11 @@ const Goals: React.FC<Props> = props => {
                     {goal.children
                          .map(id => props.allGoals[id])
                          .filter(goal => !!goal) // filter out bad references
-                         .map((x, i) => <GoalCard key={`${goal.id}-${i}`} goal={x}/>)}
+                         .map((x, i) =>
+                             <GoalCard key={`${goal.id}-${i}`} goal={x} onEdit={toggleEdit}/>)}
                 </div>
                 <div className={styles.goalColumn}>
-                    <GoalCard goal={goal}/>
+                    <GoalCard goal={goal} onEdit={toggleEdit}/>
                 </div>
             </div>)}
         </div>

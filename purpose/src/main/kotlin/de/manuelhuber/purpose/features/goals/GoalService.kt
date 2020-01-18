@@ -31,7 +31,7 @@ class GoalService @Inject constructor(private val engine: GoalsEngine,
     fun updateGoal(id: Id, update: GoalData, updaterId: Id): Goal {
         val goal = engine.get(id)
         checkAuthorization(goal, updaterId)
-        validateGoal(update, updaterId)
+        validateGoal(update, updaterId, id)
         return engine.update(id, Goal.fromData(update, updaterId.value))
     }
 
@@ -41,7 +41,10 @@ class GoalService @Inject constructor(private val engine: GoalsEngine,
         }
     }
 
-    private fun validateGoal(goal: GoalData, owner: Id) {
+    private fun validateGoal(goal: GoalData, owner: Id, goalId: Id? = null) {
+        if (goalId != null && (goal.parent == goalId.value || goal.children.contains(goalId.value))) {
+            throw ValidationError("A goal can't be it's own child/parent")
+        }
         val goalMustExist = mutableListOf<Id>()
         if (goal.parent != null) {
             goalMustExist.add(goal.parent.toId())

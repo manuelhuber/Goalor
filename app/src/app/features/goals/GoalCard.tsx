@@ -5,15 +5,17 @@ import {connect} from "react-redux"
 import {css} from "util/style";
 import styles from "./GoalCard.module.scss"
 import {Goal} from "generated/models";
-import {MdExpandLess, MdExpandMore, MdMoreVert} from "react-icons/all";
+import {MdDelete, MdEdit, MdExpandLess, MdExpandMore} from "react-icons/all";
 import Checkbox from "app/common/input/Checkbox";
-import {updateGoal} from "app/features/goals/duck";
+import {deleteGoal, updateGoal} from "app/features/goals/duck";
 import {bindActions} from "util/duckUtil";
 import {clone} from "util/object";
+import PopupMenu from "app/common/PopupMenu";
 
-const mapStateToProps = (state: AppState, ownProps: { goal: Goal }) => ownProps;
+const mapStateToProps = (state: AppState, ownProps: { goal: Goal, onEdit?: (Goal) => void }) => ownProps;
 const mapDispatchToProps = bindActions({
-    updateGoal
+    updateGoal,
+    deleteGoal
 });
 type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
 
@@ -23,7 +25,6 @@ const GoalCard: React.FC<Props> = props => {
     const hasContent = !!goal.description;
     return <div className={css(styles.card, styles.border)}>
         <div className={styles.titleRow}>
-
             <div className={styles.title}>
                 <Checkbox checked={goal.done}
                           onChange={newValue => props.updateGoal(clone(goal, {done: newValue}))}
@@ -34,7 +35,10 @@ const GoalCard: React.FC<Props> = props => {
                     {isToggled ? <MdExpandLess/> : <MdExpandMore/>}
                 </span>}
             </div>
-            <MdMoreVert/>
+            <PopupMenu entries={[
+                {icon: <MdEdit/>, text: "Edit", onClick: () => props.onEdit(props.goal)},
+                {icon: <MdDelete/>, text: "Delete", onClick: () => props.deleteGoal(props.goal.id)}
+            ]}/>
         </div>
         {isToggled && <div>
             <div className={commonStyle.divider}/>

@@ -17,7 +17,7 @@ type Props = {
 
 const EditGoal: React.FC<Props> = props => {
     const {goal, onSave, onAttemptClose, open, title: modalTitle, aspects, potentialParents} = props;
-    const {value: title, bind: bindTitle} = useInput(goal?.title);
+    const {value: title, bind: bindTitle} = useInput(goal?.title || "");
     const {value: description, bind: bindDescription} = useInput(goal?.description);
     const {value: aspect, setValue: setAspect, bind: bindAspect} = useInput(goal?.aspect);
     const {value: parent, setValue: setParent} = useInput(goal?.parent);
@@ -30,7 +30,7 @@ const EditGoal: React.FC<Props> = props => {
     };
 
     const save = () => {
-        const newGoal = {...goal, title, description, aspect, parent};
+        const newGoal = {...goal, title, description, aspect, parent: parent || null};
         onSave(newGoal);
     };
 
