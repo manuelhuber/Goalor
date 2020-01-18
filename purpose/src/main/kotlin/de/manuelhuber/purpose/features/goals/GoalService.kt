@@ -2,7 +2,7 @@ package de.manuelhuber.purpose.features.goals
 
 import com.google.inject.Inject
 import de.manuelhuber.purpose.features.aspects.AspectService
-import de.manuelhuber.purpose.features.auth.models.NotAuthorized
+import de.manuelhuber.purpose.features.auth.models.Forbidden
 import de.manuelhuber.purpose.features.goals.engine.GoalsEngine
 import de.manuelhuber.purpose.features.goals.model.Goal
 import de.manuelhuber.purpose.features.goals.model.GoalData
@@ -37,7 +37,7 @@ class GoalService @Inject constructor(private val engine: GoalsEngine,
 
     private fun checkAuthorization(goal: Goal, updaterId: Id) {
         if (goal.owner != updaterId) {
-            throw NotAuthorized("You're not the owner of the goal id=${goal.id}")
+            throw Forbidden("You're not the owner of the goal id=${goal.id}")
         }
     }
 

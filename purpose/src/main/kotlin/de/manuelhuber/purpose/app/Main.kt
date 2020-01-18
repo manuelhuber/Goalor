@@ -1,6 +1,5 @@
 package de.manuelhuber.purpose.app
 
-import com.google.gson.GsonBuilder
 import com.google.inject.Guice
 import com.google.inject.Injector
 import de.manuelhuber.purpose.features.aspects.AspectsControllerWrapper
@@ -28,7 +27,6 @@ fun main() {
         addSwagger(config)
         config.accessManager(MyAccessManager())
         config.enableCorsForAllOrigins()
-        config.enableDevLogging()
     }.start(7000)
     hackSwaggerDoc(app)
     addErrorHandling(app, logger)
@@ -46,12 +44,12 @@ fun main() {
 }
 
 fun createRoutes(app: Javalin, injector: Injector) {
-    val controllers = listOf(AuthControllerWrapper::class,
+    listOf(
+            AuthControllerWrapper::class,
             AspectsControllerWrapper::class,
             UserControllerWrapper::class,
-            GoalControllerWrapper::class);
-    controllers.forEach { kClass ->
-        val instance = injector.getInstance(kClass.java)
-        instance.addRoutes(app)
-    }
+            GoalControllerWrapper::class)
+        .forEach {
+            injector.getInstance(it.java).addRoutes(app)
+        }
 }
