@@ -8,16 +8,11 @@
 
 .goals {
   width: 200%;
-  transform: translateX(-50%);
   transition: transform 200ms;
 
-  &.showActions {
-    transform: none;
-  }
-
   @include lg {
-    width: 100%;
-    transform: none;
+    width: 100% !important;
+    transform: none !important;
   }
 }
 

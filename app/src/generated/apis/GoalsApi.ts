@@ -28,21 +28,14 @@ import {
 
 export interface DeleteGoalsWithIdRequest {
     id: string;
-    authorization?: string;
-}
-
-export interface GetGoalsRequest {
-    authorization?: string;
 }
 
 export interface PostGoalsRequest {
-    authorization?: string;
     goalData?: GoalData;
 }
 
 export interface PutGoalsWithIdRequest {
     id: string;
-    authorization?: string;
     goalData?: GoalData;
 }
 
@@ -62,10 +55,6 @@ export class GoalsApi extends runtime.BaseAPI {
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
-
-        if (requestParameters.authorization !== undefined && requestParameters.authorization !== null) {
-            headerParameters['Authorization'] = String(requestParameters.authorization);
-        }
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -95,14 +84,10 @@ export class GoalsApi extends runtime.BaseAPI {
     /**
      * Get goals
      */
-    async getGoalsRaw(requestParameters: GetGoalsRequest): Promise<runtime.ApiResponse<Array<Goal>>> {
+    async getGoalsRaw(): Promise<runtime.ApiResponse<Array<Goal>>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
-
-        if (requestParameters.authorization !== undefined && requestParameters.authorization !== null) {
-            headerParameters['Authorization'] = String(requestParameters.authorization);
-        }
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -125,8 +110,8 @@ export class GoalsApi extends runtime.BaseAPI {
     /**
      * Get goals
      */
-    async getGoals(requestParameters: GetGoalsRequest): Promise<Array<Goal>> {
-        const response = await this.getGoalsRaw(requestParameters);
+    async getGoals(): Promise<Array<Goal>> {
+        const response = await this.getGoalsRaw();
         return await response.value();
     }
 
@@ -139,10 +124,6 @@ export class GoalsApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
-
-        if (requestParameters.authorization !== undefined && requestParameters.authorization !== null) {
-            headerParameters['Authorization'] = String(requestParameters.authorization);
-        }
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -184,10 +165,6 @@ export class GoalsApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
-
-        if (requestParameters.authorization !== undefined && requestParameters.authorization !== null) {
-            headerParameters['Authorization'] = String(requestParameters.authorization);
-        }
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;

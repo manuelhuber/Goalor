@@ -61,7 +61,7 @@ fun addSwagger(conf: JavalinConfig) {
 
 // Add support for JWT
 fun hackSwaggerDoc(app: Javalin) {
-    app.after("/swagger-docs") { ctx ->
+    app.after("/api/swagger-docs") { ctx ->
 
         val resultString = ctx.resultString()!!.toString()
         val additionalComponent = """

@@ -31,7 +31,7 @@ const updateAspectAction = (aspect: Aspect): UpdateAspectAction => ({type: "UPDA
 export type AspectsAction = AddAspectAction | RemoveAspectAction | UpdateAspectAction;
 
 export const loadAllAspects = (): Thunk => async (dispatch) =>
-    aspectApi.getAspects({})
+    aspectApi.getAspects()
              .then((aspects: Aspect[]) => {
                  dispatch(addAspectAction(aspects));
              })

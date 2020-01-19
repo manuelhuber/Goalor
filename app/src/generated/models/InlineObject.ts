@@ -16,32 +16,32 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface Id
+ * @interface InlineObject
  */
-export interface Id {
+export interface InlineObject {
     /**
      * 
-     * @type {string}
-     * @memberof Id
+     * @type {Blob}
+     * @memberof InlineObject
      */
-    value: string;
+    file?: Blob;
 }
 
-export function IdFromJSON(json: any): Id {
-    return IdFromJSONTyped(json, false);
+export function InlineObjectFromJSON(json: any): InlineObject {
+    return InlineObjectFromJSONTyped(json, false);
 }
 
-export function IdFromJSONTyped(json: any, ignoreDiscriminator: boolean): Id {
+export function InlineObjectFromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineObject {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'value': json['value'],
+        'file': !exists(json, 'file') ? undefined : json['file'],
     };
 }
 
-export function IdToJSON(value?: Id | null): any {
+export function InlineObjectToJSON(value?: InlineObject | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -50,7 +50,7 @@ export function IdToJSON(value?: Id | null): any {
     }
     return {
         
-        'value': value.value,
+        'file': value.file,
     };
 }
 

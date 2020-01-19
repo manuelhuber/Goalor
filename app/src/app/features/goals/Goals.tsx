@@ -10,6 +10,8 @@ import GoalCard from "app/features/goals/GoalCard";
 import {Goal} from "generated/models";
 import {bindActions} from "util/duckUtil";
 import EditGoal from "app/features/goals/EditGoal";
+import IconButton from "app/common/buttons/IconButton";
+import {MdKeyboardArrowLeft, MdKeyboardArrowRight} from "react-icons/all";
 
 const mapStateToProps = (state: AppState, props: { rootGoals: string[] }) => ({
     aspects: state.aspects.aspectsById,
@@ -21,11 +23,12 @@ const mapDispatchToProps = bindActions({addGoals, updateGoal});
 type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
 
 const Goals: React.FC<Props> = props => {
-    const [index, setIndex] = useState(1);
+    const numOfCols = 2;
     const [modalOpen, setModalOpen] = useState(false);
     const [modalTitle, setModalTitle] = useState('');
     const [onSave, setOnSave] = useState(() => () => null);
     const [goalInEdit, setGoalInEdit] = useState(null);
+    const [selectedCol, setSelectedCol] = useState(numOfCols - 1);
     const toggleAddNew = () => {
         setModalTitle("Create Goal");
         setOnSave(() => (goal) => {
@@ -59,11 +62,16 @@ const Goals: React.FC<Props> = props => {
                   onAttemptClose={() => setModalOpen(false)}
                   onSave={onSave}/>
         <div className={css(styles.headerRow, commonStyle.padding)}>
-            <Button onClick={() => setIndex(0)}>Actions</Button>
-            <Button onClick={() => setIndex(1)}>Goals</Button>
+            <IconButton onClick={() => setSelectedCol(selectedCol - 1)} disabled={selectedCol <= 0}>
+                <MdKeyboardArrowLeft/>
+            </IconButton>
+            <IconButton onClick={() => setSelectedCol(selectedCol + 1)} disabled={selectedCol >= numOfCols - 1}>
+                <MdKeyboardArrowRight/>
+            </IconButton>
         </div>
 
-        <div className={css(styles.goals, [styles.showActions, index === 0])}>
+        <div className={css(styles.goals)}
+             style={{width: `${numOfCols * 100}%`, transform: `translateX(-${(selectedCol / numOfCols) * 100}%)`}}>
             {props.rootGoals.map(goal => <div className={styles.goalRow}
                                               style={{borderColor: color(goal)}}
                                               key={goal.id}>

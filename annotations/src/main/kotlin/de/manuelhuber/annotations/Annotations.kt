@@ -27,3 +27,8 @@ annotation class Authorized
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.FUNCTION)
 annotation class APIConfig(val errorClass: String)
+
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.FUNCTION)
+annotation class FileUpload()
+
