@@ -14,10 +14,13 @@ import Personal from "./page/Personal";
 import {loadAllGoals} from "app/features/goals/duck";
 import {loadAllAspects} from "app/features/aspects/duck";
 import {APP_TITLE} from "app/constants";
+import Journal from "app/page/Journal";
+import {loadAllGratitudes} from "app/features/gratitude/duck";
 
 if (store.getState().auth.authenticated) {
     loadAllAspects()(store.dispatch, null, null);
     loadAllGoals()(store.dispatch, null, null);
+    loadAllGratitudes()(store.dispatch, null, null);
 }
 
 const App: React.FC = () =>
@@ -31,6 +34,7 @@ const App: React.FC = () =>
                     </Header>
                     <Switch>
                         <RestrictedRoute path='/me' component={Personal}/>
+                        <RestrictedRoute path='/journal' component={Journal}/>
                         <Route path='/login' component={Authenticate}/>
                         <Route path='/' exact component={Landing}/>
                         <Route component={NotFound}/>

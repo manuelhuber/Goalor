@@ -4,12 +4,14 @@ import thunkMiddleware, {ThunkAction} from "redux-thunk"
 import {aspectsReducer} from "./features/aspects/duck";
 import {authReducer} from "./features/auth/duck";
 import {goalReducer} from "./features/goals/duck";
+import {gratitudeReducer} from "app/features/gratitude/duck";
 
 const rootReducer = combineReducers({
     goals: goalReducer,
     auth: authReducer,
     aspects: aspectsReducer,
-    notifications: notificationReducer
+    notifications: notificationReducer,
+    gratitude: gratitudeReducer
 });
 
 export type AppState = ReturnType<typeof rootReducer>

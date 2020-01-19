@@ -5,6 +5,7 @@ import com.google.inject.name.Named
 import de.manuelhuber.purpose.features.aspects.engine.Aspects
 import de.manuelhuber.purpose.features.goals.engine.GoalRelations
 import de.manuelhuber.purpose.features.goals.engine.Goals
+import de.manuelhuber.purpose.features.gratitude.engine.Gratitudes
 import de.manuelhuber.purpose.features.users.engine.Users
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -27,7 +28,7 @@ class DatabaseInitiator @Inject constructor(@Named(DB_URL) val url: String,
 //        File(path).listFiles().forEach {
 //            print(BufferedReader(FileReader(it.canonicalFile)).readText())
 //        }
-        listOf(Users, Aspects, Goals, GoalRelations).forEach {
+        listOf(Users, Aspects, Goals, GoalRelations, Gratitudes).forEach {
             transaction { SchemaUtils.createMissingTablesAndColumns(it) }
         }
     }

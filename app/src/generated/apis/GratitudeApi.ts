@@ -18,10 +18,12 @@ import {
     ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+    Gratitude,
+    GratitudeFromJSON,
+    GratitudeToJSON,
 } from '../models';
 
-export interface PostGratitudeWithIdRequest {
-    id: string;
+export interface PostGratitudeRequest {
     file?: Blob;
 }
 
@@ -31,13 +33,43 @@ export interface PostGratitudeWithIdRequest {
 export class GratitudeApi extends runtime.BaseAPI {
 
     /**
-     * Post gratitude with id
+     * Get gratitude
      */
-    async postGratitudeWithIdRaw(requestParameters: PostGratitudeWithIdRequest): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters.id === null || requestParameters.id === undefined) {
-            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling postGratitudeWithId.');
-        }
+    async getGratitudeRaw(): Promise<runtime.ApiResponse<Array<Gratitude>>> {
+        const queryParameters: runtime.HTTPQuery = {};
 
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = typeof token === 'function' ? token("bearerAuth", []) : token;
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/gratitude`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(GratitudeFromJSON));
+    }
+
+    /**
+     * Get gratitude
+     */
+    async getGratitude(): Promise<Array<Gratitude>> {
+        const response = await this.getGratitudeRaw();
+        return await response.value();
+    }
+
+    /**
+     * Post gratitude
+     */
+    async postGratitudeRaw(requestParameters: PostGratitudeRequest): Promise<runtime.ApiResponse<object>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -71,7 +103,7 @@ export class GratitudeApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/gratitude/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
+            path: `/gratitude`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -82,10 +114,10 @@ export class GratitudeApi extends runtime.BaseAPI {
     }
 
     /**
-     * Post gratitude with id
+     * Post gratitude
      */
-    async postGratitudeWithId(requestParameters: PostGratitudeWithIdRequest): Promise<object> {
-        const response = await this.postGratitudeWithIdRaw(requestParameters);
+    async postGratitude(requestParameters: PostGratitudeRequest): Promise<object> {
+        const response = await this.postGratitudeRaw(requestParameters);
         return await response.value();
     }
 

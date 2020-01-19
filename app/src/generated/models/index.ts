@@ -3,6 +3,7 @@ export * from './CreateAspect';
 export * from './ErrorResponse';
 export * from './Goal';
 export * from './GoalData';
+export * from './Gratitude';
 export * from './InlineObject';
 export * from './JWTResponse';
 export * from './Login';

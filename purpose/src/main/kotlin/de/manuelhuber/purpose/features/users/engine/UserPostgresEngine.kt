@@ -5,7 +5,7 @@ import de.manuelhuber.purpose.features.users.models.Email
 import de.manuelhuber.purpose.features.users.models.User
 import de.manuelhuber.purpose.features.users.models.Username
 import de.manuelhuber.purpose.lib.engine.Id
-import de.manuelhuber.purpose.lib.engine.toInt
+import de.manuelhuber.purpose.lib.engine.toUUID
 import de.manuelhuber.purpose.lib.exceptions.NotFound
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
@@ -24,14 +24,14 @@ class UserPostgresEngine @Inject constructor(private val db: DatabaseInitiator) 
 
     override fun get(id: Id): User {
         return transaction(db.db) {
-            Users.select { Users.id eq id.toInt() }
+            Users.select { Users.id eq id.toUUID() }
                 .map(rowToUser).firstOrNull()
                     ?: throw NotFound(id.value, User::class)
         }
     }
 
     override fun get(ids: List<Id>): List<User> {
-        val intIds = ids.map { it.toInt() }
+        val intIds = ids.map { it.toUUID() }
         return transaction(db.db) { Users.select { Users.id inList intIds }.map(rowToUser) }
     }
 
@@ -41,12 +41,12 @@ class UserPostgresEngine @Inject constructor(private val db: DatabaseInitiator) 
     }
 
     override fun update(id: Id, model: User): User {
-        transaction(db.db) { Users.update({ Users.id eq id.toInt() }, body = fillRows(model)) }
+        transaction(db.db) { Users.update({ Users.id eq id.toUUID() }, body = fillRows(model)) }
         return model.copy()
     }
 
     override fun delete(id: Id): Boolean {
-        return transaction(db.db) { Users.deleteWhere { Users.id eq id.toInt() } == 1 }
+        return transaction(db.db) { Users.deleteWhere { Users.id eq id.toUUID() } == 1 }
     }
 }
 

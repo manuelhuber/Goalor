@@ -18,6 +18,7 @@ class GuiceModule : KotlinModule() {
         bindConstant().annotatedWith(Names.named(DB_URL)).to(System.getenv(DB_URL))
         bindConstant().annotatedWith(Names.named(DB_PASSWORD)).to(System.getenv(DB_PASSWORD))
         bindConstant().annotatedWith(Names.named(DB_USER)).to(System.getenv(DB_USER))
+        bindConstant().annotatedWith(Names.named(STATIC_FILE_FOLDER)).to(System.getenv(STATIC_FILE_FOLDER))
         bind<UserEngine>().to<UserPostgresEngine>()
         bind<AspectsEngine>().to<AspectsPostgresEngine>()
         bind<GoalsEngine>().to<GoalPostgresEngine>()

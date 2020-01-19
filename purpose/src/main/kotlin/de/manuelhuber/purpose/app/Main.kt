@@ -32,6 +32,7 @@ fun main() {
         config.accessManager(MyAccessManager())
         config.enableCorsForAllOrigins()
         config.addStaticFiles(System.getenv(STATIC_FILE_FOLDER), Location.EXTERNAL)
+        config.enableDevLogging()
     }.start(7000)
     hackSwaggerDoc(app)
     addErrorHandling(app, logger)
