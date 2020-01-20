@@ -16,7 +16,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import org.jetbrains.exposed.sql.transactions.transaction
 
-class GoalPostgresEngine() : GoalsEngine {
+class GoalPostgresEngine : GoalsEngine {
 
     override fun getAllForOwner(owner: Id): List<Goal> {
         return transaction { queryGoals { ownerId eq owner.toUUID() } }

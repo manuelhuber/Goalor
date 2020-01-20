@@ -2,7 +2,6 @@ package de.manuelhuber
 
 import com.google.auto.service.AutoService
 import com.squareup.kotlinpoet.MemberName
-import de.manuelhuber.annotations.APIConfig
 import de.manuelhuber.annotations.APIController
 import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
@@ -24,8 +23,7 @@ class AnnotationProcessor : AbstractProcessor() {
     }
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> = mutableSetOf(
-            APIController::class.java.name,
-            APIConfig::class.java.name)
+            APIController::class.java.name)
 
     override fun getSupportedSourceVersion(): SourceVersion = SourceVersion.latest()
 

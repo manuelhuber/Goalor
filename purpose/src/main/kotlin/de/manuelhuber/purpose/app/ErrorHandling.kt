@@ -26,7 +26,7 @@ fun addErrorHandling(app: Javalin, logger: Logger) {
         .exception(Forbidden::class.java) { exception, ctx ->
             logger.info(exception.message)
             ctx.status(403)
-                .json(ErrorResponse(exception.message.orEmpty()))
+                .json(ErrorResponse(exception.message))
         }
         .exception(NotFound::class.java) { exception, ctx ->
             logger.info(exception.message)

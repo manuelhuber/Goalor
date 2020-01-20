@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 
 class AuthServiceTest {
-    lateinit var service: AuthService
-    lateinit var engineMock: UserEngine
+    private lateinit var service: AuthService
+    private lateinit var engineMock: UserEngine
     private val password = "foobar"
 
     @BeforeEach

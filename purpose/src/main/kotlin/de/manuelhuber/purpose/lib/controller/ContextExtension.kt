@@ -8,7 +8,3 @@ import io.javalin.http.Context
 fun Context.getId(): Id {
     return Id(attribute<String>(Claims.ID.name) ?: throw InvalidToken())
 }
-
-fun Context.getIdNoThrow(): String? {
-    return this.attribute<String>(Claims.ID.name)!!
-}
