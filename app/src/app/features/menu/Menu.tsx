@@ -1,17 +1,18 @@
+import {APP_TITLE} from "app/constants";
 import {logout} from "app/features/auth/duck";
+import Header from "app/features/header/Header";
 import {notify} from "app/features/notifications/duck";
+import {AppState} from "app/Store";
 import React, {useState} from "react";
+import {IoMdJournal} from "react-icons/all";
 import {MdChat, MdClose, MdMenu, MdPerson, MdPowerSettingsNew} from "react-icons/md";
 import {connect} from "react-redux"
+import {useHistory} from "react-router";
 import {Link} from "react-router-dom";
 import {bindActionCreators} from "redux";
 import commonStyle from "style/Common.module.scss";
 import {css} from "util/style";
 import style from "./Menu.module.scss";
-import Header from "app/features/header/Header";
-import {useHistory} from "react-router";
-import {AppState} from "app/Store";
-import {APP_TITLE} from "app/constants";
 
 const mapStateToProps = (state: AppState) => ({isLoggedIn: state.auth.authenticated});
 const mapDispatchToProps = (dispatch) => bindActionCreators({
@@ -21,9 +22,9 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
 type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
 
 const Menu: React.FC<Props> = props => {
-
     const [show, setShow] = useState(false);
     const history = useHistory();
+    history.listen(_ => setShow(false));
     const linkTo = (url: string) => ({onClick: () => history.push(url)});
 
     return <div className={style.root}>
@@ -35,8 +36,8 @@ const Menu: React.FC<Props> = props => {
                 <li className={css(style.item, style.largeOnly)} {...linkTo("/me")}>
                     <MdPerson/>Home
                 </li>
-                <li className={style.item}>
-                    <MdPerson/>Most Important
+                <li className={style.item} {...linkTo("/journal")}>
+                    <IoMdJournal/>Journal
                 </li>
                 <li className={style.item}>
                     <MdPerson/>Second important

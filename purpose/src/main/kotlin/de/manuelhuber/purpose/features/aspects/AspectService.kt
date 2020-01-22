@@ -4,7 +4,7 @@ import com.google.inject.Inject
 import de.manuelhuber.purpose.features.aspects.engine.AspectsEngine
 import de.manuelhuber.purpose.features.aspects.model.Aspect
 import de.manuelhuber.purpose.features.aspects.model.CreateAspect
-import de.manuelhuber.purpose.features.auth.models.Forbidden
+import de.manuelhuber.purpose.features.auth.checkOwnership
 import de.manuelhuber.purpose.lib.engine.Id
 import de.manuelhuber.purpose.lib.exceptions.NotFound
 
@@ -28,19 +28,14 @@ class AspectService @Inject constructor(val engine: AspectsEngine) {
     }
 
     fun deleteAspect(id: Id, updaterId: Id) {
-        checkAuthorization(engine.get(id), updaterId)
+        checkOwnership(engine.get(id), updaterId)
         if (!engine.delete(id)) throw NotFound(id.value, Aspect::class)
     }
 
     fun updateAspect(id: Id, update: CreateAspect, updaterId: Id): Aspect {
         val aspect = engine.get(id)
-        checkAuthorization(engine.get(id), updaterId)
+        checkOwnership(engine.get(id), updaterId)
         return engine.update(id, aspect.update(update))
     }
 
-    private fun checkAuthorization(aspect: Aspect, updaterId: Id) {
-        if (aspect.owner != updaterId) {
-            throw Forbidden("You're not the owner of the Aspect id=${aspect.id}")
-        }
-    }
 }

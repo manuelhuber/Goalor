@@ -21,16 +21,65 @@ import {
     Gratitude,
     GratitudeFromJSON,
     GratitudeToJSON,
+    GratitudeData,
+    GratitudeDataFromJSON,
+    GratitudeDataToJSON,
 } from '../models';
+
+export interface DeleteGratitudeWithIdRequest {
+    id: string;
+}
 
 export interface PostGratitudeRequest {
     file?: Blob;
+}
+
+export interface PutGratitudeWithIdRequest {
+    id: string;
+    gratitudeData?: GratitudeData;
 }
 
 /**
  * no description
  */
 export class GratitudeApi extends runtime.BaseAPI {
+
+    /**
+     * Delete gratitude with id
+     */
+    async deleteGratitudeWithIdRaw(requestParameters: DeleteGratitudeWithIdRequest): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters.id === null || requestParameters.id === undefined) {
+            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling deleteGratitudeWithId.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = typeof token === 'function' ? token("bearerAuth", []) : token;
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/gratitude/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Delete gratitude with id
+     */
+    async deleteGratitudeWithId(requestParameters: DeleteGratitudeWithIdRequest): Promise<void> {
+        await this.deleteGratitudeWithIdRaw(requestParameters);
+    }
 
     /**
      * Get gratitude
@@ -69,7 +118,7 @@ export class GratitudeApi extends runtime.BaseAPI {
     /**
      * Post gratitude
      */
-    async postGratitudeRaw(requestParameters: PostGratitudeRequest): Promise<runtime.ApiResponse<object>> {
+    async postGratitudeRaw(requestParameters: PostGratitudeRequest): Promise<runtime.ApiResponse<Gratitude>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -110,14 +159,55 @@ export class GratitudeApi extends runtime.BaseAPI {
             body: formParams,
         });
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => GratitudeFromJSON(jsonValue));
     }
 
     /**
      * Post gratitude
      */
-    async postGratitude(requestParameters: PostGratitudeRequest): Promise<object> {
+    async postGratitude(requestParameters: PostGratitudeRequest): Promise<Gratitude> {
         const response = await this.postGratitudeRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * Put gratitude with id
+     */
+    async putGratitudeWithIdRaw(requestParameters: PutGratitudeWithIdRequest): Promise<runtime.ApiResponse<Gratitude>> {
+        if (requestParameters.id === null || requestParameters.id === undefined) {
+            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling putGratitudeWithId.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = typeof token === 'function' ? token("bearerAuth", []) : token;
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/gratitude/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: GratitudeDataToJSON(requestParameters.gratitudeData),
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => GratitudeFromJSON(jsonValue));
+    }
+
+    /**
+     * Put gratitude with id
+     */
+    async putGratitudeWithId(requestParameters: PutGratitudeWithIdRequest): Promise<Gratitude> {
+        const response = await this.putGratitudeWithIdRaw(requestParameters);
         return await response.value();
     }
 

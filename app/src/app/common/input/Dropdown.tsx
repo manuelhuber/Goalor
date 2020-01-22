@@ -7,7 +7,7 @@ const Dropdown: React.FC<Props & React.SelectHTMLAttributes<HTMLSelectElement>> 
     return <label className="field">
         <select {...passOn}>
             {props.nullOption &&
-            <option value={null}/>}
+            <option value={undefined}/>}
             {props.children}
         </select>
         <span className="label">{props.label}</span>

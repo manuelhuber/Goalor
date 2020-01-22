@@ -4,6 +4,7 @@ export * from './ErrorResponse';
 export * from './Goal';
 export * from './GoalData';
 export * from './Gratitude';
+export * from './GratitudeData';
 export * from './InlineObject';
 export * from './JWTResponse';
 export * from './Login';

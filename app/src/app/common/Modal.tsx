@@ -1,9 +1,11 @@
-import React, {ReactNode} from "react";
-import style from "./Modal.module.scss";
-import {MdClose} from "react-icons/all";
-import Header from "app/features/header/Header";
 import Button from "app/common/buttons/Button";
 import ButtonGroup from "app/common/buttons/ButtonGroup";
+import Header from "app/features/header/Header";
+import React, {ReactNode} from "react";
+import {MdClose} from "react-icons/all";
+import commonStyle from "style/Common.module.scss";
+import {css} from "util/style";
+import style from "./Modal.module.scss";
 
 type Props = {
     open: boolean,
@@ -22,7 +24,7 @@ const Modal: React.FC<Props> = props => {
         }
     };
     const twoButtons = !!confirmLabel && !!onConfirm;
-    return open && <div className={style.overlay} onClick={onOverlayClick}>
+    return <div className={css(style.overlay, [commonStyle.hidden, !open])} onClick={onOverlayClick}>
         <div className={style.modal}>
             <Header>
                 <div className={style.header}>

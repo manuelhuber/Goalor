@@ -1,4 +1,5 @@
 import React from "react";
+import commonStyle from "style/Common.module.scss";
 
 type Props = { onSubmit, children }
 const Form: React.FC<Props> = props => <form onSubmit={(e) => {
@@ -6,7 +7,7 @@ const Form: React.FC<Props> = props => <form onSubmit={(e) => {
     props.onSubmit()
 }} className="wrapper -thin">
     {/* Hidden button so that pressing enter actually does the onSubmit action instead of the first button */}
-    <button style={{visibility: "hidden"}}/>
+    <button className={commonStyle.hidden}/>
     {props.children}
 </form>;
 

@@ -2,7 +2,7 @@ package de.manuelhuber.purpose.features.goals
 
 import com.google.inject.Inject
 import de.manuelhuber.purpose.features.aspects.AspectService
-import de.manuelhuber.purpose.features.auth.models.Forbidden
+import de.manuelhuber.purpose.features.auth.checkOwnership
 import de.manuelhuber.purpose.features.goals.engine.GoalsEngine
 import de.manuelhuber.purpose.features.goals.model.Goal
 import de.manuelhuber.purpose.features.goals.model.GoalData
@@ -24,21 +24,15 @@ class GoalService @Inject constructor(private val engine: GoalsEngine,
     }
 
     fun deleteGoal(id: Id, updaterId: Id): Boolean {
-        checkAuthorization(engine.get(id), updaterId)
+        checkOwnership(engine.get(id), updaterId)
         return engine.delete(id)
     }
 
     fun updateGoal(id: Id, update: GoalData, updaterId: Id): Goal {
         val goal = engine.get(id)
-        checkAuthorization(goal, updaterId)
+        checkOwnership(goal, updaterId)
         validateGoal(update, updaterId, id)
         return engine.update(id, Goal.fromData(update, updaterId.value))
-    }
-
-    private fun checkAuthorization(goal: Goal, updaterId: Id) {
-        if (goal.owner != updaterId) {
-            throw Forbidden("You're not the owner of the goal id=${goal.id}")
-        }
     }
 
     private fun validateGoal(goal: GoalData, owner: Id, goalId: Id? = null) {

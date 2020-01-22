@@ -1,7 +1,7 @@
 import style from "app/common/PieChart.module.scss";
 import React, {useEffect, useState} from "react";
-import {css} from "util/style";
 import {backgroundColor} from "style/styleConstants";
+import {css} from "util/style";
 
 export interface PieChartEntry {
     percentage: number; // percentage number between 0 and 1
@@ -15,7 +15,7 @@ const PieChart: React.FC<Props> = props => {
     const {entries, size, animationOnDataChange = false} = props;
     const [hideChart, setHideChart] = useState(true);
     const [hover, setHover] = useState(-1);
-    const canvasRef = React.useRef<HTMLCanvasElement>();
+    const canvasRef = React.useRef<HTMLCanvasElement>(null);
     const entryPaths = addPaths(entries, size / 2);
 
     const appear = () => {
@@ -32,6 +32,7 @@ const PieChart: React.FC<Props> = props => {
         let canvas = canvasRef.current;
         if (!canvas) return;
         const ctx = canvas.getContext("2d");
+        if (!ctx) return;
 
         // double the stroke width you actually want since half of it will be outside & half inside the shape
         // but the outside part won't be drawn because of clipping
@@ -59,7 +60,9 @@ const PieChart: React.FC<Props> = props => {
 
         canvas.onmousemove = ev => {
             const hit = entryPaths.find(path => ctx.isPointInPath(path[1], ev.offsetX, ev.offsetY));
-            setHover(entryPaths.indexOf(hit));
+            if (hit) {
+                setHover(entryPaths.indexOf(hit));
+            }
         };
 
         canvas.onclick = ev => {

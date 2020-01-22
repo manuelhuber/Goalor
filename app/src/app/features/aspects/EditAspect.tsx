@@ -30,8 +30,10 @@ const EditAspect: React.FC<Props> = props => {
     };
     return <Form onSubmit={save}>
         <Input label="Aspect" type="text" {...bindName}/>
-        <Input label="Importance (1-10)" type="number" min={1} max={10} {...bindWeight}/>
-        <Input label="Current fulfillness (1-10)" type="number" min={1} max={10} {...bindCompleted}/>
+        <div className="grid">
+            <Input label="Importance (1-10)" type="number" min={1} max={10} {...bindWeight}/>
+            <Input label="Current satisfaction (1-10)" type="number" min={1} max={10} {...bindCompleted}/>
+        </div>
         <div className={style.colorPicker}>
             {colors.map(color =>
                 <div style={{color: color}}

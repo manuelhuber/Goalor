@@ -1,10 +1,11 @@
-import {notify} from "app/features/notifications/duck";
-import {authApi, userApi} from "util/fetch";
-import {Thunk} from "app/Store";
-import {Action, Reducer} from "redux";
 import {loadAllAspects} from "app/features/aspects/duck";
 import {loadAllGoals} from "app/features/goals/duck";
+import {loadAllGratitudes} from "app/features/gratitude/duck";
+import {notify} from "app/features/notifications/duck";
+import {Thunk} from "app/Store";
 import {Registration} from "generated/models";
+import {Action, Reducer} from "redux";
+import {authApi, userApi} from "util/fetch";
 
 // State
 
@@ -18,7 +19,7 @@ const LOCAL_STORAGE_TOKEN = "GOALOR_KEY";
 const initialToken = localStorage.getItem(LOCAL_STORAGE_TOKEN);
 const initialState: AuthState = {
     authenticated: !!initialToken,
-    token: initialToken,
+    token: initialToken || undefined,
     isLoading: false
 };
 
@@ -33,9 +34,11 @@ export const login = (req: LoginRequest): Thunk => async (dispatch, getState) =>
         let password = req.password;
         let username = req.username;
         authApi.postAuthLogin({login: {username, password}}).then(res => {
-            dispatch(setToken({token: res["jwt"]}));
+            if (!res.jwt) return;
+            dispatch(setToken({token: res.jwt}));
             dispatch(loadAllAspects());
             dispatch(loadAllGoals());
+            dispatch(loadAllGratitudes());
             dispatch(notify({message: "Successfully logged in"}, 1500))
         }).catch(async (reason: Response) =>
             dispatch(notify({message: `Error when logging in: ${(await reason.json()).message}`}))
@@ -46,11 +49,11 @@ export const login = (req: LoginRequest): Thunk => async (dispatch, getState) =>
 export const register = (req: Registration): Thunk => async (dispatch) =>
     userApi.postUserRegister({registration: req})
            .then(res => {
-                dispatch(setLoading(false));
-                dispatch(setToken({token: res["token"]}));
-                dispatch(loadAllAspects());
-                dispatch(loadAllGoals());
-            });
+               dispatch(setLoading(false));
+               dispatch(setToken({token: res["token"]}));
+               dispatch(loadAllAspects());
+               dispatch(loadAllGoals());
+           });
 
 type SetToken = { token: string };
 type SetTokenAction = SetToken & Action<"SET_TOKEN">;
@@ -76,7 +79,7 @@ export const authReducer: Reducer<AuthState, AuthAction> = (state = initialState
             return {...state, token: action.token, authenticated: !!action.token};
         case "LOGOUT":
             localStorage.removeItem(LOCAL_STORAGE_TOKEN);
-            return {...state, token: null, authenticated: false};
+            return {...state, token: undefined, authenticated: false};
         default:
             return state;
     }

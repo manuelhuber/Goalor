@@ -22,7 +22,11 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 8px 24px;
+
+  --line-height-ratio: 1;
+  font-size: var(--font-size);
+
+  padding: 4px 24px;
   background: var(--color-neutral-shade2);
   color: var(--color-neutral-tint4);
   @include largeMenu {
@@ -38,6 +42,7 @@
   left: 0;
   right: 0;
   overflow: hidden;
+  z-index: 99;
 
   display: flex;
   flex-direction: column-reverse;

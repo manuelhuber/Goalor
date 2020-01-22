@@ -7,13 +7,17 @@ interface Model {
     val id: Id
 }
 
+interface OwnedModel : Model {
+    val owner: Id
+}
+
 inline class Id(val value: String)
 
 fun String.toId(): Id = Id(this)
 
 fun Id.toUUID(): UUID = try {
     UUID.fromString(this.value)
-} catch (e: NumberFormatException) {
+} catch (e: IllegalArgumentException) {
     throw ValidationError("Invalid ID=${this.value} given")
 }
 

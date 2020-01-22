@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory
 private val logger: org.slf4j.Logger = LoggerFactory.getLogger(Javalin::class.java)
 
 const val STATIC_FILE_FOLDER = "static_folder"
-
+const val DEV_MODE = "dev"
 fun main() {
     val injector = Guice.createInjector(GuiceModule())
     injector.getInstance<DatabaseInitiator>().init()
@@ -32,7 +32,9 @@ fun main() {
         config.accessManager(MyAccessManager())
         config.enableCorsForAllOrigins()
         config.addStaticFiles(System.getenv(STATIC_FILE_FOLDER), Location.EXTERNAL)
-        config.enableDevLogging()
+        if (System.getenv(DEV_MODE) != null) {
+            config.enableDevLogging()
+        }
     }.start(7000)
     hackSwaggerDoc(app)
     addErrorHandling(app, logger)

@@ -13,7 +13,6 @@ let configuration = new Configuration({
     basePath: process.env.REACT_APP_BASE_URL,
     middleware: [{
         post: context => {
-            console.log("foo");
             if (context.response.status < 200 || context.response.status >= 300) {
                 console.error(context);
             }

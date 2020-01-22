@@ -1,18 +1,18 @@
 package de.manuelhuber.purpose.features.goals.model
 
 import de.manuelhuber.purpose.lib.engine.Id
-import de.manuelhuber.purpose.lib.engine.Model
+import de.manuelhuber.purpose.lib.engine.OwnedModel
 import de.manuelhuber.purpose.lib.engine.toId
 
 data class Goal(override val id: Id,
-                val owner: Id,
+                override val owner: Id,
                 val title: String,
                 val aspect: Id? = null,
                 val parent: Id? = null,
                 val children: List<Id> = listOf(),
                 val done: Boolean = false,
                 val image: String? = null,
-                val description: String? = null) : Model {
+                val description: String? = null) : OwnedModel {
     companion object {
         fun fromData(data: GoalData, owner: String): Goal {
             return Goal(Id(""),

@@ -1,15 +1,16 @@
-import {AppState} from "app/Store";
-import React, {ReactNode} from "react";
-import {connect} from "react-redux"
-import style from "./Header.module.scss";
-import {css} from "util/style";
+import React from "react";
+import {fancyFont} from "style/styleConstants";
+import styled, {css} from "styled-components";
 
-const mapStateToProps = (state: AppState, props: { children: ReactNode, noStyle?: boolean }) => props;
-const mapDispatchToProps = {};
-type Props = typeof mapDispatchToProps & ReturnType<typeof mapStateToProps>;
+const Header = styled.header<{ noStyle?: boolean; }>`
+    padding: 4px 4px 8px 4px;
+    min-height: var(--rhythm);
+    background: var(--color-primary);
+${p => !p.noStyle && css`
+    color: var(--color-neutral-tint4);
+    font-family: ${fancyFont};
+    font-weight: normal;
+`}
+`;
 
-const Header: React.FC<Props> = props => {
-    return <header className={css(style.header, [style.title, !props.noStyle])}>{props.children}</header>;
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default Header;

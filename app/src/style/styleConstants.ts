@@ -32,3 +32,24 @@ export const blueLighter = "#b0abd2";
 export const blackLighter = "#aeb0a8";
 
 export const backgroundColor = "#050605";
+// Small tablets and large smartphones (landscape view)
+const screenSm = '576px';
+
+// Small tablets (portrait view)
+const screenMd = '768px';
+
+// Tablets and small desktops
+const screenLg = '992px';
+
+// Large tablets and desktops
+const screenXl = '1200px';
+
+const screenXxl = '1800px';
+export const fancyFont = `'Pacifico', sans-serif`;
+export const device = {
+    screenSm: `(min-width: ${screenSm})`,
+    screenMd: `(min-width: ${screenMd})`,
+    screenLg: `(min-width: ${screenLg})`,
+    screenXl: `(min-width: ${screenXl})`,
+    screenXxl: `(min-width: ${screenXxl})`
+};

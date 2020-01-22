@@ -9,6 +9,8 @@ import style from "./Aspects.module.scss";
 import {createAspect, deleteAspect, updateAspect} from "./duck";
 import {Aspect} from "generated/models";
 import {bindActions} from "util/duckUtil";
+import arrow from "app/features/aspects/right-drawn-arrow.svg"
+import {css} from "util/style";
 
 const mapStateToProps = (state: AppState) => {
     return {aspects: Object.values(state.aspects.aspectsById)}
@@ -32,7 +34,14 @@ const Aspects: React.FC<Props> = props => {
         setCircleEntries(createChartEntries(props.aspects));
     }, [props.aspects]);
     return <div>
-        <div className={style.chartWrapper}><PieChart size={250} entries={circleEntries}/></div>
+        <div className={style.chartWrapper}>
+            {circleEntries.length ?
+                <PieChart size={250} entries={circleEntries}/> :
+                <div className={style.noAspects}>
+                    <div>Add a life aspect that's important to you, like "Health" or "Hobbies"</div>
+                </div>
+            }
+        </div>
         <div>{props.aspects.map((aspect, index) =>
             <EditableAspect key={aspect.id}
                             aspect={aspect}
@@ -44,12 +53,14 @@ const Aspects: React.FC<Props> = props => {
                             }}
                             cancelEdit={() => setEdit(-1)}
                             onDelete={() => props.deleteAspect(aspect.id)}/>)}
-            <div className={style.aspectLine}>
-                <div> {/* An empty diff for layout purposes (flexbox + space between) */} </div>
-                {!add && <IconButton onClick={() => setAdd(!add)}><MdAdd/></IconButton>}
+            {!add &&
+            <div className={css(style.aspectLine, style.addIconRow)}>
+                {!circleEntries.length && <img className={style.arrow} src={arrow} alt="arrow"/>}
+                <IconButton onClick={() => setAdd(!add)}><MdAdd/></IconButton>
             </div>
+            }
         </div>
-        {add && <EditAspect aspect={{name: "", weight: 1, color: "red", completed: 0}}
+        {add && <EditAspect aspect={{name: "", weight: 5, color: "red", completed: 50}}
                             onSave={aspect => {
                                 props.createAspect(aspect);
                                 setAdd(false);
@@ -83,7 +94,7 @@ const EditableAspect = (props: {
         return <div key={aspect.id || "tmp"} className={style.aspectLine}>
             <div className={style.flexCenter}>
                 <div className={style.flexCenter} style={{color: aspect.color}}><MdBrightness1/></div>
-                {aspect.name} ({aspect.weight})
+                {aspect.name}
             </div>
             <div className={style.flexCenter}>
                 <IconButton onClick={setEdit}><MdEdit/></IconButton>

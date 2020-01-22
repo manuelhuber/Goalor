@@ -3,7 +3,6 @@ import React, {useState} from "react";
 import {connect} from "react-redux"
 import {addGoals, updateGoal} from "./duck";
 import styles from "./Goals.module.scss";
-import Button from "app/common/buttons/Button";
 import {css} from "util/style";
 import commonStyle from "style/Common.module.scss";
 import GoalCard from "app/features/goals/GoalCard";
@@ -11,7 +10,7 @@ import {Goal} from "generated/models";
 import {bindActions} from "util/duckUtil";
 import EditGoal from "app/features/goals/EditGoal";
 import IconButton from "app/common/buttons/IconButton";
-import {MdKeyboardArrowLeft, MdKeyboardArrowRight} from "react-icons/all";
+import {MdAdd, MdKeyboardArrowLeft, MdKeyboardArrowRight} from "react-icons/all";
 
 const mapStateToProps = (state: AppState, props: { rootGoals: string[] }) => ({
     aspects: state.aspects.aspectsById,
@@ -51,7 +50,7 @@ const Goals: React.FC<Props> = props => {
     const color = (goal: Goal) => props.aspects[goal.aspect] && props.aspects[goal.aspect].color;
 
     return <div className={styles.root}>
-        <Button onClick={toggleAddNew}>Add Goal</Button>
+
         <EditGoal title={modalTitle}
             // Key to re-instantiate EditGoal on goalInEdit change
                   key={goalInEdit && goalInEdit.id}
@@ -61,6 +60,9 @@ const Goals: React.FC<Props> = props => {
                   potentialParents={props.rootGoals.filter(goal => !goalInEdit || goal.id !== goalInEdit.id)}
                   onAttemptClose={() => setModalOpen(false)}
                   onSave={onSave}/>
+        <div className={css(commonStyle.rightAlign, commonStyle.padding)}>
+            <IconButton onClick={toggleAddNew}><MdAdd/></IconButton>
+        </div>
         <div className={css(styles.headerRow, commonStyle.padding)}>
             <IconButton onClick={() => setSelectedCol(selectedCol - 1)} disabled={selectedCol <= 0}>
                 <MdKeyboardArrowLeft/>

@@ -2,12 +2,12 @@ import React from "react";
 import {css} from "util/style";
 
 type Props = { label: React.ReactNode, noMargin?: boolean }
-const Input: React.FC<Props & React.InputHTMLAttributes<HTMLInputElement>> = props => {
+const TextArea: React.FC<Props & React.InputHTMLAttributes<HTMLTextAreaElement>> = props => {
     const {noMargin, ...passOnProps} = props;
     return <label className={css("field", ["mb-zero", props.noMargin])}>
-        <input {...passOnProps}/>
+        <textarea {...passOnProps} />
         <span className="label">{props.label}</span>
     </label>;
 };
 
-export default Input;
+export default TextArea;

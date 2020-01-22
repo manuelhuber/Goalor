@@ -28,6 +28,12 @@
   }
 }
 
+@mixin xxl {
+  @media (min-width: #{$screen-xxl-min}) {
+    @content;
+  }
+}
+
 @mixin largeMenu {
   @include xl {
     @content
