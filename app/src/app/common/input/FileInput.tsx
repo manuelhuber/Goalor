@@ -1,5 +1,5 @@
-import React, {useRef} from "react";
 import IconButton from "app/common/buttons/IconButton";
+import React, {useRef} from "react";
 import {MdImage} from "react-icons/all";
 
 export const FileInput: React.FC<React.InputHTMLAttributes<HTMLInputElement>> = props => {

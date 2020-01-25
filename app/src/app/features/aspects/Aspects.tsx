@@ -1,16 +1,17 @@
 import IconButton from "app/common/buttons/IconButton";
+import Expandable from "app/common/Expandable";
 import PieChart from "app/common/PieChart";
+import {AspectRow, Row} from "app/features/aspects/AspectRow";
 import EditAspect from "app/features/aspects/EditAspect";
-import {AppState} from "app/Store";
-import React, {useEffect, useState} from "react";
-import {MdAdd, MdBrightness1, MdDelete, MdEdit} from "react-icons/all";
-import {connect} from "react-redux"
-import style from "./Aspects.module.scss";
-import {createAspect, deleteAspect, updateAspect} from "./duck";
-import {Aspect} from "generated/models";
-import {bindActions} from "util/duckUtil";
 import arrow from "app/features/aspects/right-drawn-arrow.svg"
-import {css} from "util/style";
+import {AppState} from "app/Store";
+import {Aspect} from "generated/models";
+import React, {useEffect, useState} from "react";
+import {MdAdd} from "react-icons/all";
+import {connect} from "react-redux"
+import styled from "styled-components";
+import {bindActions} from "util/duckUtil";
+import {createAspect, deleteAspect, updateAspect} from "./duck";
 
 const mapStateToProps = (state: AppState) => {
     return {aspects: Object.values(state.aspects.aspectsById)}
@@ -33,39 +34,52 @@ const Aspects: React.FC<Props> = props => {
         // Recalculate entries only when aspects change
         setCircleEntries(createChartEntries(props.aspects));
     }, [props.aspects]);
+
+    const saveAspect = aspect => {
+        props.updateAspect(aspect);
+        setEdit(-1);
+    };
+
+    const createAspect = aspect => {
+        props.createAspect(aspect);
+        setAdd(false);
+    };
+
     return <div>
-        <div className={style.chartWrapper}>
+        <ChartWrapper>
             {circleEntries.length ?
                 <PieChart size={250} entries={circleEntries}/> :
-                <div className={style.noAspects}>
+                <NoAspects>
                     <div>Add a life aspect that's important to you, like "Health" or "Hobbies"</div>
-                </div>
+                </NoAspects>
             }
-        </div>
+        </ChartWrapper>
         <div>{props.aspects.map((aspect, index) =>
-            <EditableAspect key={aspect.id}
-                            aspect={aspect}
-                            editMode={index === edit}
-                            setEdit={() => setEdit(index)}
-                            onSave={aspect => {
-                                props.updateAspect(aspect);
-                                setEdit(-1);
-                            }}
-                            cancelEdit={() => setEdit(-1)}
-                            onDelete={() => props.deleteAspect(aspect.id)}/>)}
-            {!add &&
-            <div className={css(style.aspectLine, style.addIconRow)}>
-                {!circleEntries.length && <img className={style.arrow} src={arrow} alt="arrow"/>}
-                <IconButton onClick={() => setAdd(!add)}><MdAdd/></IconButton>
-            </div>
-            }
+            <AspectEntry key={aspect.id || "tmp"}>
+                <Expandable expanded={index !== edit}>
+                    <AspectRow aspect={aspect}
+                               setEdit={() => setEdit(index)}
+                               onDelete={() => props.deleteAspect(aspect.id)}/>
+                </Expandable>
+                <Expandable expanded={index === edit}>
+                    <EditAspect aspect={aspect}
+                                onSave={saveAspect}
+                                onCancel={() => setEdit(-1)}/>
+                </Expandable>
+            </AspectEntry>)}
+            <Expandable expanded={!add}>
+                <Row iconRow={true}>
+                    {!circleEntries.length && <Arrow src={arrow} alt="arrow"/>}
+                    <IconButton onClick={() => setAdd(!add)}><MdAdd/></IconButton>
+                </Row>
+            </Expandable>
+
         </div>
-        {add && <EditAspect aspect={{name: "", weight: 5, color: "red", completed: 50}}
-                            onSave={aspect => {
-                                props.createAspect(aspect);
-                                setAdd(false);
-                            }}
-                            onCancel={() => setAdd(false)}/>}
+        <Expandable expanded={add}>
+            <EditAspect aspect={{name: "", weight: 5, color: "red", completed: 50}}
+                        onSave={createAspect}
+                        onCancel={() => setAdd(false)}/>
+        </Expandable>
     </div>;
 };
 
@@ -79,29 +93,27 @@ const createChartEntries = (aspects: Aspect[]) => {
     }));
 };
 
-const EditableAspect = (props: {
-    aspect: Aspect,
-    editMode: boolean,
-    setEdit: () => void,
-    cancelEdit: () => void,
-    onSave: (a: Aspect) => void,
-    onDelete: () => void
-}) => {
-    const {aspect, editMode, setEdit, cancelEdit, onSave, onDelete} = props;
-    if (editMode) {
-        return <EditAspect aspect={aspect} onSave={onSave} onCancel={cancelEdit}/>
-    } else {
-        return <div key={aspect.id || "tmp"} className={style.aspectLine}>
-            <div className={style.flexCenter}>
-                <div className={style.flexCenter} style={{color: aspect.color}}><MdBrightness1/></div>
-                {aspect.name}
-            </div>
-            <div className={style.flexCenter}>
-                <IconButton onClick={setEdit}><MdEdit/></IconButton>
-                <IconButton onClick={onDelete}><MdDelete/></IconButton>
-            </div>
-        </div>
-    }
-};
-
 export default connect(mapStateToProps, mapDispatchToProps)(Aspects);
+
+const ChartWrapper = styled.div`
+    text-align: center;
+`;
+const NoAspects = styled.div`
+    --line-height-ratio: 1.2;
+    --sub-rhythm: 3rem;
+    font-size: var(--font-size);
+    line-height: var(--line-height);
+    padding: 8px 16px;
+    font-weight: bolder;
+    color: var(--color-neutral-tint2);
+`;
+const Arrow = styled.img`
+    max-width: 125px;
+    margin-bottom: 20px;
+`;
+const AspectEntry = styled.div`
+  border-bottom: 2px solid var(--color-neutral-tint1);
+  &:last-child {
+    border-bottom: none;
+  }
+`;

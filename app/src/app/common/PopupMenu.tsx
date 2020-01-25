@@ -1,9 +1,8 @@
 import React, {ReactNode, useEffect, useRef, useState} from "react";
 import {MdMoreVert} from "react-icons/all";
 import commonStyle from "style/Common.module.scss";
-import {css} from "util/style";
+import styled, {css} from "styled-components";
 import {nonNull} from "util/types";
-import style from "./PopupMenu.module.scss";
 
 interface PopupMenuEntry {
     icon?: ReactNode,
@@ -34,21 +33,35 @@ const PopupMenu: React.FC<Props> = props => {
             document.removeEventListener("click", onClickOutside);
         }
     }, [isOpen]);
-    return <div className={style.root} ref={thisMenu}>
+
+    return <Root ref={thisMenu}>
         <span ref={buttonRef} className={commonStyle.clickable} onClick={_ => setOpen(!isOpen)}><MdMoreVert/></span>
         {isOpen &&
-        <div className={css(style.popup,
-            [style.top, inLowerHalf],
-            [style.bottom, !inLowerHalf],
-            [style.left, inRightHalf],
-            [style.right, !inRightHalf])}>
+        <Popup inRightHalf={inRightHalf} inLowerHalf={inLowerHalf}>
             {props.entries && props.entries.filter(nonNull).map(entry =>
-                <div key={entry.text ? entry.text.toString() : "fail"}
-                     className={style.row}
-                     onClick={entry.onClick}>{entry.icon}{entry.text}</div>)}
+                <Row key={entry.text ? entry.text.toString() : "fail"}
+                     onClick={entry.onClick}>{entry.icon}{entry.text}</Row>)}
             {props.children}
-        </div>}
-    </div>;
+        </Popup>}
+    </Root>;
 };
 
 export default PopupMenu;
+const Root = styled.div`
+    display: inline-block;
+    position: relative;
+`;
+const Popup = styled.div<{ inLowerHalf: boolean, inRightHalf: boolean }>`
+    position: absolute;
+    background-color: var(--color-neutral-tint3);
+    box-shadow: 0 0 4px 1px var(--color-neutral-tint4);
+    padding: 4px;
+    ${p => !p.inRightHalf ? css`left: 100%` : css`right: 100%`};
+    ${p => p.inLowerHalf ? css`bottom: 100%` : css`top: 100%`};
+`;
+
+const Row = styled.div`
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+`;

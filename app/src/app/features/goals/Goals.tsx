@@ -50,7 +50,6 @@ const Goals: React.FC<Props> = props => {
     const color = (goal: Goal) => props.aspects[goal.aspect] && props.aspects[goal.aspect].color;
 
     return <div className={styles.root}>
-
         <EditGoal title={modalTitle}
             // Key to re-instantiate EditGoal on goalInEdit change
                   key={goalInEdit && goalInEdit.id}
@@ -71,7 +70,6 @@ const Goals: React.FC<Props> = props => {
                 <MdKeyboardArrowRight/>
             </IconButton>
         </div>
-
         <div className={css(styles.goals)}
              style={{width: `${numOfCols * 100}%`, transform: `translateX(-${(selectedCol / numOfCols) * 100}%)`}}>
             {props.rootGoals.map(goal => <div className={styles.goalRow}

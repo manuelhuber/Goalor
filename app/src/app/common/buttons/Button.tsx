@@ -21,7 +21,7 @@ const Button: React.FC<Props & React.ButtonHTMLAttributes<HTMLButtonElement>> = 
     // Override all props that cause an error, when passing it to the underlying button
     const {block, ...passOn} = props;
 
-    return <button {...passOn} className={cssString}>{props.children}</button>;
+    return <button type="button" {...passOn} className={cssString}>{props.children}</button>;
 };
 
 export default Button;

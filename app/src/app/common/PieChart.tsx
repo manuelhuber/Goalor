@@ -62,6 +62,8 @@ const PieChart: React.FC<Props> = props => {
             const hit = entryPaths.find(path => ctx.isPointInPath(path[1], ev.offsetX, ev.offsetY));
             if (hit) {
                 setHover(entryPaths.indexOf(hit));
+            } else {
+                setHover(-1);
             }
         };
 

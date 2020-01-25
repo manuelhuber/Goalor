@@ -1,4 +1,5 @@
 import Button from "app/common/buttons/Button";
+import Form from "app/common/input/Form";
 import {AppState} from "app/Store";
 import React, {useState} from "react";
 import {connect} from "react-redux"
@@ -34,7 +35,7 @@ const Authenticate: React.FC<Props> = props => {
         event.preventDefault();
     };
     return <div className='wrapper' style={{maxWidth: "25rem"}}>
-        <form action="" onSubmit={submit}>
+        <Form onSubmit={submit}>
             <WithLabel label='Username'><input type="text" {...bindUsername}/></WithLabel>
             <WithLabel label='Password'><input type="password" {...bindPassword}/></WithLabel>
             {isRegistration && <>
@@ -44,7 +45,7 @@ const Authenticate: React.FC<Props> = props => {
             </>}
             <Button type="submit" block={true}
                     disabled={props.isLoading}>{isRegistration ? "Register" : "Login"}</Button>
-        </form>
+        </Form>
         <Button onClick={() => setRegistration(!isRegistration)} design='link' block={true}>
             {isRegistration ? "Already registered? Login!" : "New here? Sign up!"}</Button>
     </div>;

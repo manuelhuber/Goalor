@@ -1,8 +1,8 @@
+import {notify} from "app/features/notifications/duck";
 import {Thunk} from "app/Store";
+import {Aspect, CreateAspect} from "generated/models";
 import {Action, Reducer} from "redux";
 import {aspectApi} from "util/fetch";
-import {notify} from "app/features/notifications/duck";
-import {Aspect, CreateAspect} from "generated/models";
 
 // State
 export type AspectsState = {
@@ -44,7 +44,10 @@ export const updateAspect = (aspect: Aspect): Thunk => async (dispatch) => {
 
 export const deleteAspect = (id: string): Thunk => async (dispatch) => {
     aspectApi.deleteAspectsWithId({id})
-             .then(() => dispatch(removeAspect(id)));
+             .then(() => {
+                 dispatch(notify({message: "Successfully deleted aspect"}, 5000));
+                 return dispatch(removeAspect(id));
+             });
 };
 
 export const createAspect = (create: CreateAspect): Thunk => async (dispatch) => {
