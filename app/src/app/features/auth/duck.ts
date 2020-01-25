@@ -64,7 +64,11 @@ type SetLoadingAction = SetLoading & Action<"SET_LOADING">;
 export const setLoading = (value: boolean): SetLoadingAction => ({type: "SET_LOADING", loading: value});
 
 type LogoutAction = Action<"LOGOUT">;
-export const logout = (): LogoutAction => ({type: "LOGOUT"});
+export const logoutAction = (): LogoutAction => ({type: "LOGOUT"});
+export const logout = (): Thunk => async (dispatch) => {
+    dispatch({type: "RESET"});
+    dispatch(logoutAction());
+};
 
 export type AuthAction = SetTokenAction | SetLoadingAction | LogoutAction;
 
