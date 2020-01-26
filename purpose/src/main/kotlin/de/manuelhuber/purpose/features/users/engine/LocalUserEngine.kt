@@ -10,24 +10,24 @@ import de.manuelhuber.purpose.lib.exceptions.NotFound
 @Singleton
 class LocalUserEngine : UserEngine {
 
-    private val users = mutableMapOf(Id("0") to User(email = Email("mail@mail.mail"),
-            username = Username("test"),
-            password = "\$2a\$10\$/UrUNRvydZ0rXWXN.cu5AuYgMJW8gMAcqmAQHuyc3BkJdmSNoNpf.", // "test"
-            id = Id("0"),
-            firstName = "First",
-            lastName = "Last"))
+    private val users =
+            mutableMapOf(Id("0") to User(email = Email("mail@mail.mail"),
+                                         username = Username("test"),
+                                         password = "\$2a\$10\$/UrUNRvydZ0rXWXN.cu5AuYgMJW8gMAcqmAQHuyc3BkJdmSNoNpf.", // "test"
+                                         id = Id("0"),
+                                         firstName = "First",
+                                         lastName = "Last",
+                                         logout = null))
 
     override fun getByUsername(username: Username): User {
-        return users.values.find { user -> user.username == username } ?: throw NotFound(
-                username.value,
-                User::class,
-                "username")
+        return users.values.find { user -> user.username == username } ?: throw NotFound(username.value,
+                                                                                         User::class,
+                                                                                         "username")
     }
 
     override fun get(id: Id): User {
         return users.getOrElse(id) {
-            throw NotFound(id.value,
-                    User::class)
+            throw NotFound(id.value, User::class)
         }
     }
 

@@ -1,7 +1,7 @@
 import style from "app/common/PieChart.module.scss";
 import React, {useEffect, useState} from "react";
 import {backgroundColor} from "style/styleConstants";
-import {css} from "util/style";
+import {jc} from "util/style";
 
 export interface PieChartEntry {
     percentage: number; // percentage number between 0 and 1
@@ -79,7 +79,7 @@ const PieChart: React.FC<Props> = props => {
     // Cause appear animation when entries change (if animationOnDataChange=true)
     useEffect(appear, [props.entries]);
 
-    return <canvas className={css(style.initial, [style.notInitial, !hideChart])}
+    return <canvas className={jc(style.initial, [style.notInitial, !hideChart])}
                    ref={canvasRef}
                    width={props.size}
                    height={props.size}/>;

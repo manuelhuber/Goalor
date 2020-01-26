@@ -11,7 +11,7 @@ import {useHistory} from "react-router";
 import {Link} from "react-router-dom";
 import {bindActionCreators} from "redux";
 import commonStyle from "style/Common.module.scss";
-import {css} from "util/style";
+import {jc} from "util/style";
 import style from "./Menu.module.scss";
 
 const mapStateToProps = (state: AppState) => ({isLoggedIn: state.auth.authenticated});
@@ -31,9 +31,9 @@ const Menu: React.FC<Props> = props => {
         <div className={style.header}>
             <Header>{APP_TITLE}</Header>
         </div>
-        <nav className={css(style.menuList, [style.visible, show])}>
+        <nav className={jc(style.menuList, [style.visible, show])}>
             <ul className={style.itemList}>
-                <li className={css(style.item, style.largeOnly)} {...linkTo("/me")}>
+                <li className={jc(style.item, style.largeOnly)} {...linkTo("/me")}>
                     <MdPerson/>Home
                 </li>
                 <li className={style.item} {...linkTo("/journal")}>
@@ -45,8 +45,8 @@ const Menu: React.FC<Props> = props => {
                 <li className={style.item}>
                     <MdPerson/>Third
                 </li>
-                <li className={style.item}>
-                    <MdPerson/>Who even cares
+                <li className={style.item} {...linkTo("/settings")}>
+                    <MdPerson/>Account
                 </li>
             </ul>
             <div className={style.logoutBlock}>

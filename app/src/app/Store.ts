@@ -1,3 +1,4 @@
+import {accountReducer} from "app/features/account/duck";
 import {gratitudeReducer} from "app/features/gratitude/duck";
 import {notificationReducer} from "app/features/notifications/duck";
 import {Action, applyMiddleware, combineReducers, compose, createStore} from "redux";
@@ -11,7 +12,8 @@ const rootReducer = combineReducers({
     auth: authReducer,
     aspects: aspectsReducer,
     notifications: notificationReducer,
-    gratitude: gratitudeReducer
+    gratitude: gratitudeReducer,
+    account: accountReducer
 });
 
 const reducerWithReset: typeof rootReducer = (state, action) => {

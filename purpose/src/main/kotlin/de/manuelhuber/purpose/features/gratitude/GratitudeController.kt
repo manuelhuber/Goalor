@@ -33,16 +33,19 @@ class GratitudeController @Inject constructor(private val gratitudeService: Grat
     }
 
     @Get
+    @Authorized
     fun getGratitudesForOwner(ctx: Context): List<Gratitude> {
         return gratitudeService.getGoalsByOwner(ctx.getId())
     }
 
     @Delete(":id")
+    @Authorized
     fun deleteGratitude(ctx: Context) {
         gratitudeService.deleteGratitude(ctx.pathParam("id").toId(), ctx.getId())
     }
 
     @Put(":id")
+    @Authorized
     fun updateGratitude(ctx: Context, data: GratitudeData): Gratitude {
         return gratitudeService.updateGoal(ctx.pathParam("id").toId(), data, ctx.getId())
     }

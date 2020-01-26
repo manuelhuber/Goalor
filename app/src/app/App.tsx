@@ -1,15 +1,15 @@
 import {APP_TITLE} from "app/constants";
-import {loadAllAspects} from "app/features/aspects/duck";
 import Authenticate from "app/features/auth/Authenticate";
-import {loadAllGoals} from "app/features/goals/duck";
-import {loadAllGratitudes} from "app/features/gratitude/duck";
+import {DataFetchers} from "app/features/auth/duck";
 import Menu from "app/features/menu/Menu";
 import Notifications from "app/features/notifications/Notifications";
 import Journal from "app/page/Journal";
+import Settings from "app/page/Settings";
 import store from "app/Store";
 import React from "react";
 import {Provider} from "react-redux"
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import styled from "styled-components";
 import style from "./App.module.scss";
 import RestrictedRoute from "./features/auth/RestrictedRoute";
 import Header from "./features/header/Header";
@@ -18,12 +18,7 @@ import NotFound from "./page/NotFound";
 import Personal from "./page/Personal";
 
 if (store.getState().auth.authenticated) {
-    // @ts-ignore
-    loadAllAspects()(store.dispatch, null, null);
-    // @ts-ignore
-    loadAllGoals()(store.dispatch, null, null);
-    // @ts-ignore
-    loadAllGratitudes()(store.dispatch, null, null);
+    DataFetchers.forEach(thunk => thunk(store.dispatch, null, null));
 }
 
 const App: React.FC = () =>
@@ -35,15 +30,16 @@ const App: React.FC = () =>
                     <Header>
                         <div className={style.header}>{APP_TITLE}</div>
                     </Header>
-                    <div>
+                    <Content>
                         <Switch>
                             <RestrictedRoute path='/me' component={Personal}/>
                             <RestrictedRoute path='/journal' component={Journal}/>
+                            <RestrictedRoute path='/settings' component={Settings}/>
                             <Route path='/login' component={Authenticate}/>
                             <Route path='/' exact component={Landing}/>
                             <Route component={NotFound}/>
                         </Switch>
-                    </div>
+                    </Content>
                 </div>
                 <div className={style.menuWrapper}><Menu/></div>
             </div>
@@ -51,3 +47,8 @@ const App: React.FC = () =>
     </Provider>;
 
 export default App;
+
+const Content = styled.div`
+max-width: 1000px;
+margin: 0 auto;
+`;

@@ -1,5 +1,5 @@
 import React from "react";
-import {css} from "util/style";
+import {jc} from "util/style";
 import style from "./Button.module.scss";
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
 }
 const Button: React.FC<Props & React.ButtonHTMLAttributes<HTMLButtonElement>> = props => {
     // These CSS classes are from cutestrap
-    let cssString = css(style.button, "button", ["-block", props.block], [style.noShadow, props.design === "link"]);
+    let cssString = jc(style.button, "button", ["-block", props.block], [style.noShadow, props.design === "link"]);
     if (props.design) {
         cssString += ` -${props.design}`;
     }

@@ -7,12 +7,16 @@ import com.google.inject.Inject
 import com.google.inject.name.Named
 import de.manuelhuber.annotations.Roles
 import de.manuelhuber.purpose.features.auth.models.WrongPassword
-import de.manuelhuber.purpose.features.users.models.User
 import de.manuelhuber.purpose.features.users.engine.UserEngine
+import de.manuelhuber.purpose.features.users.models.User
 import de.manuelhuber.purpose.features.users.models.Username
+import de.manuelhuber.purpose.lib.engine.Id
 import javalinjwt.JWTGenerator
 import javalinjwt.JWTProvider
 import org.mindrot.jbcrypt.BCrypt
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.util.*
 
 class AuthService @Inject constructor(private val engine: UserEngine, @Named(JWT_SECRET) secret: String) {
 
@@ -22,12 +26,22 @@ class AuthService @Inject constructor(private val engine: UserEngine, @Named(JWT
     init {
         val algorithm = Algorithm.HMAC256(secret)
         val generator: JWTGenerator<User> = JWTGenerator { user: User, alg: Algorithm? ->
-            val token: JWTCreator.Builder = JWT.create().withClaim(Claims.ID.name, user.id.value)
-                .withClaim(Claims.USER_LEVEL.name, Roles.USER.name)
+            val token: JWTCreator.Builder =
+                    JWT.create()
+                        .withClaim(Claims.ID.name, user.id.value)
+                        .withClaim(Claims.USER_LEVEL.name, Roles.USER.name)
+                        .withClaim(Claims.CREATED.name, LocalDateTime.now().toString())
             token.sign(alg)
         }
-        val verifier = JWT.require(algorithm).build()
+        val verifier =
+                JWT.require(algorithm)
+                    .build()
         provider = JWTProvider(algorithm, generator, verifier)
+    }
+
+    fun logout(userId: Id) {
+        val user = engine.get(userId)
+        engine.update(userId, user.copy(logout = LocalDateTime.now()))
     }
 
     fun login(username: Username, password: String): String {

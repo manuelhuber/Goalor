@@ -12,7 +12,7 @@ import {connect} from 'react-redux'
 import commonStyle from "style/Common.module.scss";
 import {redDark} from "style/styleConstants";
 import {bindActions} from "util/duckUtil";
-import {css} from "util/style";
+import {jc} from "util/style";
 
 const mapStateToProps = (state: AppState) => {
     return {gratitudes: state.gratitude.gratitudeSortedByDate}
@@ -33,7 +33,7 @@ const Journal: React.FC<Props> = props => {
     return <div>
         <div className={commonStyle.padding}><SectionTitle title="Journal" color={redDark}/></div>
         <Expandable expanded={!showAdd}>
-            <div className={css(commonStyle.padding, commonStyle.rightAlign)}>
+            <div className={jc(commonStyle.padding, commonStyle.rightAlign)}>
                 <IconButton onClick={() => setShowAdd(true)}><MdAdd/></IconButton>
             </div>
         </Expandable>

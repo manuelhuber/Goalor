@@ -3,7 +3,7 @@ import React, {useState} from "react";
 import {connect} from "react-redux"
 import {addGoals, updateGoal} from "./duck";
 import styles from "./Goals.module.scss";
-import {css} from "util/style";
+import {jc} from "util/style";
 import commonStyle from "style/Common.module.scss";
 import GoalCard from "app/features/goals/GoalCard";
 import {Goal} from "generated/models";
@@ -59,10 +59,10 @@ const Goals: React.FC<Props> = props => {
                   potentialParents={props.rootGoals.filter(goal => !goalInEdit || goal.id !== goalInEdit.id)}
                   onAttemptClose={() => setModalOpen(false)}
                   onSave={onSave}/>
-        <div className={css(commonStyle.rightAlign, commonStyle.padding)}>
+        <div className={jc(commonStyle.rightAlign, commonStyle.padding)}>
             <IconButton onClick={toggleAddNew}><MdAdd/></IconButton>
         </div>
-        <div className={css(styles.headerRow, commonStyle.padding)}>
+        <div className={jc(styles.headerRow, commonStyle.padding)}>
             <IconButton onClick={() => setSelectedCol(selectedCol - 1)} disabled={selectedCol <= 0}>
                 <MdKeyboardArrowLeft/>
             </IconButton>
@@ -70,7 +70,7 @@ const Goals: React.FC<Props> = props => {
                 <MdKeyboardArrowRight/>
             </IconButton>
         </div>
-        <div className={css(styles.goals)}
+        <div className={jc(styles.goals)}
              style={{width: `${numOfCols * 100}%`, transform: `translateX(-${(selectedCol / numOfCols) * 100}%)`}}>
             {props.rootGoals.map(goal => <div className={styles.goalRow}
                                               style={{borderColor: color(goal)}}

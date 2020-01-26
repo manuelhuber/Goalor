@@ -2,6 +2,7 @@ import {notify} from "app/features/notifications/duck";
 import {Thunk} from "app/Store";
 import {Aspect, CreateAspect} from "generated/models";
 import {Action, Reducer} from "redux";
+import {notifyWithMessage} from "util/duckUtil";
 import {aspectApi} from "util/fetch";
 
 // State
@@ -35,7 +36,7 @@ export const loadAllAspects = (): Thunk => async (dispatch) =>
              .then((aspects: Aspect[]) => {
                  dispatch(addAspectAction(aspects));
              })
-             .catch(x => dispatch(notify({message: "Error loading aspect"})));
+             .catch(notifyWithMessage("Error loading aspect: ", dispatch));
 
 export const updateAspect = (aspect: Aspect): Thunk => async (dispatch) => {
     aspectApi.putAspectsWithId({id: aspect.id, createAspect: aspect})
@@ -53,7 +54,7 @@ export const deleteAspect = (id: string): Thunk => async (dispatch) => {
 export const createAspect = (create: CreateAspect): Thunk => async (dispatch) => {
     aspectApi.postAspects({createAspect: create})
              .then(x => dispatch(addAspectAction(x)))
-             .catch(() => dispatch(notify({message: "Error creating aspect"})));
+             .catch(notifyWithMessage("Error creating aspect: ", dispatch));
 };
 
 // Reducer

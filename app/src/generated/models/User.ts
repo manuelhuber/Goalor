@@ -16,60 +16,74 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface UserTO
+ * @interface User
  */
-export interface UserTO {
+export interface User {
     /**
      * 
      * @type {string}
-     * @memberof UserTO
+     * @memberof User
      */
     email: string;
     /**
      * 
      * @type {string}
-     * @memberof UserTO
-     */
-    id: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserTO
+     * @memberof User
      */
     username: string;
     /**
      * 
      * @type {string}
-     * @memberof UserTO
+     * @memberof User
      */
     firstName: string;
     /**
      * 
      * @type {string}
-     * @memberof UserTO
+     * @memberof User
      */
     lastName: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    password: string;
+    /**
+     * 
+     * @type {Date}
+     * @memberof User
+     */
+    logout?: Date;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    id: string;
 }
 
-export function UserTOFromJSON(json: any): UserTO {
-    return UserTOFromJSONTyped(json, false);
+export function UserFromJSON(json: any): User {
+    return UserFromJSONTyped(json, false);
 }
 
-export function UserTOFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserTO {
+export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
         'email': json['email'],
-        'id': json['id'],
         'username': json['username'],
         'firstName': json['firstName'],
         'lastName': json['lastName'],
+        'password': json['password'],
+        'logout': !exists(json, 'logout') ? undefined : (new Date(json['logout'])),
+        'id': json['id'],
     };
 }
 
-export function UserTOToJSON(value?: UserTO | null): any {
+export function UserToJSON(value?: User | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -79,10 +93,12 @@ export function UserTOToJSON(value?: UserTO | null): any {
     return {
         
         'email': value.email,
-        'id': value.id,
         'username': value.username,
         'firstName': value.firstName,
         'lastName': value.lastName,
+        'password': value.password,
+        'logout': value.logout === undefined ? undefined : (value.logout.toISOString()),
+        'id': value.id,
     };
 }
 

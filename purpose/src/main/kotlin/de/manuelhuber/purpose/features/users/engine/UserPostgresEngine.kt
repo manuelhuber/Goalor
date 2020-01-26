@@ -16,23 +16,24 @@ class UserPostgresEngine @Inject constructor(private val db: DatabaseInitiator) 
 
     override fun getByUsername(username: Username): User {
         return transaction(db.db) {
-            Users.select { Users.username eq username.value }
-                .map(rowToUser).firstOrNull()
+            Users.select { Users.username eq username.value }.map(rowToUser).firstOrNull()
                     ?: throw NotFound(username.value, User::class, "username")
         }
     }
 
     override fun get(id: Id): User {
         return transaction(db.db) {
-            Users.select { Users.id eq id.toUUID() }
-                .map(rowToUser).firstOrNull()
-                    ?: throw NotFound(id.value, User::class)
+            Users.select { Users.id eq id.toUUID() }.map(rowToUser).firstOrNull() ?: throw NotFound(id.value,
+                                                                                                    User::class)
         }
     }
 
     override fun get(ids: List<Id>): List<User> {
         val intIds = ids.map { it.toUUID() }
-        return transaction(db.db) { Users.select { Users.id inList intIds }.map(rowToUser) }
+        return transaction(db.db) {
+            Users.select { Users.id inList intIds }
+                .map(rowToUser)
+        }
     }
 
     override fun create(model: User): User {
@@ -52,12 +53,12 @@ class UserPostgresEngine @Inject constructor(private val db: DatabaseInitiator) 
 
 val rowToUser: (ResultRow) -> User = {
     User(id = Id(it[Users.id].toString()),
-            email = Email(it[Users.email]),
-            username = Username(it[Users.username]),
-            firstName = it[Users.firstName],
-            lastName = it[Users.lastName],
-            password = it[Users.password]
-    )
+         email = Email(it[Users.email]),
+         username = Username(it[Users.username]),
+         firstName = it[Users.firstName],
+         lastName = it[Users.lastName],
+         password = it[Users.password],
+         logout = it[Users.logout])
 }
 
 private fun fillRows(model: User): Users.(UpdateBuilder<Int>) -> Unit = {
@@ -66,4 +67,5 @@ private fun fillRows(model: User): Users.(UpdateBuilder<Int>) -> Unit = {
     it[firstName] = model.firstName
     it[lastName] = model.lastName
     it[password] = model.password
+    it[logout] = model.logout
 }

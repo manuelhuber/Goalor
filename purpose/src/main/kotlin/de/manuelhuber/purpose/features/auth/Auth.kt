@@ -9,7 +9,7 @@ import javalinjwt.JavalinJWT
 
 
 enum class Claims {
-    USER_LEVEL, ID, USER
+    USER_LEVEL, ID, USER, CREATED
 }
 
 const val JWT_SECRET = "jwt_secret"

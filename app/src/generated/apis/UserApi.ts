@@ -18,19 +18,33 @@ import {
     ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+    PasswordUpdate,
+    PasswordUpdateFromJSON,
+    PasswordUpdateToJSON,
     Registration,
     RegistrationFromJSON,
     RegistrationToJSON,
     RegistrationResponse,
     RegistrationResponseFromJSON,
     RegistrationResponseToJSON,
+    User,
+    UserFromJSON,
+    UserToJSON,
     UserTO,
     UserTOFromJSON,
     UserTOToJSON,
 } from '../models';
 
+export interface PostUserPasswordRequest {
+    passwordUpdate?: PasswordUpdate;
+}
+
 export interface PostUserRegisterRequest {
     registration?: Registration;
+}
+
+export interface PutUserRequest {
+    userTO?: UserTO;
 }
 
 /**
@@ -39,9 +53,9 @@ export interface PostUserRegisterRequest {
 export class UserApi extends runtime.BaseAPI {
 
     /**
-     * Get user me
+     * Get user
      */
-    async getUserMeRaw(): Promise<runtime.ApiResponse<UserTO>> {
+    async getUserRaw(): Promise<runtime.ApiResponse<UserTO>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -55,7 +69,7 @@ export class UserApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/user/me`,
+            path: `/user`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -65,10 +79,47 @@ export class UserApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get user me
+     * Get user
      */
-    async getUserMe(): Promise<UserTO> {
-        const response = await this.getUserMeRaw();
+    async getUser(): Promise<UserTO> {
+        const response = await this.getUserRaw();
+        return await response.value();
+    }
+
+    /**
+     * Post user password
+     */
+    async postUserPasswordRaw(requestParameters: PostUserPasswordRequest): Promise<runtime.ApiResponse<string>> {
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = typeof token === 'function' ? token("bearerAuth", []) : token;
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/user/password`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: PasswordUpdateToJSON(requestParameters.passwordUpdate),
+        });
+
+        return new runtime.TextApiResponse(response) as any;
+    }
+
+    /**
+     * Post user password
+     */
+    async postUserPassword(requestParameters: PostUserPasswordRequest): Promise<string> {
+        const response = await this.postUserPasswordRaw(requestParameters);
         return await response.value();
     }
 
@@ -106,6 +157,43 @@ export class UserApi extends runtime.BaseAPI {
      */
     async postUserRegister(requestParameters: PostUserRegisterRequest): Promise<RegistrationResponse> {
         const response = await this.postUserRegisterRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * Put user
+     */
+    async putUserRaw(requestParameters: PutUserRequest): Promise<runtime.ApiResponse<User>> {
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = typeof token === 'function' ? token("bearerAuth", []) : token;
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/user`,
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserTOToJSON(requestParameters.userTO),
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserFromJSON(jsonValue));
+    }
+
+    /**
+     * Put user
+     */
+    async putUser(requestParameters: PutUserRequest): Promise<User> {
+        const response = await this.putUserRaw(requestParameters);
         return await response.value();
     }
 

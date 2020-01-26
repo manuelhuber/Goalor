@@ -1,5 +1,5 @@
-import {AspectsApi, AuthApi, GoalsApi, GratitudeApi, UserApi} from "generated/apis";
 import {Configuration} from "generated";
+import {AspectsApi, AuthApi, GoalsApi, GratitudeApi, UserApi} from "generated/apis";
 
 export const post = (url: string, body?: any, input?: RequestInit) => {
     return myFetch(url, "POST", body, input)
@@ -12,11 +12,13 @@ let configuration = new Configuration({
     accessToken: () => localStorage.getItem("GOALOR_KEY"),
     basePath: process.env.REACT_APP_BASE_URL,
     middleware: [{
-        post: context => {
-            if (context.response.status < 200 || context.response.status >= 300) {
-                console.error(context);
+        post: async context => {
+            const response = context.response;
+            if (response.status >= 200 && response.status < 300) {
+                return response;
+            } else {
+                throw (await response.json())
             }
-            return Promise.resolve()
         }
     }]
 });

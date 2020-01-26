@@ -2,7 +2,7 @@ import commonStyle from "style/Common.module.scss";
 import {AppState} from "app/Store";
 import React, {useState} from "react";
 import {connect} from "react-redux"
-import {css} from "util/style";
+import {jc} from "util/style";
 import styles from "./GoalCard.module.scss"
 import {Goal} from "generated/models";
 import {MdDelete, MdEdit, MdExpandLess, MdExpandMore} from "react-icons/all";
@@ -23,7 +23,7 @@ const GoalCard: React.FC<Props> = props => {
     const [isToggled, setToggle] = useState(false);
     const {goal} = props;
     const hasContent = !!goal.description;
-    return <div className={css(styles.card, styles.border)}>
+    return <div className={jc(styles.card, styles.border)}>
         <div className={styles.titleRow}>
             <div className={styles.title}>
                 <Checkbox checked={goal.done}

@@ -72,4 +72,38 @@ export class AuthApi extends runtime.BaseAPI {
         return await response.value();
     }
 
+    /**
+     * Post auth logout
+     */
+    async postAuthLogoutRaw(): Promise<runtime.ApiResponse<object>> {
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = typeof token === 'function' ? token("bearerAuth", []) : token;
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/auth/logout`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * Post auth logout
+     */
+    async postAuthLogout(): Promise<object> {
+        const response = await this.postAuthLogoutRaw();
+        return await response.value();
+    }
+
 }

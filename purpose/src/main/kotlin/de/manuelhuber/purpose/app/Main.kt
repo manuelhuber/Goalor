@@ -10,6 +10,7 @@ import de.manuelhuber.purpose.features.auth.addAuth
 import de.manuelhuber.purpose.features.goals.GoalControllerWrapper
 import de.manuelhuber.purpose.features.gratitude.GratitudeControllerWrapper
 import de.manuelhuber.purpose.features.users.UserControllerWrapper
+import de.manuelhuber.purpose.features.users.UserService
 import dev.misfitlabs.kotlinguice4.getInstance
 import io.javalin.Javalin
 import io.javalin.http.staticfiles.Location
@@ -25,17 +26,19 @@ const val STATIC_FILE_FOLDER = "static_folder"
 const val DEV_MODE = "dev"
 fun main() {
     val injector = Guice.createInjector(GuiceModule())
-    injector.getInstance<DatabaseInitiator>().init()
-
+    injector.getInstance<DatabaseInitiator>()
+        .init()
+    val userService = injector.getInstance<UserService>()
     val app = Javalin.create { config ->
         addSwagger(config)
-        config.accessManager(MyAccessManager())
+        config.accessManager(MyAccessManager(userService))
         config.enableCorsForAllOrigins()
         config.addStaticFiles(System.getenv(STATIC_FILE_FOLDER), Location.EXTERNAL)
         if (System.getenv(DEV_MODE) != null) {
             config.enableDevLogging()
         }
-    }.start(7000)
+    }
+        .start(7000)
     hackSwaggerDoc(app)
     addErrorHandling(app, logger)
     val gson = getGson()
@@ -46,18 +49,17 @@ fun main() {
         override fun map(obj: Any): String = gson.toJson(obj)
     }
 
-    addAuth(app, injector.getInstance<AuthService>().provider, injector.getInstance())
+    addAuth(app, injector.getInstance<AuthService>().provider, userService)
     createRoutes(app, injector)
 }
 
 fun createRoutes(app: Javalin, injector: Injector) {
-    listOf(
-            AuthControllerWrapper::class,
-            AspectsControllerWrapper::class,
-            UserControllerWrapper::class,
-            GoalControllerWrapper::class,
-            GratitudeControllerWrapper::class)
-        .forEach {
-            injector.getInstance(it.java).addRoutes(app)
-        }
+    listOf(AuthControllerWrapper::class,
+           AspectsControllerWrapper::class,
+           UserControllerWrapper::class,
+           GoalControllerWrapper::class,
+           GratitudeControllerWrapper::class).forEach {
+        injector.getInstance(it.java)
+            .addRoutes(app)
+    }
 }

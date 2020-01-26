@@ -1,11 +1,21 @@
+import {loadAccount} from "app/features/account/duck";
 import {loadAllAspects} from "app/features/aspects/duck";
 import {loadAllGoals} from "app/features/goals/duck";
 import {loadAllGratitudes} from "app/features/gratitude/duck";
 import {notify} from "app/features/notifications/duck";
 import {Thunk} from "app/Store";
-import {Registration} from "generated/models";
+import {ErrorResponse, Registration} from "generated/models";
 import {Action, Reducer} from "redux";
+import {notifyWithMessage} from "util/duckUtil";
 import {authApi, userApi} from "util/fetch";
+
+// Functions to load all data on page load or login
+export const DataFetchers = [
+    loadAllAspects(),
+    loadAllGoals(),
+    loadAllGratitudes(),
+    loadAccount()
+];
 
 // State
 
@@ -36,12 +46,10 @@ export const login = (req: LoginRequest): Thunk => async (dispatch, getState) =>
         authApi.postAuthLogin({login: {username, password}}).then(res => {
             if (!res.jwt) return;
             dispatch(setToken({token: res.jwt}));
-            dispatch(loadAllAspects());
-            dispatch(loadAllGoals());
-            dispatch(loadAllGratitudes());
+            DataFetchers.forEach(thunk => dispatch(thunk));
             dispatch(notify({message: "Successfully logged in"}, 1500))
-        }).catch(async (reason: Response) =>
-            dispatch(notify({message: `Error when logging in: ${(await reason.json()).message}`}))
+        }).catch((response: ErrorResponse) =>
+            dispatch(notify({message: `Error when logging in: ${response.message}`}))
         ).finally(() => dispatch(setLoading(false)));
     }
 };
@@ -55,6 +63,12 @@ export const register = (req: Registration): Thunk => async (dispatch) =>
                dispatch(loadAllGoals());
            });
 
+export const updatePassword = (old: string, newPw: string): Thunk => async (dispatch) => {
+    userApi.postUserPassword({passwordUpdate: {old, pw: newPw}}).then(value => {
+        dispatch(notify({message: "Password updated"}))
+    }).catch(notifyWithMessage("Failed to update password: ", dispatch));
+};
+
 type SetToken = { token: string };
 type SetTokenAction = SetToken & Action<"SET_TOKEN">;
 export const setToken = (input: SetToken): SetTokenAction => ({type: "SET_TOKEN", ...input});
@@ -66,8 +80,10 @@ export const setLoading = (value: boolean): SetLoadingAction => ({type: "SET_LOA
 type LogoutAction = Action<"LOGOUT">;
 export const logoutAction = (): LogoutAction => ({type: "LOGOUT"});
 export const logout = (): Thunk => async (dispatch) => {
-    dispatch({type: "RESET"});
-    dispatch(logoutAction());
+    authApi.postAuthLogout().then(() => {
+        dispatch({type: "RESET"});
+        dispatch(logoutAction());
+    });
 };
 
 export type AuthAction = SetTokenAction | SetLoadingAction | LogoutAction;

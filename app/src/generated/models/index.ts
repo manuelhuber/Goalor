@@ -8,6 +8,8 @@ export * from './GratitudeData';
 export * from './InlineObject';
 export * from './JWTResponse';
 export * from './Login';
+export * from './PasswordUpdate';
 export * from './Registration';
 export * from './RegistrationResponse';
+export * from './User';
 export * from './UserTO';

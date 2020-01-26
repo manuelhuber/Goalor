@@ -13,6 +13,7 @@ type Props = {
     children: ReactNode,
     confirmLabel?: ReactNode,
     onConfirm?: () => void
+    confirmDisabled?: boolean
 };
 
 const Modal: React.FC<Props> = props => {
@@ -28,7 +29,9 @@ const Modal: React.FC<Props> = props => {
             <Header>
                 <HeaderWrapper>
                     <div>{title}</div>
-                    <MdClose onClick={onAttemptClose}/>
+                    <Clickable>
+                        <MdClose onClick={onAttemptClose}/>
+                    </Clickable>
                 </HeaderWrapper>
             </Header>
             <Content>{children}</Content>
@@ -36,9 +39,9 @@ const Modal: React.FC<Props> = props => {
                 ? <ButtonGroup>
                     <Button onClick={onAttemptClose} design="secondary">Close</Button>
                     {twoButtons &&
-                    <Button onClick={onConfirm}>{confirmLabel}</Button>}
+                    <Button onClick={onConfirm} disabled={props.confirmDisabled}>{confirmLabel}</Button>}
                 </ButtonGroup>
-                : <Button onClick={onAttemptClose}>Close</Button>
+                : <Button onClick={onAttemptClose} disabled={props.confirmDisabled}>Close</Button>
             }
             </Footer>
         </ModalWrapper>
@@ -80,6 +83,9 @@ const HeaderWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+`;
+const Clickable = styled.div`
+cursor: pointer;
 `;
 const Content = styled.div`
     padding: var(--rhythm-half);

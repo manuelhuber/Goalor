@@ -20,7 +20,7 @@ const Expandable: React.FC<Props> = props => {
             setHeightTimeout(setTimeout(() => setHeight("auto"), animationDuration));
         } else {
             setHeight(content.current.offsetHeight);
-            setTimeout(() => setHeight(0), 0);
+            setTimeout(() => setHeight(0), 25);
         }
     }, [expand]);
     return <Drawer style={{height}}>
@@ -30,6 +30,6 @@ const Expandable: React.FC<Props> = props => {
 export default Expandable;
 let animationDuration = 350;
 const Drawer = styled.div`
-transition: height ${animationDuration}ms ease;
-overflow: hidden;
+    transition: height ${animationDuration}ms ease;
+    overflow: hidden;
 `;

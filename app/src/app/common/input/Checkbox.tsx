@@ -1,6 +1,6 @@
 import commonStyle from "style/Common.module.scss";
 import React from "react";
-import {css} from "util/style";
+import {jc} from "util/style";
 
 type Props = {
     checked: boolean;
@@ -12,7 +12,7 @@ type Props = {
     inline?: boolean;
 }
 const Checkbox: React.FC<Props> = props =>
-    <label className={css("field", ["mb-zero", props.noMargin], [commonStyle.inline, props.inline])}>
+    <label className={jc("field", ["mb-zero", props.noMargin], [commonStyle.inline, props.inline])}>
         <input type="checkbox"
                disabled={props.disable}
                value={props.value}
