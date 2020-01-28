@@ -4,6 +4,7 @@ import com.google.inject.Inject
 import de.manuelhuber.annotations.APIController
 import de.manuelhuber.annotations.Post
 import de.manuelhuber.purpose.features.auth.models.Login
+import de.manuelhuber.purpose.features.users.models.Username
 import de.manuelhuber.purpose.lib.controller.getId
 import io.javalin.http.Context
 import javalinjwt.examples.JWTResponse
@@ -16,9 +17,10 @@ class AuthController @Inject constructor(private val service: AuthService) {
         return JWTResponse(service.login(login.username, login.password))
     }
 
-    @Post("reset")
+    @Post("reset/:username")
     fun resetPassword(ctx: Context) {
-        service.resetPassword(ctx.getId())
+        val username = ctx.pathParam("username")
+        service.resetPassword(Username(username))
     }
 
     @Post("logout")

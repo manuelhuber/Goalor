@@ -4,7 +4,7 @@ import React from "react";
 import {MdClose} from "react-icons/all";
 import {connect} from "react-redux"
 import {device} from "style/styleConstants";
-import styled, {css} from "styled-components";
+import styled from "styled-components";
 
 const mapStateToProps = (state: AppState) => {
     return {message: state.notifications.message, show: state.notifications.showMessage}
@@ -17,7 +17,7 @@ const mapDispatchToProps = {
 type Props = typeof mapDispatchToProps & ReturnType<typeof mapStateToProps>;
 
 const Notifications: React.FC<Props> = props =>
-    <Root hidden={!props.show}>
+    <Root show={props.show}>
         <Message>
             {props.message}
             <Close onClick={props.clearNotification}><MdClose/></Close>
@@ -26,7 +26,7 @@ const Notifications: React.FC<Props> = props =>
 
 export default connect(mapStateToProps, mapDispatchToProps)(Notifications);
 
-const Root = styled.div<{ hidden: boolean; }>`
+const Root = styled.div<{ show: boolean; }>`
     position: fixed;
     top: 0;
     left: 0;
@@ -34,7 +34,7 @@ const Root = styled.div<{ hidden: boolean; }>`
     transition: transform ease 250ms;
     text-align: center;
     z-index: 9999;
-    ${p => p.hidden && css`transform: translateY(-100%);`}
+    transform: translateY(${p => p.show ? "0" : "-100%"});
 `;
 const Message = styled.div`
     display: inline-block;
@@ -53,4 +53,5 @@ const Message = styled.div`
 `;
 const Close = styled.div`
     float: right;
+    cursor: pointer;
 `;

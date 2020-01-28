@@ -30,6 +30,10 @@ export interface PostAuthLoginRequest {
     login?: Login;
 }
 
+export interface PostAuthResetWithUsernameRequest {
+    username: string;
+}
+
 /**
  * no description
  */
@@ -107,9 +111,13 @@ export class AuthApi extends runtime.BaseAPI {
     }
 
     /**
-     * Post auth reset
+     * Post auth reset with username
      */
-    async postAuthResetRaw(): Promise<runtime.ApiResponse<object>> {
+    async postAuthResetWithUsernameRaw(requestParameters: PostAuthResetWithUsernameRequest): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters.username === null || requestParameters.username === undefined) {
+            throw new runtime.RequiredError('username','Required parameter requestParameters.username was null or undefined when calling postAuthResetWithUsername.');
+        }
+
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -123,7 +131,7 @@ export class AuthApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/auth/reset`,
+            path: `/auth/reset/{username}`.replace(`{${"username"}}`, encodeURIComponent(String(requestParameters.username))),
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -133,10 +141,10 @@ export class AuthApi extends runtime.BaseAPI {
     }
 
     /**
-     * Post auth reset
+     * Post auth reset with username
      */
-    async postAuthReset(): Promise<object> {
-        const response = await this.postAuthResetRaw();
+    async postAuthResetWithUsername(requestParameters: PostAuthResetWithUsernameRequest): Promise<object> {
+        const response = await this.postAuthResetWithUsernameRaw(requestParameters);
         return await response.value();
     }
 

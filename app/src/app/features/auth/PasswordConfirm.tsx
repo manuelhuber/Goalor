@@ -24,7 +24,7 @@ const PasswordConfirm: React.FC<Props> = props => {
         } else {
             setNewPWError(null);
         }
-        if (newPW != repPW) {
+        if (newPW !== repPW) {
             err = "Duplicate doesn't match";
             setRepPWError(err);
         } else {

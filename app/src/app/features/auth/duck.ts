@@ -69,6 +69,13 @@ export const updatePassword = (old: string, newPw: string, token: string = null)
     }).catch(notifyWithMessage("Failed to update password: ", dispatch));
 };
 
+export const resetPassword = (username: string): Thunk => async (dispatch) => {
+    authApi.postAuthResetWithUsername({username}).then(() => {
+        dispatch(notify({message: "Reset successful. Check your emails"}))
+    });
+};
+
+
 type SetToken = { token: string };
 type SetTokenAction = SetToken & Action<"SET_TOKEN">;
 export const setToken = (input: SetToken): SetTokenAction => ({type: "SET_TOKEN", ...input});

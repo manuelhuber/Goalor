@@ -1,24 +1,24 @@
 import Button from "app/common/buttons/Button";
 import Form from "app/common/input/Form";
 import PasswordConfirm from "app/features/auth/PasswordConfirm";
+import {notify} from "app/features/notifications/duck";
 import {AppState} from "app/Store";
 import React, {useState} from "react";
 import {connect} from "react-redux"
 import {bindActionCreators} from "redux";
 import {useInput} from "util/inputHook";
-import {login, register} from "./duck";
+import {login, register, resetPassword} from "./duck";
 
 const mapStateToProps = (state: AppState) => {
     return {isLoading: state.auth.isLoading}
 };
-
 const mapDispatchToProps = (dispatch) => bindActionCreators({
     login,
     register,
+    resetPassword,
+    notify
 }, dispatch);
-
-const WithLabel = (props: { label: string, children: React.ReactNode }) =>
-    <label className='field'>{props.children}<span className='label'>{props.label}</span></label>;
+type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
 
 const Authenticate: React.FC<Props> = props => {
     const [isRegistration, setRegistration] = useState(false);
@@ -33,6 +33,13 @@ const Authenticate: React.FC<Props> = props => {
         isRegistration ?
             props.register({username, password, email, firstName, lastName}) :
             props.login({username, password});
+    };
+    const reset = () => {
+        if (username) {
+            props.resetPassword(username);
+        } else {
+            props.notify({message: "Please enter your username"})
+        }
     };
     return <div className='wrapper'>
         <Form onSubmit={submit}>
@@ -52,8 +59,11 @@ const Authenticate: React.FC<Props> = props => {
         </Form>
         <Button onClick={() => setRegistration(!isRegistration)} design='link' block={true}>
             {isRegistration ? "Already registered? Login!" : "New here? Sign up!"}</Button>
+        <Button design="link" block={true} onClick={reset}>Forgot password?</Button>
     </div>;
 };
 
-type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
 export default connect(mapStateToProps, mapDispatchToProps)(Authenticate);
+
+const WithLabel = (props: { label: string, children: React.ReactNode }) =>
+    <label className='field'>{props.children}<span className='label'>{props.label}</span></label>;

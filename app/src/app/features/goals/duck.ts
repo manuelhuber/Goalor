@@ -1,9 +1,9 @@
-import {Action, Reducer} from "redux";
-import {Thunk} from "app/Store";
-import {goalApi} from "util/fetch";
-import {Goal} from "generated/models";
-import {clone} from "util/object";
 import {notify} from "app/features/notifications/duck";
+import {Thunk} from "app/Store";
+import {Goal} from "generated/models";
+import {Action, Reducer} from "redux";
+import {goalApi} from "util/fetch";
+import {clone} from "util/object";
 
 export type GoalState = {
     goalsById: { [key: string]: Goal };
@@ -39,7 +39,8 @@ type DeleteGoalAction = { id: string } & Action<'REMOVE_GOAL'>;
 const deleteGoalAction = (id: string): DeleteGoalAction => ({type: 'REMOVE_GOAL', id});
 export const deleteGoal = (id: string): Thunk => async (dispatch) => {
     goalApi.deleteGoalsWithId({id: id}).then(() => {
-        dispatch(loadAllGoals())
+        dispatch(deleteGoalAction(id));
+        dispatch(loadAllGoals());
     });
 };
 

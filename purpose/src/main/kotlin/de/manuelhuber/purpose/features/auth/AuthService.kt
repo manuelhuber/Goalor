@@ -43,12 +43,12 @@ class AuthService @Inject constructor(private val engine: UserEngine, @Named(JWT
         provider = JWTProvider(algorithm, generator, verifier)
     }
 
-    fun resetPassword(id: Id) {
-        val user = engine.get(id)
+    fun resetPassword(username: Username) {
+        val user = engine.getByUsername(username)
         val resetToken =
                 UUID.randomUUID()
                     .toString()
-        engine.update(id, user.copy(resetToken = resetToken))
+        engine.update(user.id, user.copy(resetToken = resetToken))
         resetQueue("${user.email.value}:$resetToken")
     }
 
