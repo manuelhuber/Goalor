@@ -4,7 +4,7 @@ import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.`java-time`.datetime
 
 object Users : UUIDTable() {
-    val email = varchar("email", 100)
+    val email = varchar("email", 100).uniqueIndex()
     val username = varchar("username", 50).uniqueIndex()
     val firstName = varchar("first_name", 50)
     val lastName = varchar("last_name", 50)

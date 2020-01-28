@@ -4,9 +4,11 @@ import com.google.inject.Inject
 import de.manuelhuber.purpose.features.auth.AuthService
 import de.manuelhuber.purpose.features.auth.models.NotAuthorized
 import de.manuelhuber.purpose.features.users.engine.UserEngine
-import de.manuelhuber.purpose.features.users.models.*
+import de.manuelhuber.purpose.features.users.models.Registration
+import de.manuelhuber.purpose.features.users.models.User
+import de.manuelhuber.purpose.features.users.models.UserTO
+import de.manuelhuber.purpose.features.users.models.Username
 import de.manuelhuber.purpose.lib.engine.Id
-import de.manuelhuber.purpose.lib.exceptions.NotFound
 import java.time.LocalDateTime
 
 
@@ -26,17 +28,12 @@ class UserService @Inject constructor(private val authService: AuthService, priv
     }
 
     fun register(request: Registration): User {
-        try {
-            engine.getByUsername(request.username)
-            throw AccountAlreadyExists()
-        } catch (e: NotFound) {
-            return engine.create(User(id = Id(""),
-                                      username = request.username,
-                                      email = request.email,
-                                      firstName = request.firstName,
-                                      lastName = request.lastName,
-                                      password = authService.hashPassword(request.password)))
-        }
+        return engine.create(User(id = Id(""),
+                                  username = request.username,
+                                  email = request.email,
+                                  firstName = request.firstName,
+                                  lastName = request.lastName,
+                                  password = authService.hashPassword(request.password)))
     }
 
     fun updatePassword(userId: Id, newPW: String, oldPw: String? = null, token: String? = null): String {

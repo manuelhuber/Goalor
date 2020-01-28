@@ -61,7 +61,7 @@ export const register = (req: Registration): Thunk => async (dispatch) =>
                dispatch(setToken({token: res["token"]}));
                dispatch(loadAllAspects());
                dispatch(loadAllGoals());
-           });
+           }).catch(notifyWithMessage("Failed to register: ", dispatch));
 
 export const updatePassword = (old: string, newPw: string, token: string = null): Thunk => async (dispatch) => {
     userApi.postUserPassword({passwordUpdate: {old, pw: newPw, token}}).then(value => {

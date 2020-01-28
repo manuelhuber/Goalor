@@ -7,9 +7,12 @@ import de.manuelhuber.purpose.features.users.models.Username
 import de.manuelhuber.purpose.lib.engine.Id
 import de.manuelhuber.purpose.lib.engine.toUUID
 import de.manuelhuber.purpose.lib.exceptions.NotFound
+import de.manuelhuber.purpose.lib.exceptions.ValidationError
+import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.postgresql.util.PSQLException
 import javax.inject.Inject
 
 class UserPostgresEngine @Inject constructor(private val db: DatabaseInitiator) : UserEngine {
@@ -37,13 +40,21 @@ class UserPostgresEngine @Inject constructor(private val db: DatabaseInitiator) 
     }
 
     override fun create(model: User): User {
-        val id = transaction(db.db) { Users.insertAndGetId(fillRows(model)) }
-        return model.copy(id = Id(id.toString()))
+        try {
+            val id = transaction(db.db) { Users.insertAndGetId(fillRows(model)) }
+            return model.copy(id = Id(id.toString()))
+        } catch (e: ExposedSQLException) {
+            throw ValidationError((e.cause as PSQLException).serverErrorMessage.detail)
+        }
     }
 
     override fun update(id: Id, model: User): User {
-        transaction(db.db) { Users.update({ Users.id eq id.toUUID() }, body = fillRows(model)) }
-        return model.copy()
+        try {
+            transaction(db.db) { Users.update({ Users.id eq id.toUUID() }, body = fillRows(model)) }
+            return model.copy()
+        } catch (e: ExposedSQLException) {
+            throw ValidationError((e.cause as PSQLException).serverErrorMessage.detail)
+        }
     }
 
     override fun delete(id: Id): Boolean {

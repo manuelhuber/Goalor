@@ -2,6 +2,7 @@ import {notify} from "app/features/notifications/duck";
 import {Thunk} from "app/Store";
 import {UserTO} from "generated/models";
 import {Action, Reducer} from "redux";
+import {notifyWithMessage} from "util/duckUtil";
 import {userApi} from "util/fetch";
 
 // State
@@ -41,7 +42,8 @@ export const updateAccount = (userTO: UserTO): Thunk => async (dispatch) => {
         dispatch(setEmail(value.email));
         dispatch(setUsername(value.username));
         dispatch(setNames({first: value.firstName, last: value.lastName}))
-    }).then(() => dispatch(notify({message: "Update successful!"})));
+    }).then(() => dispatch(notify({message: "Update successful!"}))
+    ).catch(notifyWithMessage("Failed to update: ", dispatch));
 };
 
 
