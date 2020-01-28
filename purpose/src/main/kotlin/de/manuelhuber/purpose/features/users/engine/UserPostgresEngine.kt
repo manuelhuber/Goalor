@@ -53,12 +53,13 @@ class UserPostgresEngine @Inject constructor(private val db: DatabaseInitiator) 
 
 val rowToUser: (ResultRow) -> User = {
     User(id = Id(it[Users.id].toString()),
-         email = Email(it[Users.email]),
          username = Username(it[Users.username]),
+         email = Email(it[Users.email]),
          firstName = it[Users.firstName],
          lastName = it[Users.lastName],
          password = it[Users.password],
-         logout = it[Users.logout])
+         logout = it[Users.logout],
+         resetToken = it[Users.resetToken])
 }
 
 private fun fillRows(model: User): Users.(UpdateBuilder<Int>) -> Unit = {
@@ -68,4 +69,5 @@ private fun fillRows(model: User): Users.(UpdateBuilder<Int>) -> Unit = {
     it[lastName] = model.lastName
     it[password] = model.password
     it[logout] = model.logout
+    it[resetToken] = model.resetToken
 }

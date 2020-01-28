@@ -6,5 +6,11 @@ import de.manuelhuber.purpose.features.users.models.Username
 import de.manuelhuber.purpose.lib.engine.Id
 
 fun testUser(password: String = "password"): User {
-    return User(Email("mail"), Username("username"), "First", "Last", password, id = Id("0"), logout = null)
+    return User(id = Id("0"),
+                username = Username("username"),
+                email = Email("mail"),
+                firstName = "First",
+                lastName = "Last",
+                password = password,
+                logout = null)
 }

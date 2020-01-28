@@ -22,8 +22,8 @@ import org.slf4j.LoggerFactory
 
 private val logger: org.slf4j.Logger = LoggerFactory.getLogger(Javalin::class.java)
 
-const val STATIC_FILE_FOLDER = "static_folder"
 const val DEV_MODE = "dev"
+
 fun main() {
     val injector = Guice.createInjector(GuiceModule())
     injector.getInstance<DatabaseInitiator>()

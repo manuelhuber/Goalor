@@ -2,6 +2,7 @@ package de.manuelhuber.purpose.features.users
 
 import com.google.inject.Inject
 import de.manuelhuber.purpose.features.auth.AuthService
+import de.manuelhuber.purpose.features.auth.models.NotAuthorized
 import de.manuelhuber.purpose.features.users.engine.UserEngine
 import de.manuelhuber.purpose.features.users.models.*
 import de.manuelhuber.purpose.lib.engine.Id
@@ -29,21 +30,30 @@ class UserService @Inject constructor(private val authService: AuthService, priv
             engine.getByUsername(request.username)
             throw AccountAlreadyExists()
         } catch (e: NotFound) {
-            return engine.create(User(email = request.email,
-                                      password = authService.hashPassword(request.password),
+            return engine.create(User(id = Id(""),
+                                      username = request.username,
+                                      email = request.email,
                                       firstName = request.firstName,
                                       lastName = request.lastName,
-                                      username = request.username,
-                                      id = Id(""),
-                                      logout = null))
+                                      password = authService.hashPassword(request.password)))
         }
     }
 
-    fun updatePassword(userId: Id, newPW: String, old: String): String {
+    fun updatePassword(userId: Id, newPW: String, oldPw: String? = null, token: String? = null): String {
+        val user = engine.get(userId)
+        when {
+            oldPw != null -> authService.login(user.username, oldPw)
+            token != null -> user.resetToken.equals(token)
+            else -> throw NotAuthorized("Either previous password or reset token needed to set new password")
+        }
+        return updatePassword(userId, newPW)
+    }
+
+    fun updatePassword(userId: Id, newPW: String): String {
         val user = getUserById(userId)
-        val token = authService.login(user.username, old)
         val update = user.copy(password = authService.hashPassword(newPW), logout = LocalDateTime.now())
         engine.update(userId, update)
+        val token = authService.login(user.username, newPW)
         return token
     }
 

@@ -24,13 +24,19 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    email: string;
+    id: string;
     /**
      * 
      * @type {string}
      * @memberof User
      */
     username: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    email: string;
     /**
      * 
      * @type {string}
@@ -60,7 +66,7 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    id: string;
+    resetToken?: string;
 }
 
 export function UserFromJSON(json: any): User {
@@ -73,13 +79,14 @@ export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User
     }
     return {
         
-        'email': json['email'],
+        'id': json['id'],
         'username': json['username'],
+        'email': json['email'],
         'firstName': json['firstName'],
         'lastName': json['lastName'],
         'password': json['password'],
         'logout': !exists(json, 'logout') ? undefined : (new Date(json['logout'])),
-        'id': json['id'],
+        'resetToken': !exists(json, 'resetToken') ? undefined : json['resetToken'],
     };
 }
 
@@ -92,13 +99,14 @@ export function UserToJSON(value?: User | null): any {
     }
     return {
         
-        'email': value.email,
+        'id': value.id,
         'username': value.username,
+        'email': value.email,
         'firstName': value.firstName,
         'lastName': value.lastName,
         'password': value.password,
         'logout': value.logout === undefined ? undefined : (value.logout.toISOString()),
-        'id': value.id,
+        'resetToken': value.resetToken,
     };
 }
 

@@ -12,10 +12,6 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 
 
-const val DB_URL = "database_url"
-const val DB_USER = "database_user"
-const val DB_PASSWORD = "database_password"
-
 class DatabaseInitiator @Inject constructor(@Named(DB_URL) val url: String,
                                             @Named(DB_USER) val user: String,
                                             @Named(DB_PASSWORD) val password: String) {

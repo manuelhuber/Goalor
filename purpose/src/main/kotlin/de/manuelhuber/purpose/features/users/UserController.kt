@@ -23,7 +23,7 @@ class UserController @Inject constructor(private val service: UserService, priva
     @Post("password")
     @Authorized
     fun updatePw(ctx: Context, passwordUpdate: PasswordUpdate): String {
-        return service.updatePassword(ctx.getId(), passwordUpdate.pw, passwordUpdate.old)
+        return service.updatePassword(ctx.getId(), passwordUpdate.pw, passwordUpdate.old, passwordUpdate.token)
     }
 
     @Get
@@ -40,5 +40,5 @@ class UserController @Inject constructor(private val service: UserService, priva
     }
 }
 
-data class PasswordUpdate(val old: String, val pw: String)
+data class PasswordUpdate(val old: String?, val token: String?, val pw: String)
 

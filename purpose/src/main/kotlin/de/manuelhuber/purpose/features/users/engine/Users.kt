@@ -10,4 +10,5 @@ object Users : UUIDTable() {
     val lastName = varchar("last_name", 50)
     val password = varchar("password", 150)
     val logout = datetime("logout").nullable()
+    val resetToken = varchar("reset_token", 50).nullable()
 }

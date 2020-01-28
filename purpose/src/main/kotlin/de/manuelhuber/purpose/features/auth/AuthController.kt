@@ -16,6 +16,11 @@ class AuthController @Inject constructor(private val service: AuthService) {
         return JWTResponse(service.login(login.username, login.password))
     }
 
+    @Post("reset")
+    fun resetPassword(ctx: Context) {
+        service.resetPassword(ctx.getId())
+    }
+
     @Post("logout")
     fun logout(ctx: Context) {
         service.logout(ctx.getId())

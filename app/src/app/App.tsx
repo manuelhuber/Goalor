@@ -4,6 +4,7 @@ import {DataFetchers} from "app/features/auth/duck";
 import Menu from "app/features/menu/Menu";
 import Notifications from "app/features/notifications/Notifications";
 import Journal from "app/page/Journal";
+import Reset from "app/page/Reset";
 import Settings from "app/page/Settings";
 import store from "app/Store";
 import React from "react";
@@ -36,6 +37,7 @@ const App: React.FC = () =>
                             <RestrictedRoute path='/journal' component={Journal}/>
                             <RestrictedRoute path='/settings' component={Settings}/>
                             <Route path='/login' component={Authenticate}/>
+                            <Route path='/reset/:token' component={Reset}/>
                             <Route path='/' exact component={Landing}/>
                             <Route component={NotFound}/>
                         </Switch>

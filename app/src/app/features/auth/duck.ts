@@ -63,8 +63,8 @@ export const register = (req: Registration): Thunk => async (dispatch) =>
                dispatch(loadAllGoals());
            });
 
-export const updatePassword = (old: string, newPw: string): Thunk => async (dispatch) => {
-    userApi.postUserPassword({passwordUpdate: {old, pw: newPw}}).then(value => {
+export const updatePassword = (old: string, newPw: string, token: string = null): Thunk => async (dispatch) => {
+    userApi.postUserPassword({passwordUpdate: {old, pw: newPw, token}}).then(value => {
         dispatch(notify({message: "Password updated"}))
     }).catch(notifyWithMessage("Failed to update password: ", dispatch));
 };

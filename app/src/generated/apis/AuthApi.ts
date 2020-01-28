@@ -106,4 +106,38 @@ export class AuthApi extends runtime.BaseAPI {
         return await response.value();
     }
 
+    /**
+     * Post auth reset
+     */
+    async postAuthResetRaw(): Promise<runtime.ApiResponse<object>> {
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = typeof token === 'function' ? token("bearerAuth", []) : token;
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/auth/reset`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * Post auth reset
+     */
+    async postAuthReset(): Promise<object> {
+        const response = await this.postAuthResetRaw();
+        return await response.value();
+    }
+
 }

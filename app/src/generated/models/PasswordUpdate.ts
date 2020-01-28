@@ -24,7 +24,13 @@ export interface PasswordUpdate {
      * @type {string}
      * @memberof PasswordUpdate
      */
-    old: string;
+    old?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PasswordUpdate
+     */
+    token?: string;
     /**
      * 
      * @type {string}
@@ -43,7 +49,8 @@ export function PasswordUpdateFromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'old': json['old'],
+        'old': !exists(json, 'old') ? undefined : json['old'],
+        'token': !exists(json, 'token') ? undefined : json['token'],
         'pw': json['pw'],
     };
 }
@@ -58,6 +65,7 @@ export function PasswordUpdateToJSON(value?: PasswordUpdate | null): any {
     return {
         
         'old': value.old,
+        'token': value.token,
         'pw': value.pw,
     };
 }

@@ -6,22 +6,26 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.google.inject.Inject
 import com.google.inject.name.Named
 import de.manuelhuber.annotations.Roles
+import de.manuelhuber.purpose.app.JWT_SECRET
 import de.manuelhuber.purpose.features.auth.models.WrongPassword
 import de.manuelhuber.purpose.features.users.engine.UserEngine
 import de.manuelhuber.purpose.features.users.models.User
 import de.manuelhuber.purpose.features.users.models.Username
 import de.manuelhuber.purpose.lib.engine.Id
+import de.manuelhuber.purpose.lib.rabbitmq.RabbitMQConnector
 import javalinjwt.JWTGenerator
 import javalinjwt.JWTProvider
 import org.mindrot.jbcrypt.BCrypt
 import java.time.LocalDateTime
-import java.time.ZoneOffset
 import java.util.*
 
-class AuthService @Inject constructor(private val engine: UserEngine, @Named(JWT_SECRET) secret: String) {
+class AuthService @Inject constructor(private val engine: UserEngine, @Named(JWT_SECRET) secret: String,
+                                      private val queue: RabbitMQConnector) {
 
     internal var provider: JWTProvider
         private set
+
+    private val resetQueue = queue.getConnection("reset_pw")
 
     init {
         val algorithm = Algorithm.HMAC256(secret)
@@ -37,6 +41,15 @@ class AuthService @Inject constructor(private val engine: UserEngine, @Named(JWT
                 JWT.require(algorithm)
                     .build()
         provider = JWTProvider(algorithm, generator, verifier)
+    }
+
+    fun resetPassword(id: Id) {
+        val user = engine.get(id)
+        val resetToken =
+                UUID.randomUUID()
+                    .toString()
+        engine.update(id, user.copy(resetToken = resetToken))
+        resetQueue("${user.email.value}:$resetToken")
     }
 
     fun logout(userId: Id) {
