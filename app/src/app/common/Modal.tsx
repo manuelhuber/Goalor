@@ -3,7 +3,7 @@ import ButtonGroup from "app/common/buttons/ButtonGroup";
 import Header from "app/features/header/Header";
 import React, {ReactNode} from "react";
 import {MdClose} from "react-icons/all";
-import {device} from "style/styleConstants";
+import {device, screenLg} from "style/styleConstants";
 import styled, {css} from "styled-components";
 
 type Props = {
@@ -71,7 +71,10 @@ const ModalWrapper = styled.div`
         border-radius: var(--border-radius);
         overflow: hidden;
         left: 50%;
+        right: auto;
         top: 50%;
+        bottom: auto;
+        min-width: calc(${screenLg}/2);
         transform: translate(-50%, -50%);
     }
 

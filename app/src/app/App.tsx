@@ -27,7 +27,7 @@ const App: React.FC = () =>
         <Router>
             <div className={style.app}>
                 <Notifications/>
-                <div className={style.main}>
+                <Main>
                     <Header>
                         <div className={style.header}>{APP_TITLE}</div>
                     </Header>
@@ -42,7 +42,7 @@ const App: React.FC = () =>
                             <Route component={NotFound}/>
                         </Switch>
                     </Content>
-                </div>
+                </Main>
                 <div className={style.menuWrapper}><Menu/></div>
             </div>
         </Router>
@@ -51,6 +51,10 @@ const App: React.FC = () =>
 export default App;
 
 const Content = styled.div`
-max-width: 1000px;
-margin: 0 auto;
+  max-width: 1000px;
+  margin: 0 auto;
+`;
+const Main = styled.div`
+  flex-grow: 1;
+  overflow: auto;
 `;

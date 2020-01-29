@@ -53,13 +53,13 @@ const PopupImage: React.FC<Props> = props => {
                                bottom={rect.bottom}
                                isFullscreen={isFullscreen}
                                onClick={() => setFullscreen(false)}>
-            <img src={props.src} alt=""/>
+            <Image src={props.src} alt=""/>
         </Fullscreen>}
     </div>;
 };
 
 const Backdrop = styled.div<{ isFullscreen: boolean }>`
-  position: fixed;
+  position: absolute;
   z-index: 9;
   top: 0;
   bottom: 0;
@@ -71,7 +71,7 @@ const Backdrop = styled.div<{ isFullscreen: boolean }>`
 `;
 const Fullscreen = styled.div<{ top: number, bottom: number, left: number, right: number, isFullscreen: boolean }>`
   z-index: 10;
-  position: fixed;
+  position: absolute;
   display: flex;
   align-items: center;
   top: ${p => p.isFullscreen ? 0 : p.top}px;
@@ -81,4 +81,9 @@ const Fullscreen = styled.div<{ top: number, bottom: number, left: number, right
   transition: all ${blowUpDuration}ms ease;
 `;
 
+const Image = styled.img`
+max-width: 100%;
+max-height: 100%;
+margin: 0 auto;
+`;
 export default PopupImage;

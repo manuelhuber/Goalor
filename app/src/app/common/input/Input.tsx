@@ -6,13 +6,13 @@ import {jc} from "util/style";
 type Props = { label: React.ReactNode, noMargin?: boolean, error?: string }
 const Input: React.FC<Props & React.InputHTMLAttributes<HTMLInputElement>> = props => {
     const {noMargin, ...passOnProps} = props;
-    return <>
+    return <div>
         <Error>{props.error}</Error>
         <label className={jc("field", ["mb-zero", props.noMargin])}>
             <StyledInput red={!!props.error} {...passOnProps}/>
             <Label red={!!props.error} className="label">{props.label}</Label>
         </label>
-    </>;
+    </div>;
 };
 
 const Error = styled.div`

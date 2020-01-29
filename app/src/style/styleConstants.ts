@@ -33,16 +33,16 @@ export const blackLighter = "#aeb0a8";
 
 export const backgroundColor = "#050605";
 // Small tablets and large smartphones (landscape view)
-const screenSm = '576px';
+export const screenSm = '576px';
 
 // Small tablets (portrait view)
-const screenMd = '768px';
+export const screenMd = '768px';
 
 // Tablets and small desktops
-const screenLg = '992px';
+export const screenLg = '992px';
 
 // Large tablets and desktops
-const screenXl = '1200px';
+export const screenXl = '1200px';
 
 const screenXxl = '1800px';
 export const fancyFont = `'Pacifico', sans-serif`;
