@@ -3,7 +3,7 @@ package de.manuelhuber.purpose.features.gratitude
 import com.google.inject.Inject
 import de.manuelhuber.annotations.*
 import de.manuelhuber.purpose.features.gratitude.model.Gratitude
-import de.manuelhuber.purpose.lib.controller.getId
+import de.manuelhuber.purpose.lib.controller.getRequesterId
 import de.manuelhuber.purpose.lib.engine.toId
 import de.manuelhuber.purpose.lib.exceptions.ValidationError
 import io.javalin.http.Context
@@ -29,25 +29,25 @@ class GratitudeController @Inject constructor(private val gratitudeService: Grat
             if (!it.contentType.contains("image")) throw ValidationError("Wrong filetype: only images are supported")
         }
         val description = ctx.formParam("description")
-        return gratitudeService.createGratitude(GratitudeData(title, description, date), file, ctx.getId())
+        return gratitudeService.createGratitude(GratitudeData(title, description, date), file, ctx.getRequesterId())
     }
 
     @Get
     @Authorized
     fun getGratitudesForOwner(ctx: Context): List<Gratitude> {
-        return gratitudeService.getGoalsByOwner(ctx.getId())
+        return gratitudeService.getGoalsByOwner(ctx.getRequesterId())
     }
 
     @Delete(":id")
     @Authorized
     fun deleteGratitude(ctx: Context) {
-        gratitudeService.deleteGratitude(ctx.pathParam("id").toId(), ctx.getId())
+        gratitudeService.deleteGratitude(ctx.pathParam("id").toId(), ctx.getRequesterId())
     }
 
     @Put(":id")
     @Authorized
     fun updateGratitude(ctx: Context, data: GratitudeData): Gratitude {
-        return gratitudeService.updateGoal(ctx.pathParam("id").toId(), data, ctx.getId())
+        return gratitudeService.updateGoal(ctx.pathParam("id").toId(), data, ctx.getRequesterId())
     }
 
 }

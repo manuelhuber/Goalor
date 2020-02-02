@@ -27,8 +27,8 @@ class GratitudePostgresEngine : GratitudeEngine {
 
     override fun get(id: Id): Gratitude {
         return transaction {
-            Gratitudes.select { Gratitudes.id eq id.toUUID() }.map(rowToModel).firstOrNull() ?: throw NotFound(id.value,
-                                                                                                               Gratitude::class)
+            Gratitudes.select { Gratitudes.id eq id.toUUID() }.map(rowToModel).firstOrNull()
+                    ?: throw NotFound(id.value, Gratitude::class)
         }
     }
 
@@ -63,9 +63,9 @@ fun fillColumns(gratitude: Gratitude): Gratitudes.(UpdateBuilder<Int>) -> Unit =
 
 val rowToModel: (ResultRow) -> Gratitude = {
     Gratitude(id = it[Gratitudes.id].value.toId(),
-              owner = it[Gratitudes.owner].toId(),
-              title = it[Gratitudes.title],
-              date = it[Gratitudes.date],
-              description = it[Gratitudes.description],
-              image = it[Gratitudes.image_id])
+            owner = it[Gratitudes.owner].toId(),
+            title = it[Gratitudes.title],
+            date = it[Gratitudes.date],
+            description = it[Gratitudes.description],
+            image = it[Gratitudes.image_id])
 }

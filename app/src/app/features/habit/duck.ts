@@ -1,59 +1,67 @@
 import {Thunk} from "app/Store";
+import {Habit} from "generated/models";
 import {Action, Reducer} from "redux";
+import {serialise} from "util/date";
+import {notifyWithMessage} from "util/duckUtil";
+import {habitApi} from "util/fetch";
 
-export type CheckinType = "check" | "bool" | "mood";
-
-export type Habit = { id: string, title: string, options: number }
-export type HabitValue = { habit: string, value: number }
 // State
 export type HabitsState = {
     habits: { [id: string]: Habit };
-    values: { [date: string]: { [id: string]: HabitValue } }
+    values: { [date: string]: { [id: string]: number } }
 };
 
 const initialState: HabitsState = {
-    habits: {
-        "1": {id: "1", title: "Exercised", options: 1},
-        "2": {id: "2", title: "Ate healthy", options: 2},
-        "3": {id: "3", title: "Enjoyed work", options: 3},
-        "4": {id: "4", title: "Yes?", options: 4},
-        "5": {id: "5", title: "Overall mood", options: 5},
-    },
-    values: {
-        "2020-02-01": {
-            "1": {habit: "1", value: 1},
-            "2": {habit: "2", value: -1},
-            "5": {habit: "5", value: 2},
-        }, "2020-01-30": {
-            "2": {habit: "2", value: -1},
-            "3": {habit: "3", value: 0},
-            "4": {habit: "4", value: 1},
-            "5": {habit: "5", value: -2},
+    habits: {},
+    values: {}
+};
+
+export const loadHabits = (): Thunk => async (dispatch) => {
+    const from = new Date();
+    from.setDate(from.getDate() - 30);
+    habitApi.getHabits({from, to: new Date()}).then(value => {
+            dispatch(addHabit({habits: value.habits}));
+            dispatch(setValuesAction({values: value.dateValue}));
         }
-    }
+    );
 };
 
 // Actions
 
-type SetValue = { key: string, value: any, date: string };
-type SetValueAction = SetValue & Action<'SET_VALUE'>;
-export const setValueAction = (input: SetValue): SetValueAction => ({type: 'SET_VALUE', ...input});
-export const setHabitValue = (update: SetValue): Thunk => async (dispatch) => {
-    // Call backend
-    dispatch(setValueAction(update));
+type AddHabit = { habits: Habit[] };
+type AddHabitAction = AddHabit & Action<'ADD_HABIT'>;
+export const addHabit = (input: AddHabit): AddHabitAction => ({type: 'ADD_HABIT', ...input});
+
+type SetValues = { values: { [key: string]: { [key: string]: number } } };
+type SetValuesAction = SetValues & Action<'SET_VALUE'>;
+export const setValuesAction = (input: SetValues): SetValuesAction => ({type: 'SET_VALUE', ...input});
+
+export const updateHabitValue = (date: Date, value: number, habit: string): Thunk => async (dispatch, getState) => {
+    // Set right away to improve responsiveness
+    const dateKey = serialise(date);
+    let values = {[dateKey]: {[habit]: value}};
+    dispatch(setValuesAction({values}));
+    habitApi.postHabitsWithHabit({habit, habitValueRequest: {date, value}})
+            .catch(notifyWithMessage("Failed to update habit: ", dispatch));
 };
 
-export type HabitsAction = SetValueAction;
+export type HabitsAction = SetValuesAction | AddHabitAction;
 
 // Reducer
 
 export const habitsReducer: Reducer<HabitsState, HabitsAction> = (state = initialState, action): HabitsState => {
     switch (action.type) {
+        case "ADD_HABIT":
+            let habits = {...state.habits};
+            action.habits.forEach(habit => habits[habit.id] = habit);
+            return {...state, habits: habits};
         case "SET_VALUE":
-            const dateData = {...state.values[action.date]};
-            dateData[action.key] = {habit: action.key, value: action.value};
             const values = {...state.values};
-            values[action.date] = dateData;
+            Object.keys(action.values).forEach(date => {
+                const dateValues = {...values[date]};
+                Object.assign(dateValues, action.values[date]);
+                values[date] = dateValues;
+            });
             return {...state, values: values};
         default:
             return state;

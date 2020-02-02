@@ -2,17 +2,48 @@ package de.manuelhuber.purpose.features.habits
 
 import com.google.inject.Inject
 import de.manuelhuber.annotations.APIController
+import de.manuelhuber.annotations.Authorized
 import de.manuelhuber.annotations.Get
+import de.manuelhuber.annotations.Post
+import de.manuelhuber.purpose.features.habits.model.Habit
+import de.manuelhuber.purpose.features.habits.model.HabitRequest
+import de.manuelhuber.purpose.features.habits.model.HabitValue
+import de.manuelhuber.purpose.features.habits.model.HabitValueRequest
+import de.manuelhuber.purpose.lib.controller.getRequesterId
+import de.manuelhuber.purpose.lib.engine.toId
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.annotations.OpenApiParam
 import java.time.LocalDate
 
 @APIController("habits")
-class HabitController @Inject constructor() {
+class HabitController @Inject constructor(val service: HabitService) {
 
-    @Get("", queryParams = [OpenApiParam("limit", Int::class), OpenApiParam("from", LocalDate::class)])
-    fun register(ctx: Context) {
-        print(ctx.queryParam<LocalDate>("from"))
+    @Get("", queryParams = [OpenApiParam("to", LocalDate::class), OpenApiParam("from", LocalDate::class)])
+    fun register(ctx: Context): HabitResponse {
+        val from = ctx.queryParam<LocalDate>("from").value!!
+        val to = ctx.queryParam<LocalDate>("to").value!!
+        val owner = ctx.getRequesterId()
+        val habits = service.getHabits(owner)
+        val habitValues = service.getHabitValues(owner, from, to).mapValues { entry ->
+            entry.value.fold(mutableMapOf<String, Int>()) { acc, habitValue ->
+                acc[habitValue.habit.value] = habitValue.value
+                acc
+            }
+        }
+        return HabitResponse(habits, habitValues)
+    }
+
+    @Post
+    @Authorized
+    fun createHabit(ctx: Context, habit: HabitRequest): Habit {
+        return service.createHabit(habit, ctx.getRequesterId())
+    }
+
+    @Post("/:habit")
+    @Authorized
+    fun addValue(ctx: Context, habit: HabitValueRequest): HabitValue {
+        return service.addValue(ctx.pathParam("habit").toId(), habit, ctx.getRequesterId())
     }
 }
 
+data class HabitResponse(val habits: List<Habit>, val dateValue: Map<LocalDate, Map<String, Int>>)

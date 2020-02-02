@@ -1,5 +1,5 @@
 import IconButton from "app/common/buttons/IconButton";
-import {Habit} from "app/features/habit/duck";
+import {Habit} from "generated/models";
 import React from "react";
 import {
     FaMinus,

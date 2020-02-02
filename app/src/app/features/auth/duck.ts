@@ -2,6 +2,7 @@ import {loadAccount} from "app/features/account/duck";
 import {loadAllAspects} from "app/features/aspects/duck";
 import {loadAllGoals} from "app/features/goals/duck";
 import {loadAllGratitudes} from "app/features/gratitude/duck";
+import {loadHabits} from "app/features/habit/duck";
 import {notify} from "app/features/notifications/duck";
 import {Thunk} from "app/Store";
 import {ErrorResponse, Registration} from "generated/models";
@@ -14,7 +15,8 @@ export const DataFetchers = [
     loadAllAspects(),
     loadAllGoals(),
     loadAllGratitudes(),
-    loadAccount()
+    loadAccount(),
+    loadHabits()
 ];
 
 // State

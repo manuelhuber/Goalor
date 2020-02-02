@@ -6,6 +6,8 @@ import de.manuelhuber.purpose.features.aspects.engine.Aspects
 import de.manuelhuber.purpose.features.goals.engine.GoalRelations
 import de.manuelhuber.purpose.features.goals.engine.Goals
 import de.manuelhuber.purpose.features.gratitude.engine.Gratitudes
+import de.manuelhuber.purpose.features.habits.engine.HabitValues
+import de.manuelhuber.purpose.features.habits.engine.Habits
 import de.manuelhuber.purpose.features.users.engine.Users
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -24,7 +26,7 @@ class DatabaseInitiator @Inject constructor(@Named(DB_URL) val url: String,
 //        File(path).listFiles().forEach {
 //            print(BufferedReader(FileReader(it.canonicalFile)).readText())
 //        }
-        listOf(Users, Aspects, Goals, GoalRelations, Gratitudes).forEach {
+        listOf(Users, Aspects, Goals, GoalRelations, Gratitudes, Habits, HabitValues).forEach {
             transaction { SchemaUtils.createMissingTablesAndColumns(it) }
         }
     }

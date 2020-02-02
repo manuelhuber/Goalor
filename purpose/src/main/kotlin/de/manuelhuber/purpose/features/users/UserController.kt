@@ -7,7 +7,7 @@ import de.manuelhuber.purpose.features.users.models.Registration
 import de.manuelhuber.purpose.features.users.models.RegistrationResponse
 import de.manuelhuber.purpose.features.users.models.User
 import de.manuelhuber.purpose.features.users.models.UserTO
-import de.manuelhuber.purpose.lib.controller.getId
+import de.manuelhuber.purpose.lib.controller.getRequesterId
 import io.javalin.http.Context
 
 @APIController("user")
@@ -23,20 +23,20 @@ class UserController @Inject constructor(private val service: UserService, priva
     @Post("password")
     @Authorized
     fun updatePw(ctx: Context, passwordUpdate: PasswordUpdate): String {
-        return service.updatePassword(ctx.getId(), passwordUpdate.pw, passwordUpdate.old, passwordUpdate.token)
+        return service.updatePassword(ctx.getRequesterId(), passwordUpdate.pw, passwordUpdate.old, passwordUpdate.token)
     }
 
     @Get
     @Authorized
     fun getUser(ctx: Context): UserTO {
-        val user = service.getUserById(ctx.getId())
+        val user = service.getUserById(ctx.getRequesterId())
         return UserTO.fromUser(user)
     }
 
     @Put
     @Authorized
     fun updateUser(ctx: Context, userTO: UserTO): User {
-        return service.updateUser(ctx.getId(), userTO)
+        return service.updateUser(ctx.getRequesterId(), userTO)
     }
 }
 

@@ -22,3 +22,5 @@ fun Id.toUUID(): UUID = try {
 }
 
 fun UUID.toId() = Id(this.toString())
+
+val PlaceholderId = Id("")

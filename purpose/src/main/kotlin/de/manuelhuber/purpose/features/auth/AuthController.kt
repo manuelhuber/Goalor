@@ -5,7 +5,7 @@ import de.manuelhuber.annotations.APIController
 import de.manuelhuber.annotations.Post
 import de.manuelhuber.purpose.features.auth.models.Login
 import de.manuelhuber.purpose.features.users.models.Username
-import de.manuelhuber.purpose.lib.controller.getId
+import de.manuelhuber.purpose.lib.controller.getRequesterId
 import io.javalin.http.Context
 import javalinjwt.examples.JWTResponse
 
@@ -25,7 +25,7 @@ class AuthController @Inject constructor(private val service: AuthService) {
 
     @Post("logout")
     fun logout(ctx: Context) {
-        service.logout(ctx.getId())
+        service.logout(ctx.getRequesterId())
     }
 }
 

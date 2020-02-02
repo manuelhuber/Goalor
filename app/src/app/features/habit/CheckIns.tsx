@@ -1,27 +1,26 @@
 import IconButton from "app/common/buttons/IconButton";
 import Input from "app/common/input/Input";
 import CheckIn from "app/features/habit/CheckIn";
-import {setHabitValue} from "app/features/habit/duck";
+import {updateHabitValue} from "app/features/habit/duck";
 import {AppState} from "app/Store";
 import React, {useState} from "react";
 import {IoMdArrowDropleft, IoMdArrowDropright} from "react-icons/all";
 import {connect} from 'react-redux'
 import {bindActionCreators} from "redux";
 import styled from "styled-components";
-import {toInput} from "util/date";
+import {serialise} from "util/date";
 
 const mapStateToProps = (state: AppState) => {
     return {habits: state.habits.habits, values: state.habits.values};
 };
-const mapDispatchToProps = dispatch => bindActionCreators({setHabitValue}, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({updateHabitValue}, dispatch);
 type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
 
 const CheckIns: React.FC<Props> = props => {
     const [date, setDate] = useState(new Date());
     const updateValue = (key) => (value) => {
-        props.setHabitValue({key, value, date: toInput(date)})
+        props.updateHabitValue(date, value, key);
     };
-
     const adjacentDate = (mod: number) => {
         const newDate = new Date(date);
         newDate.setDate(date.getDate() + mod);
@@ -29,15 +28,21 @@ const CheckIns: React.FC<Props> = props => {
     };
     const prevDate = () => adjacentDate(-1);
     const nextDate = () => adjacentDate(1);
-    const setDateFromString = (e) => setDate(new Date(e.target.value));
+    const setDateFromString = (e) => {
+        let newDate = new Date(e.target.value);
+        // Prevent the "clear" function of date input
+        if (!isNaN(newDate.getDate())) {
+            setDate(newDate);
+        }
+    };
     const getValue = (habitId) => {
-        const dateData = props.values[toInput(date)];
-        return dateData && dateData[habitId] && dateData[habitId].value;
+        const dateData = props.values[serialise(date)];
+        return dateData && dateData[habitId] && dateData[habitId];
     };
     return <div>
         <DateRow>
             <IconButton onClick={prevDate}><IoMdArrowDropleft/></IconButton>
-            <Input type="date" label="date" noMargin={true} value={toInput(date)} onChange={setDateFromString}/>
+            <Input type="date" label="date" noMargin={true} value={serialise(date)} onChange={setDateFromString}/>
             <IconButton onClick={nextDate}><IoMdArrowDropright/></IconButton>
         </DateRow>
         {Object.keys(props.habits).map(key =>

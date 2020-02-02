@@ -6,7 +6,7 @@ import de.manuelhuber.purpose.features.auth.Claims
 import de.manuelhuber.purpose.features.goals.model.Goal
 import de.manuelhuber.purpose.features.goals.model.GoalData
 import de.manuelhuber.purpose.features.users.models.User
-import de.manuelhuber.purpose.lib.controller.getId
+import de.manuelhuber.purpose.lib.controller.getRequesterId
 import de.manuelhuber.purpose.lib.engine.toId
 import io.javalin.http.Context
 
@@ -23,19 +23,19 @@ class GoalController @Inject constructor(private val service: GoalService) {
     @Post
     @Authorized
     fun createNewGoal(ctx: Context, create: GoalData): Goal {
-        return service.createNewGoal(create, ctx.getId())
+        return service.createNewGoal(create, ctx.getRequesterId())
     }
 
     @Delete(":id")
     @Authorized
     fun deleteGoal(ctx: Context) {
-        service.deleteGoal(ctx.pathParam("id").toId(), ctx.getId())
+        service.deleteGoal(ctx.pathParam("id").toId(), ctx.getRequesterId())
     }
 
     @Put(":id")
     @Authorized
     fun updateGoal(ctx: Context, aspect: GoalData): Goal {
-        return service.updateGoal(ctx.pathParam("id").toId(), aspect, ctx.getId())
+        return service.updateGoal(ctx.pathParam("id").toId(), aspect, ctx.getRequesterId())
     }
 
 }
