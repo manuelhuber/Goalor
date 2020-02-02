@@ -10,6 +10,7 @@ import io.javalin.http.UploadedFile
 import io.javalin.plugin.openapi.annotations.*
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.ExecutableElement
+import javax.lang.model.type.MirroredTypeException
 import javax.tools.Diagnostic
 
 class FunctionProcessor(private val processingEnv: ProcessingEnvironment,
@@ -118,6 +119,26 @@ class FunctionProcessor(private val processingEnv: ProcessingEnvironment,
 
         if (requestType != null) {
             annotation.addMember("requestBody = %L", requestBodyAnnotation(requestType))
+        }
+
+        if (this.annotation.queryParams.isNotEmpty()) {
+            // This is some weird shit:
+            //https://area-51.blog/2009/02/13/getting-class-values-from-annotations-in-an-annotationprocessor/
+            val getType = { it: OpenApiParam ->
+                try {
+                    it.type
+                } catch (e: MirroredTypeException) {
+                    e.typeMirror
+                }
+            }
+            val queryParams = this.annotation.queryParams.map {
+                AnnotationSpec.builder(OpenApiParam::class)
+                    .addMember("name = \"%L\"", it.name)
+                    .addMember("type = %T::class", getType(it))
+                    .build()
+            }
+            val paramsString = queryParams.map { "%L" }.joinToString(", ")
+            annotation.addMember("queryParams = [${paramsString}]", *queryParams.toTypedArray())
         }
 
         if (fileUpload) {

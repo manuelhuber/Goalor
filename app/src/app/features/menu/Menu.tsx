@@ -4,7 +4,7 @@ import Header from "app/features/header/Header";
 import {notify} from "app/features/notifications/duck";
 import {AppState} from "app/Store";
 import React, {useState} from "react";
-import {IoMdJournal} from "react-icons/all";
+import {IoMdJournal, MdSync} from "react-icons/all";
 import {MdChat, MdClose, MdMenu, MdPerson, MdPowerSettingsNew} from "react-icons/md";
 import {connect} from "react-redux"
 import {useHistory} from "react-router";
@@ -39,11 +39,8 @@ const Menu: React.FC<Props> = props => {
                 <li className={style.item} {...linkTo("/journal")}>
                     <IoMdJournal/>Journal
                 </li>
-                <li className={style.item}>
-                    <MdPerson/>Second important
-                </li>
-                <li className={style.item}>
-                    <MdPerson/>Third
+                <li className={style.item} {...linkTo("/habits")}>
+                    <MdSync/>Habits
                 </li>
                 <li className={style.item} {...linkTo("/settings")}>
                     <MdPerson/>Account

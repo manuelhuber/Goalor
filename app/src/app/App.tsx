@@ -3,6 +3,7 @@ import Authenticate from "app/features/auth/Authenticate";
 import {DataFetchers} from "app/features/auth/duck";
 import Menu from "app/features/menu/Menu";
 import Notifications from "app/features/notifications/Notifications";
+import Habits from "app/page/Habits";
 import Journal from "app/page/Journal";
 import Reset from "app/page/Reset";
 import Settings from "app/page/Settings";
@@ -36,6 +37,7 @@ const App: React.FC = () =>
                             <RestrictedRoute path='/me' component={Personal}/>
                             <RestrictedRoute path='/journal' component={Journal}/>
                             <RestrictedRoute path='/settings' component={Settings}/>
+                            <RestrictedRoute path='/habits' component={Habits}/>
                             <Route path='/login' component={Authenticate}/>
                             <Route path='/reset/:token' component={Reset}/>
                             <Route path='/' exact component={Landing}/>

@@ -1,3 +1,3 @@
-export function serialiseDate(date: Date) {
-    return date.toISOString()
+export function toInput(date: Date = new Date()) {
+    return date.toISOString().substr(0,10)
 }

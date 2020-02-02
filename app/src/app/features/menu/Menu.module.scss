@@ -105,6 +105,9 @@
     &:first-child {
       border-top: none;
     }
+    &:only-child {
+      border: none;
+    }
   }
 
   &.largeOnly {

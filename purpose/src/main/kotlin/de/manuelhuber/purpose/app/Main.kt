@@ -9,16 +9,20 @@ import de.manuelhuber.purpose.features.auth.MyAccessManager
 import de.manuelhuber.purpose.features.auth.addAuth
 import de.manuelhuber.purpose.features.goals.GoalControllerWrapper
 import de.manuelhuber.purpose.features.gratitude.GratitudeControllerWrapper
+import de.manuelhuber.purpose.features.habits.HabitControllerWrapper
 import de.manuelhuber.purpose.features.users.UserControllerWrapper
 import de.manuelhuber.purpose.features.users.UserService
 import dev.misfitlabs.kotlinguice4.getInstance
 import io.javalin.Javalin
+import io.javalin.core.validation.JavalinValidation
 import io.javalin.http.staticfiles.Location
 import io.javalin.plugin.json.FromJsonMapper
 import io.javalin.plugin.json.JavalinJson.fromJsonMapper
 import io.javalin.plugin.json.JavalinJson.toJsonMapper
 import io.javalin.plugin.json.ToJsonMapper
 import org.slf4j.LoggerFactory
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 private val logger: org.slf4j.Logger = LoggerFactory.getLogger(Javalin::class.java)
 
@@ -48,6 +52,7 @@ fun main() {
     toJsonMapper = object : ToJsonMapper {
         override fun map(obj: Any): String = gson.toJson(obj)
     }
+    JavalinValidation.register(LocalDate::class.java) { LocalDate.parse(it, DateTimeFormatter.ISO_LOCAL_DATE)}
 
     addAuth(app, injector.getInstance<AuthService>().provider, userService)
     createRoutes(app, injector)
@@ -57,6 +62,7 @@ fun createRoutes(app: Javalin, injector: Injector) {
     listOf(AuthControllerWrapper::class,
            AspectsControllerWrapper::class,
            UserControllerWrapper::class,
+           HabitControllerWrapper::class,
            GoalControllerWrapper::class,
            GratitudeControllerWrapper::class).forEach {
         injector.getInstance(it.java)

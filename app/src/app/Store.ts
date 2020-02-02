@@ -1,5 +1,6 @@
 import {accountReducer} from "app/features/account/duck";
 import {gratitudeReducer} from "app/features/gratitude/duck";
+import {habitsReducer} from "app/features/habit/duck";
 import {notificationReducer} from "app/features/notifications/duck";
 import {Action, applyMiddleware, combineReducers, compose, createStore} from "redux";
 import thunkMiddleware, {ThunkAction} from "redux-thunk"
@@ -13,7 +14,8 @@ const rootReducer = combineReducers({
     aspects: aspectsReducer,
     notifications: notificationReducer,
     gratitude: gratitudeReducer,
-    account: accountReducer
+    account: accountReducer,
+    habits: habitsReducer
 });
 
 const reducerWithReset: typeof rootReducer = (state, action) => {

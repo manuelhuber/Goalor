@@ -1,6 +1,7 @@
 import IconButton from "app/common/buttons/IconButton";
 import Expandable from "app/common/Expandable";
 import PieChart from "app/common/PieChart";
+import {NuxBigText} from "app/common/StyledComponents";
 import {AspectRow, Row} from "app/features/aspects/AspectRow";
 import EditAspect from "app/features/aspects/EditAspect";
 import arrow from "app/features/aspects/right-drawn-arrow.svg"
@@ -44,27 +45,29 @@ const Aspects: React.FC<Props> = props => {
         props.createAspect(aspect);
         setAdd(false);
     };
+    const deleteAspect = (id) => () => props.deleteAspect(id);
+    const editAspect = (id) => () => props.deleteAspect(id);
 
     return <div>
         <ChartWrapper>
             {circleEntries.length ?
                 <PieChart size={250} entries={circleEntries}/> :
-                <NoAspects>
+                <NuxBigText>
                     <div>Add a life aspect that's important to you, like "Health" or "Hobbies"</div>
-                </NoAspects>
+                </NuxBigText>
             }
         </ChartWrapper>
         <div>{props.aspects.map((aspect, index) =>
             <AspectEntry key={aspect.id || "tmp"}>
                 <Expandable expanded={index !== edit}>
                     <AspectRow aspect={aspect}
-                               setEdit={() => setEdit(index)}
-                               onDelete={() => props.deleteAspect(aspect.id)}/>
+                               setEdit={editAspect(index)}
+                               onDelete={deleteAspect(aspect.id)}/>
                 </Expandable>
                 <Expandable expanded={index === edit}>
                     <EditAspect aspect={aspect}
                                 onSave={saveAspect}
-                                onCancel={() => setEdit(-1)}/>
+                                onCancel={editAspect(-1)}/>
                 </Expandable>
             </AspectEntry>)}
             <Expandable expanded={!add}>
@@ -97,15 +100,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(Aspects);
 
 const ChartWrapper = styled.div`
     text-align: center;
-`;
-const NoAspects = styled.div`
-    --line-height-ratio: 1.2;
-    --sub-rhythm: 3rem;
-    font-size: var(--font-size);
-    line-height: var(--line-height);
-    padding: 8px 16px;
-    font-weight: bolder;
-    color: var(--color-neutral-tint2);
 `;
 const Arrow = styled.img`
     max-width: 125px;

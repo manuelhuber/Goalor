@@ -23,7 +23,6 @@ object LocalDateAdapter : JsonSerializer<LocalDate?> {
 }
 
 object LocalDateDeserializerAdapter : JsonDeserializer<LocalDate?> {
-
     override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): LocalDate? {
         return json?.let { LocalDate.parse(it.asString, DateTimeFormatter.ISO_LOCAL_DATE) }
     }
