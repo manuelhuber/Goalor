@@ -13,27 +13,22 @@
  */
 
 
-import * as runtime from '../runtime';
 import {
-    ErrorResponse,
-    ErrorResponseFromJSON,
-    ErrorResponseToJSON,
+    JWTResponse,
+    JWTResponseFromJSON,
     PasswordUpdate,
-    PasswordUpdateFromJSON,
     PasswordUpdateToJSON,
     Registration,
-    RegistrationFromJSON,
-    RegistrationToJSON,
     RegistrationResponse,
     RegistrationResponseFromJSON,
-    RegistrationResponseToJSON,
+    RegistrationToJSON,
     User,
     UserFromJSON,
-    UserToJSON,
     UserTO,
     UserTOFromJSON,
     UserTOToJSON,
 } from '../models';
+import * as runtime from '../runtime';
 
 export interface PostUserPasswordRequest {
     passwordUpdate?: PasswordUpdate;
@@ -89,7 +84,7 @@ export class UserApi extends runtime.BaseAPI {
     /**
      * Post user password
      */
-    async postUserPasswordRaw(requestParameters: PostUserPasswordRequest): Promise<runtime.ApiResponse<string>> {
+    async postUserPasswordRaw(requestParameters: PostUserPasswordRequest): Promise<runtime.ApiResponse<JWTResponse>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -112,13 +107,13 @@ export class UserApi extends runtime.BaseAPI {
             body: PasswordUpdateToJSON(requestParameters.passwordUpdate),
         });
 
-        return new runtime.TextApiResponse(response) as any;
+        return new runtime.JSONApiResponse(response, (jsonValue) => JWTResponseFromJSON(jsonValue));
     }
 
     /**
      * Post user password
      */
-    async postUserPassword(requestParameters: PostUserPasswordRequest): Promise<string> {
+    async postUserPassword(requestParameters: PostUserPasswordRequest): Promise<JWTResponse> {
         const response = await this.postUserPasswordRaw(requestParameters);
         return await response.value();
     }
