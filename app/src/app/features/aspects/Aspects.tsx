@@ -43,7 +43,7 @@ const Aspects: React.FC<Props> = props => {
         setAdd(false);
     };
     const deleteAspect = (id) => () => props.deleteAspect(id);
-    const editAspect = (id) => () => props.deleteAspect(id);
+    const editAspect = (id) => () => setEdit(id);
 
     return <div>
         {!!circleEntries.length && <ChartWrapper>
