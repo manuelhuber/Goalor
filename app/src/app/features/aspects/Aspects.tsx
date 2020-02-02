@@ -1,14 +1,11 @@
-import IconButton from "app/common/buttons/IconButton";
+import AddRow from "app/common/AddRow";
 import Expandable from "app/common/Expandable";
 import PieChart from "app/common/PieChart";
-import {NuxBigText} from "app/common/StyledComponents";
-import {AspectRow, Row} from "app/features/aspects/AspectRow";
+import {AspectRow} from "app/features/aspects/AspectRow";
 import EditAspect from "app/features/aspects/EditAspect";
-import arrow from "app/features/aspects/right-drawn-arrow.svg"
 import {AppState} from "app/Store";
 import {Aspect} from "generated/models";
 import React, {useEffect, useState} from "react";
-import {MdAdd} from "react-icons/all";
 import {connect} from "react-redux"
 import styled from "styled-components";
 import {bindActions} from "util/duckUtil";
@@ -49,14 +46,9 @@ const Aspects: React.FC<Props> = props => {
     const editAspect = (id) => () => props.deleteAspect(id);
 
     return <div>
-        <ChartWrapper>
-            {circleEntries.length ?
-                <PieChart size={250} entries={circleEntries}/> :
-                <NuxBigText>
-                    <div>Add a life aspect that's important to you, like "Health" or "Hobbies"</div>
-                </NuxBigText>
-            }
-        </ChartWrapper>
+        {!!circleEntries.length && <ChartWrapper>
+            <PieChart size={250} entries={circleEntries}/>
+        </ChartWrapper>}
         <div>{props.aspects.map((aspect, index) =>
             <AspectEntry key={aspect.id || "tmp"}>
                 <Expandable expanded={index !== edit}>
@@ -71,10 +63,9 @@ const Aspects: React.FC<Props> = props => {
                 </Expandable>
             </AspectEntry>)}
             <Expandable expanded={!add}>
-                <Row iconRow={true}>
-                    {!circleEntries.length && <Arrow src={arrow} alt="arrow"/>}
-                    <IconButton onClick={() => setAdd(!add)}><MdAdd/></IconButton>
-                </Row>
+                <AddRow showNux={!props.aspects.length}
+                        onAdd={() => setAdd(!add)}
+                        nuxText="Add a life aspect that's important to you, like 'Health' or 'Hobbies'"/>
             </Expandable>
 
         </div>

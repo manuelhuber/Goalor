@@ -1,16 +1,17 @@
+import AddRow from "app/common/AddRow";
+import IconButton from "app/common/buttons/IconButton";
+import EditGoal from "app/features/goals/EditGoal";
+import GoalCard from "app/features/goals/GoalCard";
 import {AppState} from "app/Store";
+import {Goal} from "generated/models";
 import React, {useState} from "react";
+import {MdKeyboardArrowLeft, MdKeyboardArrowRight} from "react-icons/all";
 import {connect} from "react-redux"
+import commonStyle from "style/Common.module.scss";
+import {bindActions} from "util/duckUtil";
+import {jc} from "util/style";
 import {addGoals, updateGoal} from "./duck";
 import styles from "./Goals.module.scss";
-import {jc} from "util/style";
-import commonStyle from "style/Common.module.scss";
-import GoalCard from "app/features/goals/GoalCard";
-import {Goal} from "generated/models";
-import {bindActions} from "util/duckUtil";
-import EditGoal from "app/features/goals/EditGoal";
-import IconButton from "app/common/buttons/IconButton";
-import {MdAdd, MdKeyboardArrowLeft, MdKeyboardArrowRight} from "react-icons/all";
 
 const mapStateToProps = (state: AppState, props: { rootGoals: string[] }) => ({
     aspects: state.aspects.aspectsById,
@@ -59,9 +60,7 @@ const Goals: React.FC<Props> = props => {
                   potentialParents={props.rootGoals.filter(goal => !goalInEdit || goal.id !== goalInEdit.id)}
                   onAttemptClose={() => setModalOpen(false)}
                   onSave={onSave}/>
-        <div className={jc(commonStyle.rightAlign, commonStyle.padding)}>
-            <IconButton onClick={toggleAddNew}><MdAdd/></IconButton>
-        </div>
+        <AddRow onAdd={toggleAddNew} showNux={!Object.keys(props.allGoals).length} nuxText="Add a goal."/>
         <div className={jc(styles.headerRow, commonStyle.padding)}>
             <IconButton onClick={() => setSelectedCol(selectedCol - 1)} disabled={selectedCol <= 0}>
                 <MdKeyboardArrowLeft/>
