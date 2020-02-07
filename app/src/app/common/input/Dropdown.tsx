@@ -1,10 +1,11 @@
 import React, {ReactNode} from "react";
+import {jc} from "util/style";
 
-type Props = { label: React.ReactNode, children: ReactNode, nullOption?: boolean }
+type Props = { label: React.ReactNode, children: ReactNode, nullOption?: boolean, noMargin?: boolean }
 const Dropdown: React.FC<Props & React.SelectHTMLAttributes<HTMLSelectElement>> = props => {
     // Override all props that cause an error, when passing it to the underlying button
-    const {nullOption, ...passOn} = props;
-    return <label className="field">
+    const {nullOption, noMargin, ...passOn} = props;
+    return <label className={jc("field", ["mb-zero", props.noMargin])}>
         <select {...passOn}>
             {props.nullOption &&
             <option value={undefined}/>}

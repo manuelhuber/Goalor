@@ -1,10 +1,7 @@
 package de.manuelhuber.purpose.features.habits
 
 import com.google.inject.Inject
-import de.manuelhuber.annotations.APIController
-import de.manuelhuber.annotations.Authorized
-import de.manuelhuber.annotations.Get
-import de.manuelhuber.annotations.Post
+import de.manuelhuber.annotations.*
 import de.manuelhuber.purpose.features.habits.model.Habit
 import de.manuelhuber.purpose.features.habits.model.HabitRequest
 import de.manuelhuber.purpose.features.habits.model.HabitValue
@@ -44,6 +41,19 @@ class HabitController @Inject constructor(val service: HabitService) {
     fun addValue(ctx: Context, habit: HabitValueRequest): HabitValue {
         return service.addValue(ctx.pathParam("habit").toId(), habit, ctx.getRequesterId())
     }
+
+    @Delete("/:habit")
+    @Authorized
+    fun deleteHabit(ctx: Context) {
+        service.deleteHabit(ctx.getRequesterId(), ctx.pathParam("habit").toId())
+    }
+
+    @Put("/:habit")
+    @Authorized
+    fun updateHabit(ctx: Context, habit: HabitRequest): Habit {
+        return service.updateHabit(ctx.getRequesterId(), ctx.pathParam("habit").toId(), habit)
+    }
+
 }
 
 data class HabitResponse(val habits: List<Habit>, val dateValue: Map<LocalDate, Map<String, Int>>)

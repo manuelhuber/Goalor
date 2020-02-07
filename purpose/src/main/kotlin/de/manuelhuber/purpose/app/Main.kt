@@ -5,7 +5,7 @@ import com.google.inject.Injector
 import de.manuelhuber.purpose.features.aspects.AspectsControllerWrapper
 import de.manuelhuber.purpose.features.auth.AuthControllerWrapper
 import de.manuelhuber.purpose.features.auth.AuthService
-import de.manuelhuber.purpose.features.auth.MyAccessManager
+import de.manuelhuber.purpose.features.auth.JWTAccessManager
 import de.manuelhuber.purpose.features.auth.addAuth
 import de.manuelhuber.purpose.features.goals.GoalControllerWrapper
 import de.manuelhuber.purpose.features.gratitude.GratitudeControllerWrapper
@@ -30,21 +30,25 @@ const val DEV_MODE = "dev"
 
 fun main() {
     val injector = Guice.createInjector(GuiceModule())
-    injector.getInstance<DatabaseInitiator>()
-        .init()
+    // Init DB
+    injector.getInstance<DatabaseInitiator>().init()
+
     val userService = injector.getInstance<UserService>()
+
     val app = Javalin.create { config ->
         addSwagger(config)
-        config.accessManager(MyAccessManager(userService))
+        config.accessManager(JWTAccessManager(userService))
         config.enableCorsForAllOrigins()
         config.addStaticFiles(System.getenv(STATIC_FILE_FOLDER), Location.EXTERNAL)
         if (System.getenv(DEV_MODE) != null) {
             config.enableDevLogging()
         }
-    }
-        .start(7000)
+    }.start(7000)
+
     hackSwaggerDoc(app)
+
     addErrorHandling(app, logger)
+
     val gson = getGson()
     fromJsonMapper = object : FromJsonMapper {
         override fun <T> map(json: String, targetClass: Class<T>): T = gson.fromJson(json, targetClass)
@@ -52,7 +56,7 @@ fun main() {
     toJsonMapper = object : ToJsonMapper {
         override fun map(obj: Any): String = gson.toJson(obj)
     }
-    JavalinValidation.register(LocalDate::class.java) { LocalDate.parse(it, DateTimeFormatter.ISO_LOCAL_DATE)}
+    JavalinValidation.register(LocalDate::class.java) { LocalDate.parse(it, DateTimeFormatter.ISO_LOCAL_DATE) }
 
     addAuth(app, injector.getInstance<AuthService>().provider, userService)
     createRoutes(app, injector)
@@ -60,11 +64,11 @@ fun main() {
 
 fun createRoutes(app: Javalin, injector: Injector) {
     listOf(AuthControllerWrapper::class,
-           AspectsControllerWrapper::class,
-           UserControllerWrapper::class,
-           HabitControllerWrapper::class,
-           GoalControllerWrapper::class,
-           GratitudeControllerWrapper::class).forEach {
+            AspectsControllerWrapper::class,
+            UserControllerWrapper::class,
+            HabitControllerWrapper::class,
+            GoalControllerWrapper::class,
+            GratitudeControllerWrapper::class).forEach {
         injector.getInstance(it.java)
             .addRoutes(app)
     }

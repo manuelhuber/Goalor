@@ -8,4 +8,5 @@ import java.time.LocalDate
 interface HabitValueEngine : Engine<HabitValue> {
     fun getAllForHabit(habit: Id, from: LocalDate, to: LocalDate): List<HabitValue>
     fun getAllForHabits(habits: List<Id>, from: LocalDate, to: LocalDate): Map<LocalDate, List<HabitValue>>
+    fun deleteAllValuesWExcept(habit: Id, valuesToKeep: List<Int>)
 }

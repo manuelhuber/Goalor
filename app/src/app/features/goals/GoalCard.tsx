@@ -1,16 +1,16 @@
-import commonStyle from "style/Common.module.scss";
-import {AppState} from "app/Store";
-import React, {useState} from "react";
-import {connect} from "react-redux"
-import {jc} from "util/style";
-import styles from "./GoalCard.module.scss"
-import {Goal} from "generated/models";
-import {MdDelete, MdEdit, MdExpandLess, MdExpandMore} from "react-icons/all";
 import Checkbox from "app/common/input/Checkbox";
+import PopupMenu from "app/common/PopupMenu";
 import {deleteGoal, updateGoal} from "app/features/goals/duck";
+import {AppState} from "app/Store";
+import {Goal} from "generated/models";
+import React, {useState} from "react";
+import {MdDelete, MdEdit, MdExpandLess, MdExpandMore} from "react-icons/all";
+import {connect} from "react-redux"
+import commonStyle from "style/Common.module.scss";
 import {bindActions} from "util/duckUtil";
 import {clone} from "util/object";
-import PopupMenu from "app/common/PopupMenu";
+import {jc} from "util/style";
+import styles from "./GoalCard.module.scss"
 
 const mapStateToProps = (state: AppState, ownProps: { goal: Goal, onEdit?: (Goal) => void }) => ownProps;
 const mapDispatchToProps = bindActions({
@@ -36,8 +36,8 @@ const GoalCard: React.FC<Props> = props => {
                 </span>}
             </div>
             <PopupMenu entries={[
-                {icon: <MdEdit/>, text: "Edit", onClick: () => props.onEdit(props.goal)},
-                {icon: <MdDelete/>, text: "Delete", onClick: () => props.deleteGoal(props.goal.id)}
+                {icon: MdEdit, text: "Edit", onClick: () => props.onEdit(props.goal)},
+                {icon: MdDelete, text: "Delete", onClick: () => props.deleteGoal(props.goal.id)}
             ]}/>
         </div>
         {isToggled && <div>

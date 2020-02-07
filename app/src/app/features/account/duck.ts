@@ -30,7 +30,6 @@ export const setNames = (input: SetNames): SetNamesAction => ({type: 'SET_NAMES'
 
 export const loadAccount = (): Thunk => async (dispatch) => {
     userApi.getUser().then(value => {
-        console.log(value);
         dispatch(setEmail(value.email));
         dispatch(setUsername(value.username));
         dispatch(setNames({first: value.firstName, last: value.lastName}))

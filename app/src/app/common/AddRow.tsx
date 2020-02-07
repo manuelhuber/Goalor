@@ -10,7 +10,7 @@ const AddRow: React.FC<Props> = props => <div>
     {props.showNux && <NuxBigText>{props.nuxText}</NuxBigText>}
     <Row>
         {props.showNux && <Arrow src={arrow} alt="arrow"/>}
-        <IconButton onClick={() => props.onAdd}><MdAdd/></IconButton>
+        <IconButton onClick={() => props.onAdd()}><MdAdd/></IconButton>
     </Row>
 </div>;
 

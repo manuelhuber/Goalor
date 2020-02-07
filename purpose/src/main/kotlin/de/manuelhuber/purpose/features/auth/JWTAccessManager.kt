@@ -11,7 +11,7 @@ import io.javalin.http.Handler
 import javalinjwt.JavalinJWT
 import java.time.LocalDateTime
 
-class MyAccessManager(val userService: UserService) : AccessManager {
+class JWTAccessManager(val userService: UserService) : AccessManager {
 
     override fun manage(handler: Handler, ctx: Context, permittedRoles: MutableSet<Role>) {
         if (permittedRoles.size == 0 || permittedRoles.contains(Roles.ANYONE)) {

@@ -5,7 +5,7 @@ import styled, {css} from "styled-components";
 import {nonNull} from "util/types";
 
 interface PopupMenuEntry {
-    icon?: ReactNode,
+    icon?: any,
     text: ReactNode,
     onClick: () => any
 }
@@ -40,7 +40,9 @@ const PopupMenu: React.FC<Props> = props => {
         <Popup inRightHalf={inRightHalf} inLowerHalf={inLowerHalf}>
             {props.entries && props.entries.filter(nonNull).map(entry =>
                 <Row key={entry.text ? entry.text.toString() : "fail"}
-                     onClick={entry.onClick}>{entry.icon}{entry.text}</Row>)}
+                     onClick={entry.onClick}>
+                    <entry.icon/>
+                    {entry.text}</Row>)}
             {props.children}
         </Popup>}
     </Root>;
@@ -53,6 +55,7 @@ const Root = styled.div`
 `;
 const Popup = styled.div<{ inLowerHalf: boolean, inRightHalf: boolean }>`
     position: absolute;
+    z-index: 10;
     background-color: var(--color-neutral-tint3);
     box-shadow: 0 0 4px 1px var(--color-neutral-tint4);
     padding: 4px;

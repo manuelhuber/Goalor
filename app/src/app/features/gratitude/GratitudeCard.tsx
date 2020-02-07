@@ -28,8 +28,8 @@ const GratitudeCard: React.FC<Props> = props => {
                 <Info>
                     <Date>{date.toLocaleDateString()}</Date>
                     <PopupMenu entries={[
-                        {text: "Delete", onClick: deleteIt, icon: <MdDelete/>},
-                        props.onEdit ? {text: "Edit", onClick: props.onEdit, icon: <MdEdit/>} : null
+                        {icon: MdDelete, text: "Delete", onClick: deleteIt},
+                        {icon: MdEdit, text: "Edit", onClick: props.onEdit}
                     ]}/>
                 </Info>
                 <Title>{title}</Title>

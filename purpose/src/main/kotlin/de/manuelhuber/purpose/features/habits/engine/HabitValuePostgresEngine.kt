@@ -32,16 +32,20 @@ class HabitValuePostgresEngine : HabitValueEngine {
 
     override fun getAllForHabits(habits: List<Id>, from: LocalDate, to: LocalDate): Map<LocalDate, List<HabitValue>> {
         val uuids = habits.map(Id::toUUID)
-        val values = transaction {
+        return transaction {
             HabitValues.select {
                 (HabitValues.habit inList uuids) and
                         (HabitValues.date greaterEq from) and
                         (HabitValues.date lessEq to)
             }.orderBy(HabitValues.date).map(rowToHabitValue)
 
-        }
-        return values.groupBy { habitValue: HabitValue -> habitValue.date }
+        }.groupBy { habitValue: HabitValue -> habitValue.date }
+    }
 
+    override fun deleteAllValuesWExcept(habit: Id, valuesToKeep: List<Int>) {
+        transaction {
+            HabitValues.deleteWhere { HabitValues.value notInList valuesToKeep }
+        }
     }
 
     override fun get(id: Id): HabitValue {

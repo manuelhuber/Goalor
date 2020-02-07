@@ -1,10 +1,13 @@
 import IconButton from "app/common/buttons/IconButton";
 import Input from "app/common/input/Input";
+import PopupMenu from "app/common/PopupMenu";
 import CheckIn from "app/features/habit/CheckIn";
-import {updateHabitValue} from "app/features/habit/duck";
+import {deleteHabit, updateHabit, updateHabitValue} from "app/features/habit/duck";
+import EditHabit from "app/features/habit/EditHabit";
 import {AppState} from "app/Store";
+import {Habit} from "generated/models";
 import React, {useState} from "react";
-import {IoMdArrowDropleft, IoMdArrowDropright} from "react-icons/all";
+import {IoMdArrowDropleft, IoMdArrowDropright, MdDelete, MdEdit} from "react-icons/all";
 import {connect} from 'react-redux'
 import {bindActionCreators} from "redux";
 import styled from "styled-components";
@@ -13,14 +16,13 @@ import {serialise} from "util/date";
 const mapStateToProps = (state: AppState) => {
     return {habits: state.habits.habits, values: state.habits.values};
 };
-const mapDispatchToProps = dispatch => bindActionCreators({updateHabitValue}, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({updateHabitValue, deleteHabit, updateHabit}, dispatch);
 type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
 
 const CheckIns: React.FC<Props> = props => {
     const [date, setDate] = useState(new Date());
-    const updateValue = (key) => (value) => {
-        props.updateHabitValue(date, value, key);
-    };
+    const [edit, setEdit] = useState("");
+    const updateValue = (habitId) => (value) => props.updateHabitValue(date, value, habitId);
     const adjacentDate = (mod: number) => {
         const newDate = new Date(date);
         newDate.setDate(date.getDate() + mod);
@@ -39,18 +41,30 @@ const CheckIns: React.FC<Props> = props => {
         const dateData = props.values[serialise(date)];
         return dateData && dateData[habitId] && dateData[habitId];
     };
+    const updateHabit = (habit: Habit) => {
+        props.updateHabit(habit);
+        setEdit("");
+    };
     return <div>
         <DateRow>
             <IconButton onClick={prevDate}><IoMdArrowDropleft/></IconButton>
             <Input type="date" label="date" noMargin={true} value={serialise(date)} onChange={setDateFromString}/>
             <IconButton onClick={nextDate}><IoMdArrowDropright/></IconButton>
         </DateRow>
-        {Object.keys(props.habits).map(key =>
-            <CheckinRow key={key}>
-                <CheckIn value={getValue(key)}
-                         habit={props.habits[key]}
-                         onChange={updateValue(key)}/>
-            </CheckinRow>
+        {Object.entries(props.habits).map(([habitId, habit]) =>
+            habitId !== edit
+                ? <CheckinRow key={habitId}>
+                    <CheckinIcons>
+                        <CheckIn value={getValue(habitId)}
+                                 habit={habit}
+                                 onChange={updateValue(habitId)}/>
+                    </CheckinIcons>
+                    <PopupMenu entries={[
+                        {icon: MdDelete, text: "Delete", onClick: () => props.deleteHabit(habitId)},
+                        {icon: MdEdit, text: "Edit", onClick: () => setEdit(habitId)}
+                    ]}/>
+                </CheckinRow>
+                : <EditHabit key={habitId} onCancel={() => setEdit("")} habit={habit} onSave={updateHabit}/>
         )}
     </div>;
 };
@@ -61,7 +75,12 @@ const DateRow = styled.div`
     justify-content: center;
 `;
 const CheckinRow = styled.div`
+  display: flex;
+  align-items: baseline;
   border-bottom: 2px solid var(--color-neutral-tint1);
+`;
+const CheckinIcons = styled.div`
+  flex-grow: 1;
 `;
 
 export default connect(mapStateToProps, mapDispatchToProps)(CheckIns);

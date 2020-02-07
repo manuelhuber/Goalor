@@ -33,6 +33,21 @@ class HabitService @Inject constructor(private val habitEngine: HabitEngine,
         return habitValueEngine.getAllForHabits(habits, from, to)
     }
 
+    fun deleteHabit(requester: Id, habitId: Id) {
+        val habit = habitEngine.get(habitId)
+        checkOwnership(habit, requester)
+        habitEngine.delete(habitId)
+    }
+
+    fun updateHabit(requester: Id, habitId: Id, request: HabitRequest): Habit {
+        val habit = habitEngine.get(habitId)
+        checkOwnership(habit, requester)
+        validateOptions(request.options)
+        val newHabit = habitEngine.update(habitId, habit.copy(title = request.title, options = request.options))
+        validValues[newHabit.options]?.let { habitValueEngine.deleteAllValuesWExcept(habitId, it) }
+        return newHabit
+    }
+
     fun createHabit(habitData: HabitRequest, owner: Id): Habit {
         validateOptions(habitData.options)
         return habitEngine.create(Habit(

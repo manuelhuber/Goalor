@@ -16,25 +16,23 @@ const initialState: HabitsState = {
     values: {}
 };
 
+// API calls
+
 export const loadHabits = (): Thunk => async (dispatch) => {
     const from = new Date();
     from.setDate(from.getDate() - 30);
     habitApi.getHabits({from, to: new Date()}).then(value => {
-            dispatch(addHabit({habits: value.habits}));
+            dispatch(setHabits(value.habits));
             dispatch(setValuesAction({values: value.dateValue}));
         }
     );
 };
 
-// Actions
-
-type AddHabit = { habits: Habit[] };
-type AddHabitAction = AddHabit & Action<'ADD_HABIT'>;
-export const addHabit = (input: AddHabit): AddHabitAction => ({type: 'ADD_HABIT', ...input});
-
-type SetValues = { values: { [key: string]: { [key: string]: number } } };
-type SetValuesAction = SetValues & Action<'SET_VALUE'>;
-export const setValuesAction = (input: SetValues): SetValuesAction => ({type: 'SET_VALUE', ...input});
+export const createHabit = (title: string, options: number): Thunk => async (dispatch) => {
+    habitApi.postHabits({habitRequest: {title, options}}).then(value => {
+        dispatch(setHabits([value]));
+    });
+};
 
 export const updateHabitValue = (date: Date, value: number, habit: string): Thunk => async (dispatch, getState) => {
     // Set right away to improve responsiveness
@@ -42,27 +40,60 @@ export const updateHabitValue = (date: Date, value: number, habit: string): Thun
     let values = {[dateKey]: {[habit]: value}};
     dispatch(setValuesAction({values}));
     habitApi.postHabitsWithHabit({habit, habitValueRequest: {date, value}})
+            .catch(notifyWithMessage("Failed to update habit value: ", dispatch));
+};
+
+export const deleteHabit = (habit: string): Thunk => async (dispatch) => {
+    habitApi.deleteHabitsWithHabit({habit}).then(() => dispatch(removeHabit({id: habit})));
+};
+
+export const updateHabit = (habit: Habit): Thunk => async (dispatch) => {
+    dispatch(setHabits([habit]));
+    habitApi.putHabitsWithHabit({habit: habit.id, habitRequest: {...habit}})
             .catch(notifyWithMessage("Failed to update habit: ", dispatch));
 };
 
-export type HabitsAction = SetValuesAction | AddHabitAction;
+// Actions
+
+type SetHabitsAction = { habits: Habit[] } & Action<'SET_HABITS'>;
+export const setHabits = (habits: Habit[]): SetHabitsAction => ({type: 'SET_HABITS', habits});
+
+type SetValues = { values: { [key: string]: { [key: string]: number } } };
+type SetValuesAction = SetValues & Action<'SET_VALUES'>;
+export const setValuesAction = (input: SetValues): SetValuesAction => ({type: 'SET_VALUES', ...input});
+
+type RemoveHabit = { id: string };
+type RemoveHabitAction = RemoveHabit & Action<'REMOVE_HABIT'>;
+export const removeHabit = (input: RemoveHabit): RemoveHabitAction => ({type: 'REMOVE_HABIT', ...input});
+
+export type HabitsAction = SetValuesAction | SetHabitsAction | RemoveHabitAction ;
 
 // Reducer
 
 export const habitsReducer: Reducer<HabitsState, HabitsAction> = (state = initialState, action): HabitsState => {
+    let habits = {...state.habits};
+    const values = {...state.values};
     switch (action.type) {
-        case "ADD_HABIT":
-            let habits = {...state.habits};
+        case "SET_HABITS":
             action.habits.forEach(habit => habits[habit.id] = habit);
-            return {...state, habits: habits};
-        case "SET_VALUE":
-            const values = {...state.values};
-            Object.keys(action.values).forEach(date => {
+            return {...state, habits};
+        case "SET_VALUES":
+            for (const [date, newValues] of Object.entries(action.values)) {
                 const dateValues = {...values[date]};
-                Object.assign(dateValues, action.values[date]);
+                Object.assign(dateValues, newValues); // Override & add new values
                 values[date] = dateValues;
-            });
+            }
             return {...state, values: values};
+        case "REMOVE_HABIT":
+            delete habits[action.id];
+            for (const [dates, entries] of Object.entries(values)) {
+                if (entries[action.id]) {
+                    const update = {...entries};
+                    delete entries[action.id];
+                    values[dates] = update
+                }
+            }
+            return {...state, values, habits};
         default:
             return state;
     }

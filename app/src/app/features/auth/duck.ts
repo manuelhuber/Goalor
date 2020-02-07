@@ -38,22 +38,19 @@ const initialState: AuthState = {
 // Actions
 export type LoginRequest = { username: string, password: string };
 export const login = (req: LoginRequest): Thunk => async (dispatch, getState) => {
-    if (getState().auth.token) {
-        return Promise.resolve();
-    } else {
-        dispatch(setLoading(true));
-        dispatch(notify({message: "LOGGING IN"}, 3000));
-        let password = req.password;
-        let username = req.username;
-        authApi.postAuthLogin({login: {username, password}}).then(res => {
-            if (!res.jwt) return;
-            dispatch(setToken({token: res.jwt}));
-            DataFetchers.forEach(thunk => dispatch(thunk));
-            dispatch(notify({message: "Successfully logged in"}, 1500))
-        }).catch((response: ErrorResponse) =>
-            dispatch(notify({message: `Error when logging in: ${response.message}`}))
-        ).finally(() => dispatch(setLoading(false)));
-    }
+    dispatch(setLoading(true));
+    dispatch(notify({message: "LOGGING IN"}, 3000));
+    let password = req.password;
+    let username = req.username;
+    authApi.postAuthLogin({login: {username, password}}).then(res => {
+        if (!res.jwt) return;
+        dispatch(setToken({token: res.jwt}));
+        DataFetchers.forEach(thunk => dispatch(thunk));
+        dispatch(notify({message: "Successfully logged in"}, 1500))
+    }).catch((response: ErrorResponse) =>
+        dispatch(notify({message: `Error when logging in: ${response.message}`}))
+    ).finally(() => dispatch(setLoading(false)));
+
 };
 
 export const register = (req: Registration): Thunk => async (dispatch) =>
