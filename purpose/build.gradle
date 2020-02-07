@@ -78,7 +78,7 @@ dependencies {
             'org.junit.jupiter:junit-jupiter-api:5.4.2'
     )
     testRuntime('org.junit.jupiter:junit-jupiter-engine:5.4.2')
-    testCompile "org.mockito:mockito-core:2.1.0"
+    testCompile "org.mockito:mockito-core:2.28.1"
     test.useJUnitPlatform()
 }
 
