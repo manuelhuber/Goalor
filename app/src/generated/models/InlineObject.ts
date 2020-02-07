@@ -12,7 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import {exists} from '../runtime';
+
 /**
  * 
  * @export
@@ -24,7 +25,7 @@ export interface InlineObject {
      * @type {Blob}
      * @memberof InlineObject
      */
-    file?: Blob;
+    image?: Blob;
 }
 
 export function InlineObjectFromJSON(json: any): InlineObject {
@@ -37,7 +38,7 @@ export function InlineObjectFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'file': !exists(json, 'file') ? undefined : json['file'],
+        'image': !exists(json, 'image') ? undefined : json['image'],
     };
 }
 
@@ -50,7 +51,7 @@ export function InlineObjectToJSON(value?: InlineObject | null): any {
     }
     return {
         
-        'file': value.file,
+        'image': value.image,
     };
 }
 

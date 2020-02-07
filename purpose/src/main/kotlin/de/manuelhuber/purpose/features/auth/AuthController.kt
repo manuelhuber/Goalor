@@ -13,7 +13,7 @@ import javalinjwt.examples.JWTResponse
 class AuthController @Inject constructor(private val service: AuthService) {
 
     @Post("login")
-    fun login(ctx: Context, login: Login): JWTResponse {
+    fun login(login: Login): JWTResponse {
         return JWTResponse(service.login(login.username, login.password))
     }
 

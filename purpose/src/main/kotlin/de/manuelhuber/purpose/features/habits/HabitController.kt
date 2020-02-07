@@ -9,16 +9,13 @@ import de.manuelhuber.purpose.features.habits.model.HabitValueRequest
 import de.manuelhuber.purpose.lib.controller.getRequesterId
 import de.manuelhuber.purpose.lib.engine.toId
 import io.javalin.http.Context
-import io.javalin.plugin.openapi.annotations.OpenApiParam
 import java.time.LocalDate
 
 @APIController("habits")
 class HabitController @Inject constructor(val service: HabitService) {
 
-    @Get("", queryParams = [OpenApiParam("to", LocalDate::class), OpenApiParam("from", LocalDate::class)])
-    fun register(ctx: Context): HabitResponse {
-        val from = ctx.queryParam<LocalDate>("from").value!!
-        val to = ctx.queryParam<LocalDate>("to").value!!
+    @Get
+    fun register(ctx: Context, @QueryParam from: LocalDate, @QueryParam to: LocalDate): HabitResponse {
         val owner = ctx.getRequesterId()
         val habits = service.getHabits(owner)
         val habitValues = service.getHabitValues(owner, from, to).mapValues { entry ->

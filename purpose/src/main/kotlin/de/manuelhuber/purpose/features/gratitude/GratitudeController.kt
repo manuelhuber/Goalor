@@ -15,9 +15,9 @@ import java.time.format.DateTimeParseException
 class GratitudeController @Inject constructor(private val gratitudeService: GratitudeService) {
 
     @Post
-    @FileUpload
+
     @Authorized
-    fun createGratitude(ctx: Context, file: UploadedFile?): Gratitude {
+    fun createGratitude(ctx: Context, @FileUpload("image") file: UploadedFile?): Gratitude {
         val title = ctx.formParam("title") ?: throw ValidationError("Required field missing: title")
         val dateString = ctx.formParam("date") ?: throw ValidationError("Required field missing: date")
         val date = try {

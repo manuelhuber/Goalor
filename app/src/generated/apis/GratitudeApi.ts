@@ -13,25 +13,15 @@
  */
 
 
+import {Gratitude, GratitudeData, GratitudeDataToJSON, GratitudeFromJSON,} from '../models';
 import * as runtime from '../runtime';
-import {
-    ErrorResponse,
-    ErrorResponseFromJSON,
-    ErrorResponseToJSON,
-    Gratitude,
-    GratitudeFromJSON,
-    GratitudeToJSON,
-    GratitudeData,
-    GratitudeDataFromJSON,
-    GratitudeDataToJSON,
-} from '../models';
 
 export interface DeleteGratitudeWithIdRequest {
     id: string;
 }
 
 export interface PostGratitudeRequest {
-    file?: Blob;
+    image?: Blob;
 }
 
 export interface PutGratitudeWithIdRequest {
@@ -147,8 +137,8 @@ export class GratitudeApi extends runtime.BaseAPI {
             formParams = new URLSearchParams();
         }
 
-        if (requestParameters.file !== undefined) {
-            formParams.append('file', requestParameters.file as any);
+        if (requestParameters.image !== undefined) {
+            formParams.append('image', requestParameters.image as any);
         }
 
         const response = await this.request({

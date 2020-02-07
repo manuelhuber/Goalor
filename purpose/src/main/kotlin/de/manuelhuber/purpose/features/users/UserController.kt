@@ -15,7 +15,7 @@ import javalinjwt.examples.JWTResponse
 class UserController @Inject constructor(private val service: UserService, private val authService: AuthService) {
 
     @Post("register")
-    fun register(ctx: Context, reg: Registration): RegistrationResponse {
+    fun register(reg: Registration): RegistrationResponse {
         val user = service.register(reg)
         val token = authService.login(user.username, reg.password)
         return RegistrationResponse(UserTO.fromUser(user), token)

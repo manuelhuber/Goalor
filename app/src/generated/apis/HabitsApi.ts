@@ -32,8 +32,8 @@ export interface DeleteHabitsWithHabitRequest {
 }
 
 export interface GetHabitsRequest {
-    to?: Date;
     from?: Date;
+    to?: Date;
 }
 
 export interface PostHabitsRequest {
@@ -98,12 +98,12 @@ export class HabitsApi extends runtime.BaseAPI {
     async getHabitsRaw(requestParameters: GetHabitsRequest): Promise<runtime.ApiResponse<HabitResponse>> {
         const queryParameters: runtime.HTTPQuery = {};
 
-        if (requestParameters.to !== undefined) {
-            queryParameters['to'] = (requestParameters.to as any).toISOString().substr(0,10);
-        }
-
         if (requestParameters.from !== undefined) {
             queryParameters['from'] = (requestParameters.from as any).toISOString().substr(0,10);
+        }
+
+        if (requestParameters.to !== undefined) {
+            queryParameters['to'] = (requestParameters.to as any).toISOString().substr(0,10);
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
