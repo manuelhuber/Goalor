@@ -5,18 +5,7 @@ import {serialise} from "util/date";
 import {notifyWithMessage} from "util/duckUtil";
 import {habitApi} from "util/fetch";
 
-// State
-export type HabitsState = {
-    habits: { [id: string]: Habit };
-    values: { [date: string]: { [id: string]: number } }
-};
-
-const initialState: HabitsState = {
-    habits: {},
-    values: {}
-};
-
-// API calls
+// API calls -----------------------------------------------------------------------------------------------------------
 
 export const loadHabits = (): Thunk => async (dispatch) => {
     const from = new Date();
@@ -53,22 +42,33 @@ export const updateHabit = (habit: Habit): Thunk => async (dispatch) => {
             .catch(notifyWithMessage("Failed to update habit: ", dispatch));
 };
 
-// Actions
+// State ---------------------------------------------------------------------------------------------------------------
+export type HabitsState = {
+    habits: { [id: string]: Habit };
+    values: { [date: string]: { [id: string]: number } }
+};
+
+const initialState: HabitsState = {
+    habits: {},
+    values: {}
+};
+
+// Actions -------------------------------------------------------------------------------------------------------------
 
 type SetHabitsAction = { habits: Habit[] } & Action<'SET_HABITS'>;
-export const setHabits = (habits: Habit[]): SetHabitsAction => ({type: 'SET_HABITS', habits});
+const setHabits = (habits: Habit[]): SetHabitsAction => ({type: 'SET_HABITS', habits});
 
 type SetValues = { values: { [key: string]: { [key: string]: number } } };
 type SetValuesAction = SetValues & Action<'SET_VALUES'>;
-export const setValuesAction = (input: SetValues): SetValuesAction => ({type: 'SET_VALUES', ...input});
+const setValuesAction = (input: SetValues): SetValuesAction => ({type: 'SET_VALUES', ...input});
 
 type RemoveHabit = { id: string };
 type RemoveHabitAction = RemoveHabit & Action<'REMOVE_HABIT'>;
-export const removeHabit = (input: RemoveHabit): RemoveHabitAction => ({type: 'REMOVE_HABIT', ...input});
+const removeHabit = (input: RemoveHabit): RemoveHabitAction => ({type: 'REMOVE_HABIT', ...input});
 
 export type HabitsAction = SetValuesAction | SetHabitsAction | RemoveHabitAction ;
 
-// Reducer
+// Reducer -------------------------------------------------------------------------------------------------------------
 
 export const habitsReducer: Reducer<HabitsState, HabitsAction> = (state = initialState, action): HabitsState => {
     let habits = {...state.habits};

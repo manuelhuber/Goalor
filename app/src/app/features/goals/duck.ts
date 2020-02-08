@@ -4,15 +4,7 @@ import {Goal} from "generated/models";
 import {Action, Reducer} from "redux";
 import {goalApi} from "util/fetch";
 
-export type GoalState = {
-    goalsById: { [key: string]: Goal };
-};
-
-const initialState: GoalState = {
-    goalsById: {}
-};
-
-// API calls
+// API calls -----------------------------------------------------------------------------------------------------------
 
 export const addGoals = (goal: Goal): Thunk => async (dispatch) => {
     goal.children = goal.children || [];
@@ -38,8 +30,17 @@ export const loadAllGoals = (): Thunk => async (dispatch) => {
     goalApi.getGoals().then(goals => dispatch(addGoalsAction(goals)))
 };
 
+// State ---------------------------------------------------------------------------------------------------------------
 
-// Actions
+export type GoalState = {
+    goalsById: { [key: string]: Goal };
+};
+
+const initialState: GoalState = {
+    goalsById: {}
+};
+
+// Actions -------------------------------------------------------------------------------------------------------------
 
 type AddGoalsAction = { goal: Goal[] } & Action<"ADD_GOALS">;
 const addGoalsAction = (goal: Goal | Goal[]): AddGoalsAction => ({
@@ -52,8 +53,7 @@ const deleteGoalAction = (id: string): DeleteGoalAction => ({type: 'REMOVE_GOAL'
 
 export type GoalAction = AddGoalsAction | DeleteGoalAction;
 
-
-// Reducer
+// Reducer -------------------------------------------------------------------------------------------------------------
 
 export const goalReducer: Reducer<GoalState, GoalAction> = (state = initialState, action): GoalState => {
     const newGoals = {...state.goalsById};

@@ -32,7 +32,7 @@ const Authenticate: React.FC<Props> = props => {
     const submit = () => {
         isRegistration ?
             props.register({username, password, email, firstName, lastName}) :
-            props.login({username, password});
+            props.login(username, password);
     };
     const reset = () => {
         if (username) {

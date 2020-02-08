@@ -5,28 +5,7 @@ import {Action, Reducer} from "redux";
 import {notifyWithMessage} from "util/duckUtil";
 import {userApi} from "util/fetch";
 
-// State
-
-export type AccountState = {
-    username: string,
-    email: string,
-    firstName: string,
-    lastName: string
-};
-
-const initialState: AccountState = {email: "", username: "", firstName: "", lastName: ""};
-
-// Actions
-
-type SetEmailAction = { newMail: string } & Action<'SET_EMAIL'>;
-export const setEmail = (newMail: string): SetEmailAction => ({type: 'SET_EMAIL', newMail});
-
-type SetUsernameAction = { newUsername: string } & Action<'SET_USERNAME'>;
-export const setUsername = (newUsername: string): SetUsernameAction => ({type: 'SET_USERNAME', newUsername});
-
-type SetNames = { first: string, last: string };
-type SetNamesAction = SetNames & Action<'SET_NAMES'>;
-export const setNames = (input: SetNames): SetNamesAction => ({type: 'SET_NAMES', ...input});
+// API calls -----------------------------------------------------------------------------------------------------------
 
 export const loadAccount = (): Thunk => async (dispatch) => {
     userApi.getUser().then(value => {
@@ -45,10 +24,32 @@ export const updateAccount = (userTO: UserTO): Thunk => async (dispatch) => {
     ).catch(notifyWithMessage("Failed to update: ", dispatch));
 };
 
+// State ---------------------------------------------------------------------------------------------------------------
+
+export type AccountState = {
+    username: string,
+    email: string,
+    firstName: string,
+    lastName: string
+};
+
+const initialState: AccountState = {email: "", username: "", firstName: "", lastName: ""};
+
+// Actions -------------------------------------------------------------------------------------------------------------
+
+type SetEmailAction = { newMail: string } & Action<'SET_EMAIL'>;
+const setEmail = (newMail: string): SetEmailAction => ({type: 'SET_EMAIL', newMail});
+
+type SetUsernameAction = { newUsername: string } & Action<'SET_USERNAME'>;
+const setUsername = (newUsername: string): SetUsernameAction => ({type: 'SET_USERNAME', newUsername});
+
+type SetNames = { first: string, last: string };
+type SetNamesAction = SetNames & Action<'SET_NAMES'>;
+const setNames = (input: SetNames): SetNamesAction => ({type: 'SET_NAMES', ...input});
 
 export type AccountAction = SetEmailAction | SetUsernameAction | SetNamesAction;
 
-// Reducer
+// Reducer -------------------------------------------------------------------------------------------------------------
 
 export const accountReducer: Reducer<AccountState, AccountAction> = (
     state = initialState,

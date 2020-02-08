@@ -10,6 +10,8 @@ import {Action, Reducer} from "redux";
 import {notifyWithMessage} from "util/duckUtil";
 import {authApi, userApi} from "util/fetch";
 
+// API calls -----------------------------------------------------------------------------------------------------------
+
 // Functions to load all data on page load or login
 export const DataFetchers = [
     loadAllAspects(),
@@ -19,29 +21,9 @@ export const DataFetchers = [
     loadHabits()
 ];
 
-// State
-
-export type AuthState = {
-    authenticated: boolean;
-    token?: string;
-    isLoading: boolean;
-};
-
-const LOCAL_STORAGE_TOKEN = "GOALOR_KEY";
-const initialToken = localStorage.getItem(LOCAL_STORAGE_TOKEN);
-const initialState: AuthState = {
-    authenticated: !!initialToken,
-    token: initialToken || undefined,
-    isLoading: false
-};
-
-// Actions
-export type LoginRequest = { username: string, password: string };
-export const login = (req: LoginRequest): Thunk => async (dispatch, getState) => {
+export const login = (username: string, password: string): Thunk => async (dispatch) => {
     dispatch(setLoading(true));
     dispatch(notify({message: "LOGGING IN"}, 3000));
-    let password = req.password;
-    let username = req.username;
     authApi.postAuthLogin({login: {username, password}}).then(res => {
         if (!res.jwt) return;
         dispatch(setToken({token: res.jwt}));
@@ -50,7 +32,6 @@ export const login = (req: LoginRequest): Thunk => async (dispatch, getState) =>
     }).catch((response: ErrorResponse) =>
         dispatch(notify({message: `Error when logging in: ${response.message}`}))
     ).finally(() => dispatch(setLoading(false)));
-
 };
 
 export const register = (req: Registration): Thunk => async (dispatch) =>
@@ -75,17 +56,6 @@ export const resetPassword = (username: string): Thunk => async (dispatch) => {
     });
 };
 
-
-type SetToken = { token: string };
-type SetTokenAction = SetToken & Action<"SET_TOKEN">;
-export const setToken = (input: SetToken): SetTokenAction => ({type: "SET_TOKEN", ...input});
-
-type SetLoading = { loading: boolean };
-type SetLoadingAction = SetLoading & Action<"SET_LOADING">;
-export const setLoading = (value: boolean): SetLoadingAction => ({type: "SET_LOADING", loading: value});
-
-type LogoutAction = Action<"LOGOUT">;
-export const logoutAction = (): LogoutAction => ({type: "LOGOUT"});
 export const logout = (): Thunk => async (dispatch) => {
     authApi.postAuthLogout().then(() => {
         dispatch({type: "RESET"});
@@ -93,9 +63,38 @@ export const logout = (): Thunk => async (dispatch) => {
     });
 };
 
+// State ---------------------------------------------------------------------------------------------------------------
+
+export type AuthState = {
+    authenticated: boolean;
+    token?: string;
+    isLoading: boolean;
+};
+
+const LOCAL_STORAGE_TOKEN = "GOALOR_KEY";
+const initialToken = localStorage.getItem(LOCAL_STORAGE_TOKEN);
+const initialState: AuthState = {
+    authenticated: !!initialToken,
+    token: initialToken || undefined,
+    isLoading: false
+};
+
+// Actions -------------------------------------------------------------------------------------------------------------
+
+type SetToken = { token: string };
+type SetTokenAction = SetToken & Action<"SET_TOKEN">;
+const setToken = (input: SetToken): SetTokenAction => ({type: "SET_TOKEN", ...input});
+
+type SetLoading = { loading: boolean };
+type SetLoadingAction = SetLoading & Action<"SET_LOADING">;
+const setLoading = (value: boolean): SetLoadingAction => ({type: "SET_LOADING", loading: value});
+
+type LogoutAction = Action<"LOGOUT">;
+const logoutAction = (): LogoutAction => ({type: "LOGOUT"});
+
 export type AuthAction = SetTokenAction | SetLoadingAction | LogoutAction;
 
-// Reducer
+// Reducer -------------------------------------------------------------------------------------------------------------
 
 export const authReducer: Reducer<AuthState, AuthAction> = (state = initialState, action): AuthState => {
     switch (action.type) {

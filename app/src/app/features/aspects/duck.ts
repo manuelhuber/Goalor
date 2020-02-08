@@ -5,31 +5,7 @@ import {Action, Reducer} from "redux";
 import {notifyWithMessage} from "util/duckUtil";
 import {aspectApi} from "util/fetch";
 
-// State
-export type AspectsState = {
-    aspectsById: { [id: string]: Aspect }
-};
-
-const initialState: AspectsState = {
-    aspectsById: {}
-};
-
-// Actions
-type AddAspect = { aspect: Aspect[] };
-type AddAspectAction = AddAspect & Action<"ADD_ASPECT">;
-const addAspectAction = (aspect: Aspect | Aspect[]): AddAspectAction => ({
-    type: "ADD_ASPECT",
-    aspect: Array.isArray(aspect) ? aspect : [aspect]
-});
-
-type RemoveAspect = { id: string };
-type RemoveAspectAction = RemoveAspect & Action<"REMOVE_ASPECT">;
-export const removeAspect = (id: string): RemoveAspectAction => ({type: "REMOVE_ASPECT", id});
-
-type UpdateAspectAction = { aspect: Aspect } & Action<"UPDATE_ASPECT">;
-const updateAspectAction = (aspect: Aspect): UpdateAspectAction => ({type: "UPDATE_ASPECT", aspect});
-
-export type AspectsAction = AddAspectAction | RemoveAspectAction | UpdateAspectAction;
+// API calls -----------------------------------------------------------------------------------------------------------
 
 export const loadAllAspects = (): Thunk => async (dispatch) =>
     aspectApi.getAspects()
@@ -57,7 +33,35 @@ export const createAspect = (create: CreateAspect): Thunk => async (dispatch) =>
              .catch(notifyWithMessage("Error creating aspect: ", dispatch));
 };
 
-// Reducer
+// State ---------------------------------------------------------------------------------------------------------------
+
+export type AspectsState = {
+    aspectsById: { [id: string]: Aspect }
+};
+
+const initialState: AspectsState = {
+    aspectsById: {}
+};
+
+// Actions -------------------------------------------------------------------------------------------------------------
+
+type AddAspect = { aspect: Aspect[] };
+type AddAspectAction = AddAspect & Action<"ADD_ASPECT">;
+const addAspectAction = (aspect: Aspect | Aspect[]): AddAspectAction => ({
+    type: "ADD_ASPECT",
+    aspect: Array.isArray(aspect) ? aspect : [aspect]
+});
+
+type RemoveAspect = { id: string };
+type RemoveAspectAction = RemoveAspect & Action<"REMOVE_ASPECT">;
+const removeAspect = (id: string): RemoveAspectAction => ({type: "REMOVE_ASPECT", id});
+
+type UpdateAspectAction = { aspect: Aspect } & Action<"UPDATE_ASPECT">;
+const updateAspectAction = (aspect: Aspect): UpdateAspectAction => ({type: "UPDATE_ASPECT", aspect});
+
+export type AspectsAction = AddAspectAction | RemoveAspectAction | UpdateAspectAction;
+
+// Reducer -------------------------------------------------------------------------------------------------------------
 
 export const aspectsReducer: Reducer<AspectsState, AspectsAction> = (state = initialState, action): AspectsState => {
     const newAspects = {...state.aspectsById};

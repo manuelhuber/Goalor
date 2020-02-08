@@ -4,31 +4,7 @@ import {Gratitude, GratitudeFromJSON} from "generated/models";
 import {Action, Reducer} from "redux";
 import {gratitudeApi, myFetch} from "util/fetch";
 
-// State
-
-export type GratitudeState = {
-    gratitude: { [id: string]: Gratitude },
-    gratitudeSortedByDate: string[]
-};
-
-const initialState: GratitudeState = {gratitude: {}, gratitudeSortedByDate: []};
-
-// Actions
-
-type AddGratitudes = { gratitudes: Gratitude[] };
-type AddGratitudesAction = AddGratitudes & Action<'ADD_GRATITUDES'>;
-export const addGratitudes = (gratitudes: Gratitude[]): AddGratitudesAction => ({type: 'ADD_GRATITUDES', gratitudes});
-
-type RemoveGratitude = { id: string };
-type RemoveGratitudeAction = RemoveGratitude & Action<'REMOVE_GRATITUDE'>;
-export const removeGratitude = (id: string): RemoveGratitudeAction => ({type: 'REMOVE_GRATITUDE', id});
-
-type UpdateGratitude = { gratitude: Gratitude };
-type UpdateGratitudeAction = UpdateGratitude & Action<'UPDATE_GRATITUDE'>;
-export const updateGratitudeAction = (gratitude: Gratitude): UpdateGratitudeAction => ({
-    type: 'UPDATE_GRATITUDE',
-    gratitude
-});
+// API calls -----------------------------------------------------------------------------------------------------------
 
 export const createGratitude = (
     title: string,
@@ -63,9 +39,33 @@ export const loadAllGratitudes = (): Thunk => async (dispatch) => {
     gratitudeApi.getGratitude().then(value => dispatch(addGratitudes(value)));
 };
 
+// State ---------------------------------------------------------------------------------------------------------------
+
+export type GratitudeState = {
+    gratitude: { [id: string]: Gratitude },
+    gratitudeSortedByDate: string[]
+};
+
+const initialState: GratitudeState = {gratitude: {}, gratitudeSortedByDate: []};
+
+// Actions -------------------------------------------------------------------------------------------------------------
+
+type AddGratitudes = { gratitudes: Gratitude[] };
+type AddGratitudesAction = AddGratitudes & Action<'ADD_GRATITUDES'>;
+export const addGratitudes = (gratitudes: Gratitude[]): AddGratitudesAction => ({type: 'ADD_GRATITUDES', gratitudes});
+
+type RemoveGratitude = { id: string };
+type RemoveGratitudeAction = RemoveGratitude & Action<'REMOVE_GRATITUDE'>;
+const removeGratitude = (id: string): RemoveGratitudeAction => ({type: 'REMOVE_GRATITUDE', id});
+
+type UpdateGratitude = { gratitude: Gratitude };
+type UpdateGratitudeAction = UpdateGratitude & Action<'UPDATE_GRATITUDE'>;
+const updateGratitudeAction = (gratitude: Gratitude): UpdateGratitudeAction => ({type: 'UPDATE_GRATITUDE', gratitude});
+
+
 export type GratitudeAction = AddGratitudesAction | RemoveGratitudeAction | UpdateGratitudeAction;
 
-// Reducer
+// Reducer -------------------------------------------------------------------------------------------------------------
 
 export const gratitudeReducer: Reducer<GratitudeState, GratitudeAction> = (
     state = initialState,

@@ -1,7 +1,14 @@
 import {Thunk} from "app/Store";
 import {Action, Reducer} from "redux";
 
-// State
+let timeout = null;
+export const notify = (message: Notify, timeToLive?: number): Thunk => async (dispatch) => {
+    dispatch(notifyAction(message));
+    clearTimeout(timeout);
+    timeout = timeToLive ? setTimeout(() => dispatch(clearNotification()), timeToLive) : null;
+};
+
+// State ---------------------------------------------------------------------------------------------------------------
 
 export type NotificationState = {
     message?: string,
@@ -10,26 +17,18 @@ export type NotificationState = {
 
 const initialState: NotificationState = {message: "test", showMessage: false};
 
-// Actions
+// Actions -------------------------------------------------------------------------------------------------------------
 
 type Notify = { message: string };
 type NotifyAction = Notify & Action<"NOTIFY">;
 const notifyAction = (input: Notify): NotifyAction => ({type: "NOTIFY", ...input});
-
-let timeout = null;
-export const notify = (message: Notify, timeToLive?: number): Thunk => async (dispatch) => {
-    dispatch(notifyAction(message));
-    clearTimeout(timeout);
-    timeout = timeToLive ? setTimeout(() => dispatch(clearNotification()), timeToLive) : null;
-};
-
 
 type ClearAction = Action<"CLEAR">;
 export const clearNotification = (): ClearAction => ({type: "CLEAR"});
 
 export type NotificationAction = NotifyAction | ClearAction;
 
-// Reducer
+// Reducer -------------------------------------------------------------------------------------------------------------
 
 export const notificationReducer: Reducer<NotificationState, NotificationAction> = (
     state = initialState,
