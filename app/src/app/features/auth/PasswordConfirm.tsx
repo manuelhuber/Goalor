@@ -10,28 +10,21 @@ const PasswordConfirm: React.FC<Props> = props => {
     const {value: oldPW, bind: bindOldPW} = useInput("");
     const [newPWError, setNewPWError] = useState(null);
     const [repPWError, setRepPWError] = useState(null);
-    const [initialRender, setInitialRender] = useState(true);
 
     useEffect(() => {
-        if (initialRender) {
-            setInitialRender(false);
-            return;
-        }
-        let err;
-        if (newPW.length < 5) {
-            err = "Password too short";
-            setNewPWError(err);
-        } else {
+        if (!newPW) {
             setNewPWError(null);
-        }
-        if (newPW !== repPW) {
-            err = "Duplicate doesn't match";
-            setRepPWError(err);
+            setRepPWError(null);
         } else {
-            setRepPWError(null)
+            setNewPWError(newPW.length < 5 ? "Password too short" : null);
+            setRepPWError(newPW !== repPW ? "Duplicate doesn't match" : null);
         }
-        props.onUpdate(newPW, !err, oldPW);
-    }, [newPW, repPW, oldPW]);
+
+    }, [newPW, repPW, oldPW, setRepPWError, setNewPWError]);
+
+    useEffect(() => {
+        props.onUpdate(newPW, !(newPWError || repPWError), oldPW);
+    }, [props, newPW, newPWError, repPWError, oldPW]);
 
     return <div>
         {props.requiresOldPW && <Input type="password" label="Current password" {...bindOldPW}/>}

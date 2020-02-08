@@ -92,10 +92,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(Aspects);
 const ChartWrapper = styled.div`
     text-align: center;
 `;
-const Arrow = styled.img`
-    max-width: 125px;
-    margin-bottom: 20px;
-`;
 const AspectEntry = styled.div`
   border-bottom: 2px solid var(--color-neutral-tint1);
   &:last-child {

@@ -34,7 +34,7 @@ const AccountSettings: React.FC<Props> = props => {
         setEmail(props.email);
         setFirst(props.firstName);
         setLast(props.lastName);
-    }, [props]);
+    }, [props, setUsername, setEmail, setFirst, setLast]);
 
     function pwUpdate(newPW: string, valid: boolean, oldPW: string) {
         setPassword(valid ? newPW : null);
