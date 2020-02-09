@@ -4,7 +4,7 @@ import PasswordConfirm from "app/features/auth/PasswordConfirm";
 import {AppState} from "app/Store";
 import React, {useState} from "react";
 import {connect} from 'react-redux'
-import {useParams} from "react-router";
+import {useHistory, useParams} from "react-router";
 import {bindActions} from "util/duckUtil";
 
 const mapStateToProps = (state: AppState) => {
@@ -21,8 +21,11 @@ const Reset: React.FC<Props> = props => {
     const pwUpdate = (newPW, valid, oldPW) => {
         setPassword(valid ? newPW : null)
     };
-    const savePassword = () => {
-        props.updatePassword(null, password, token);
+    const history = useHistory();
+    const savePassword = async () => {
+        props.updatePassword(null, password, token).then(x => {
+            history.push("/login")
+        });
     };
     return <div>
         <PasswordConfirm onUpdate={pwUpdate}/>

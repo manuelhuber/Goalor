@@ -5,7 +5,7 @@ import {loadAllGratitudes} from "app/features/gratitude/duck";
 import {loadHabits} from "app/features/habit/duck";
 import {notify} from "app/features/notifications/duck";
 import {Thunk} from "app/Store";
-import {ErrorResponse, Registration} from "generated/models";
+import {ErrorResponse, JWTResponse, Registration} from "generated/models";
 import {Action, Reducer} from "redux";
 import {notifyWithMessage} from "util/duckUtil";
 import {authApi, userApi} from "util/fetch";
@@ -43,11 +43,16 @@ export const register = (req: Registration): Thunk => async (dispatch) =>
                dispatch(loadAllGoals());
            }).catch(notifyWithMessage("Failed to register: ", dispatch));
 
-export const updatePassword = (old: string, newPw: string, token: string = null): Thunk => async (dispatch) => {
-    userApi.postUserPassword({passwordUpdate: {old, pw: newPw, token}}).then(value => {
+export const updatePassword = (
+    old: string,
+    newPw: string,
+    token: string = null): (dispatch) => Promise<JWTResponse> => async (dispatch) => {
+    let responsePromise = userApi.postUserPassword({passwordUpdate: {old, pw: newPw, token}});
+    responsePromise.then(value => {
         dispatch(setToken({token: value.jwt}));
         dispatch(notify({message: "Password updated"}))
     }).catch(notifyWithMessage("Failed to update password: ", dispatch));
+    return responsePromise;
 };
 
 export const resetPassword = (username: string): Thunk => async (dispatch) => {

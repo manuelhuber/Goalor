@@ -13,7 +13,7 @@ export function namespacedReducer<S, A extends NamespacedAction<any>>(
 }
 
 export function bindActions<A, C extends ActionCreatorsMapObject<A>>(actions: C) {
-    return (dispatch: Dispatch): C => bindActionCreators(actions, dispatch)
+    return (dispatch: Dispatch) => bindActionCreators(actions, dispatch)
 }
 
 export function notifyWithMessage(text: string, dispatch) {
