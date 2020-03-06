@@ -15,7 +15,7 @@ import java.time.LocalDate
 class HabitController @Inject constructor(val service: HabitService) {
 
     @Get
-    fun register(ctx: Context, @QueryParam from: LocalDate, @QueryParam to: LocalDate): HabitResponse {
+    fun getHabits(ctx: Context, @QueryParam from: LocalDate, @QueryParam to: LocalDate): HabitResponse {
         val owner = ctx.getRequesterId()
         val habits = service.getHabits(owner)
         val habitValues = service.getHabitValues(owner, from, to).mapValues { entry ->

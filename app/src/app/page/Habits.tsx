@@ -26,11 +26,9 @@ const Habits: React.FC<Props> = props => {
     return <Root>
         <SectionTitle color={redDark} title="Habits"/>
         <Checkins/>
-        <div>
-            <AddRow nuxText="Add a habit that you want to track!"
-                    showNux={!Object.keys(props.habits).length}
-                    onAdd={() => setShowAdd(!showAdd)}/>
-        </div>
+        <AddRow nuxText="Add a habit that you want to track!"
+                showNux={!Object.keys(props.habits).length}
+                onAdd={() => setShowAdd(!showAdd)}/>
         {showAdd && <EditHabit onSave={addHabit}
                                onCancel={() => setShowAdd(false)}/>}
     </Root>;

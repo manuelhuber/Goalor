@@ -17,7 +17,7 @@ class HabitService @Inject constructor(private val habitEngine: HabitEngine,
                                        private val habitValueEngine: HabitValueEngine) {
 
     private val validValues = mapOf(
-            1 to listOf(1),
+            1 to listOf(0, 1),
             2 to listOf(-1, 1),
             3 to listOf(-1, 0, 1),
             4 to listOf(-2, -1, 1, 2),
@@ -44,7 +44,7 @@ class HabitService @Inject constructor(private val habitEngine: HabitEngine,
         checkOwnership(habit, requester)
         validateOptions(request.options)
         val newHabit = habitEngine.update(habitId, habit.copy(title = request.title, options = request.options))
-        validValues[newHabit.options]?.let { habitValueEngine.deleteAllValuesWExcept(habitId, it) }
+        validValues[newHabit.options]?.let { habitValueEngine.deleteAllValuesExcept(habitId, it) }
         return newHabit
     }
 

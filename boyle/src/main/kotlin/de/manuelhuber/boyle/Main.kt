@@ -32,10 +32,8 @@ fun main() {
 
         }
     }
-
     channel.basicConsume(QUEUE_NAME, true, consumer)
 }
-
 
 fun sendMail(userEmail: String, token: String) {
     val from = Email("test@example.com")

@@ -22,27 +22,26 @@ class HabitValuePostgresEngine : HabitValueEngine {
 
     override fun getAllForHabit(habit: Id, from: LocalDate, to: LocalDate): List<HabitValue> {
         return transaction {
-            HabitValues.select {
-                (HabitValues.habit eq habit.toUUID()) and
-                        (HabitValues.date greaterEq from) and
-                        (HabitValues.date lessEq to)
-            }.map(rowToHabitValue)
+            HabitValues
+                .select { HabitValues.habit eq habit.toUUID() }
+                .andWhere { HabitValues.date greaterEq from }
+                .andWhere { HabitValues.date lessEq to }
+                .map(rowToHabitValue)
         }
     }
 
     override fun getAllForHabits(habits: List<Id>, from: LocalDate, to: LocalDate): Map<LocalDate, List<HabitValue>> {
         val uuids = habits.map(Id::toUUID)
         return transaction {
-            HabitValues.select {
-                (HabitValues.habit inList uuids) and
-                        (HabitValues.date greaterEq from) and
-                        (HabitValues.date lessEq to)
-            }.orderBy(HabitValues.date).map(rowToHabitValue)
-
+            HabitValues
+                .select { HabitValues.habit inList uuids }
+                .andWhere { HabitValues.date greaterEq from }
+                .andWhere { HabitValues.date lessEq to }
+                .orderBy(HabitValues.date).map(rowToHabitValue)
         }.groupBy { habitValue: HabitValue -> habitValue.date }
     }
 
-    override fun deleteAllValuesWExcept(habit: Id, valuesToKeep: List<Int>) {
+    override fun deleteAllValuesExcept(habit: Id, valuesToKeep: List<Int>) {
         transaction {
             HabitValues.deleteWhere { HabitValues.value notInList valuesToKeep }
         }
