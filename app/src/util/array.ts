@@ -21,3 +21,5 @@ export function replaceByComp<T>(array: T[], replace: T, comp: (T) => any) {
         }
     });
 }
+
+export const unique = (value, index, array) => array.indexOf(value) === index;

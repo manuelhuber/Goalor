@@ -3,11 +3,11 @@ import IconButton from "app/common/buttons/IconButton";
 import EditGoal from "app/features/goals/EditGoal";
 import GoalCard from "app/features/goals/GoalCard";
 import {AppState} from "app/Store";
-import {Goal} from "generated/models";
 import React, {useState} from "react";
 import {MdKeyboardArrowLeft, MdKeyboardArrowRight} from "react-icons/all";
 import {connect} from "react-redux"
 import commonStyle from "style/Common.module.scss";
+import {unique} from "util/array";
 import {bindActions} from "util/duckUtil";
 import {jc} from "util/style";
 import {addGoals, updateGoal} from "./duck";
@@ -48,7 +48,9 @@ const Goals: React.FC<Props> = props => {
         setModalOpen(true);
     };
 
-    const color = (goal: Goal) => props.aspects[goal.aspect] && props.aspects[goal.aspect].color;
+    const aspects = props.rootGoals.map(goal => goal.aspect).filter(unique);
+
+    const color = (aspect) => props.aspects[aspect] && props.aspects[aspect].color;
 
     return <div className={styles.root}>
         <EditGoal title={modalTitle}
@@ -60,7 +62,6 @@ const Goals: React.FC<Props> = props => {
                   potentialParents={props.rootGoals.filter(goal => !goalInEdit || goal.id !== goalInEdit.id)}
                   onAttemptClose={() => setModalOpen(false)}
                   onSave={onSave}/>
-        <AddRow onAdd={toggleAddNew} showNux={!Object.keys(props.allGoals).length} nuxText="Add a goal."/>
         <div className={jc(styles.headerRow, commonStyle.padding)}>
             <IconButton onClick={() => setSelectedCol(selectedCol - 1)} disabled={selectedCol <= 0}>
                 <MdKeyboardArrowLeft/>
@@ -71,21 +72,25 @@ const Goals: React.FC<Props> = props => {
         </div>
         <div className={jc(styles.goals)}
              style={{width: `${numOfCols * 100}%`, transform: `translateX(-${(selectedCol / numOfCols) * 100}%)`}}>
-            {props.rootGoals.map(goal => <div className={styles.goalRow}
-                                              style={{borderColor: color(goal)}}
-                                              key={goal.id}>
-                <div className={styles.actionColumn}>
-                    {goal.children
-                         .map(id => props.allGoals[id])
-                         .filter(goal => !!goal) // filter out bad references
-                         .map((x, i) =>
-                             <GoalCard key={`${goal.id}-${i}`} goal={x} onEdit={toggleEdit}/>)}
-                </div>
-                <div className={styles.goalColumn}>
-                    <GoalCard goal={goal} onEdit={toggleEdit}/>
-                </div>
+            {aspects.map(aspect => <div className={styles.aspectRow}
+                                        style={{borderColor: color(aspect)}}
+                                        key={aspect}>
+                {props.rootGoals.filter(goal => goal.aspect === aspect).map(goal => <div className={styles.goalRow}
+                                                                                         key={goal.id}>
+                    <div className={styles.actionColumn}>
+                        {goal.children
+                             .map(id => props.allGoals[id])
+                             .filter(goal => !!goal) // filter out bad references
+                             .map((x, i) =>
+                                 <GoalCard key={`${goal.id}-${i}`} goal={x} onEdit={toggleEdit}/>)}
+                    </div>
+                    <div className={styles.goalColumn}>
+                        <GoalCard goal={goal} onEdit={toggleEdit}/>
+                    </div>
+                </div>)}
             </div>)}
         </div>
+        <AddRow onAdd={toggleAddNew} showNux={!Object.keys(props.allGoals).length} nuxText="Add a goal."/>
     </div>;
 };
 

@@ -26,12 +26,21 @@
   }
 }
 
-.goalRow {
-  display: flex;
+.aspectRow {
   margin: 8px;
   border: 4px dashed var(--color-neutral-tint2);
-  padding: 8px;
   border-radius: var(--border-radius);
+}
+
+.goalRow {
+  display: flex;
+  margin: 0 8px;
+  padding: 4px 0;
+  border-bottom: 2px dashed var(--color-neutral-tint2);
+
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
 .actionColumn {
