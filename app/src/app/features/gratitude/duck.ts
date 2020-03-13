@@ -12,7 +12,7 @@ export const createGratitude = (
     description: string,
     file: File): Thunk => async (dispatch) => {
     const data = new FormData();
-    data.append("file", file);
+    data.append("image", file);
     data.append("title", title);
     data.append("date", date);
     data.append("description", description);
