@@ -74,7 +74,7 @@ const Goals: React.FC<Props> = props => {
              style={{width: `${numOfCols * 100}%`, transform: `translateX(-${(selectedCol / numOfCols) * 100}%)`}}>
             {aspects.map(aspect => <div className={styles.aspectRow}
                                         style={{borderColor: color(aspect)}}
-                                        key={aspect}>
+                                        key={aspect || "none"}>
                 {props.rootGoals.filter(goal => goal.aspect === aspect).map(goal => <div className={styles.goalRow}
                                                                                          key={goal.id}>
                     <div className={styles.actionColumn}>
