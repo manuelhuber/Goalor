@@ -64,6 +64,10 @@ export const goalReducer: Reducer<GoalState, GoalAction> = (state = initialState
         case "ADD_GOALS":
             action.goal.forEach(goal => {
                 newGoals[goal.id] = goal;
+                let parent = newGoals[goal.parent];
+                if (parent && parent.children.indexOf(goal.id) === -1) {
+                    parent.children.push(goal.id);
+                }
             });
             return {...state, goalsById: newGoals};
         default:
