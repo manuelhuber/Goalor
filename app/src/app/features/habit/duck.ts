@@ -2,7 +2,6 @@ import {Thunk} from "app/Store";
 import {Habit} from "generated/models";
 import {Action, Reducer} from "redux";
 import {serialise} from "util/date";
-import {notifyWithMessage} from "util/duckUtil";
 import {habitApi} from "util/fetch";
 
 // API calls -----------------------------------------------------------------------------------------------------------
@@ -10,7 +9,7 @@ import {habitApi} from "util/fetch";
 export const loadHabits = (): Thunk => async (dispatch) => {
     const from = new Date();
     from.setDate(from.getDate() - 30);
-    habitApi.getHabits({from, to: new Date()}).then(value => {
+    habitApi(dispatch).getHabits({from, to: new Date()}).then(value => {
             dispatch(setHabits(value.habits));
             dispatch(setValuesAction({values: value.dateValue}));
         }
@@ -18,7 +17,7 @@ export const loadHabits = (): Thunk => async (dispatch) => {
 };
 
 export const createHabit = (title: string, options: number): Thunk => async (dispatch) => {
-    habitApi.postHabits({habitRequest: {title, options}}).then(value => {
+    habitApi(dispatch).postHabits({habitRequest: {title, options}}).then(value => {
         dispatch(setHabits([value]));
     });
 };
@@ -28,18 +27,16 @@ export const updateHabitValue = (date: Date, value: number, habit: string): Thun
     const dateKey = serialise(date);
     let values = {[dateKey]: {[habit]: value}};
     dispatch(setValuesAction({values}));
-    habitApi.postHabitsWithHabit({habit, habitValueRequest: {date, value}})
-            .catch(notifyWithMessage("Failed to update habit value: ", dispatch));
+    habitApi(dispatch).postHabitsWithHabit({habit, habitValueRequest: {date, value}});
 };
 
 export const deleteHabit = (habit: string): Thunk => async (dispatch) => {
-    habitApi.deleteHabitsWithHabit({habit}).then(() => dispatch(removeHabit({id: habit})));
+    habitApi(dispatch).deleteHabitsWithHabit({habit}).then(() => dispatch(removeHabit({id: habit})));
 };
 
 export const updateHabit = (habit: Habit): Thunk => async (dispatch) => {
     dispatch(setHabits([habit]));
-    habitApi.putHabitsWithHabit({habit: habit.id, habitRequest: {...habit}})
-            .catch(notifyWithMessage("Failed to update habit: ", dispatch));
+    habitApi(dispatch).putHabitsWithHabit({habit: habit.id, habitRequest: {...habit}});
 };
 
 // State ---------------------------------------------------------------------------------------------------------------

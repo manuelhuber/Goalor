@@ -2,13 +2,12 @@ import {notify} from "app/features/notifications/duck";
 import {Thunk} from "app/Store";
 import {UserTO} from "generated/models";
 import {Action, Reducer} from "redux";
-import {notifyWithMessage} from "util/duckUtil";
 import {userApi} from "util/fetch";
 
 // API calls -----------------------------------------------------------------------------------------------------------
 
 export const loadAccount = (): Thunk => async (dispatch) => {
-    userApi.getUser().then(value => {
+    userApi(dispatch).getUser().then(value => {
         dispatch(setEmail(value.email));
         dispatch(setUsername(value.username));
         dispatch(setNames({first: value.firstName, last: value.lastName}))
@@ -16,12 +15,11 @@ export const loadAccount = (): Thunk => async (dispatch) => {
 };
 
 export const updateAccount = (userTO: UserTO): Thunk => async (dispatch) => {
-    userApi.putUser({userTO}).then(value => {
+    userApi(dispatch).putUser({userTO}).then(value => {
         dispatch(setEmail(value.email));
         dispatch(setUsername(value.username));
         dispatch(setNames({first: value.firstName, last: value.lastName}))
-    }).then(() => dispatch(notify({message: "Update successful!"}))
-    ).catch(notifyWithMessage("Failed to update: ", dispatch));
+    }).then(() => dispatch(notify({message: "Update successful!"})));
 };
 
 // State ---------------------------------------------------------------------------------------------------------------

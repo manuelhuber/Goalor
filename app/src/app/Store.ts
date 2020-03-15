@@ -1,8 +1,9 @@
+import {configureStore} from "@reduxjs/toolkit";
 import {accountReducer} from "app/features/account/duck";
 import {gratitudeReducer} from "app/features/gratitude/duck";
 import {habitsReducer} from "app/features/habit/duck";
 import {notificationReducer} from "app/features/notifications/duck";
-import {Action, applyMiddleware, combineReducers, compose, createStore} from "redux";
+import {Action, combineReducers} from "redux";
 import thunkMiddleware, {ThunkAction} from "redux-thunk"
 import {aspectsReducer} from "./features/aspects/duck";
 import {authReducer} from "./features/auth/duck";
@@ -29,12 +30,5 @@ const reducerWithReset: typeof rootReducer = (state, action) => {
 export type AppState = ReturnType<typeof reducerWithReset>
 
 export type Thunk<R = void> = ThunkAction<Promise<R>, AppState, {}, Action>;
-
-const store =
-    (window as any).__REDUX_DEVTOOLS_EXTENSION__ ?
-        createStore(reducerWithReset, compose(
-            applyMiddleware(thunkMiddleware),
-            (window as any).__REDUX_DEVTOOLS_EXTENSION__())
-        ) : createStore(reducerWithReset, applyMiddleware(thunkMiddleware));
-
+const store = configureStore({reducer: reducerWithReset, middleware: [thunkMiddleware], devTools: true});
 export default store;

@@ -1,5 +1,11 @@
-import {Configuration, HabitsApi} from "generated";
+import {logoutAction} from "app/features/auth/duck";
+import {notify} from "app/features/notifications/duck";
+import {AppState} from "app/Store";
+
+import {BaseAPI, Configuration, HabitsApi} from "generated";
 import {AspectsApi, AuthApi, GoalsApi, GratitudeApi, UserApi} from "generated/apis";
+import {Action, Dispatch} from "redux";
+import {ThunkDispatch} from "redux-thunk";
 
 export const post = (url: string, body?: any, input?: RequestInit) => {
     return myFetch(url, "POST", body, input)
@@ -7,28 +13,37 @@ export const post = (url: string, body?: any, input?: RequestInit) => {
 export const get = (url: string, input?: RequestInit) => {
     return myFetch(url, "GET", null, input)
 };
-
-let configuration = new Configuration({
+let configuration = (dispatch: ThunkDispatch<AppState, {}, Action>) => new Configuration({
     accessToken: () => localStorage.getItem("GOALOR_KEY"),
     basePath: process.env.REACT_APP_BASE_URL,
     middleware: [{
         post: async context => {
             const response = context.response;
+
             if (response.status >= 200 && response.status < 300) {
                 return response;
-            } else {
-                throw (await response.json())
             }
+
+            if (response.status === 401) {
+                dispatch(logoutAction());
+            }
+            let errorResponse = await response.json();
+            dispatch(notify({message: "Error" + (errorResponse.message || errorResponse.toString())}));
+            throw (errorResponse);
         }
     }]
 });
 
-export const aspectApi = new AspectsApi(configuration);
-export const goalApi = new GoalsApi(configuration);
-export const authApi = new AuthApi(configuration);
-export const userApi = new UserApi(configuration);
-export const gratitudeApi = new GratitudeApi(configuration);
-export const habitApi = new HabitsApi(configuration);
+function configApi<T extends BaseAPI>(Api: new (Configuration) => T): (Dispatch) => T {
+    return (dispatch: Dispatch): T => new Api(configuration(dispatch));
+}
+
+export const aspectApi = configApi(AspectsApi);
+export const goalApi = configApi(GoalsApi);
+export const authApi = configApi(AuthApi);
+export const userApi = configApi(UserApi);
+export const gratitudeApi = configApi(GratitudeApi);
+export const habitApi = configApi(HabitsApi);
 
 export const myFetch = (url: string, method: "POST" | "GET" | "PUT" | "DELETE", body?: any, input?: RequestInit) => {
     const defaultConfig = {

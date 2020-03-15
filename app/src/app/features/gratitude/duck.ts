@@ -1,4 +1,3 @@
-import {notify} from "app/features/notifications/duck";
 import {Thunk} from "app/Store";
 import {Gratitude, GratitudeFromJSON} from "generated/models";
 import {Action, Reducer} from "redux";
@@ -18,25 +17,23 @@ export const createGratitude = (
     data.append("description", description);
     myFetch("gratitude", "POST", data).then(e => {
         dispatch(addGratitudes([GratitudeFromJSON(e)]))
-    }).catch(reason => {
-        dispatch(notify({message: reason.message}))
     });
 };
 
 export const deleteGratitude = (id: string): Thunk => async (dispatch) => {
-    gratitudeApi.deleteGratitudeWithId({id}).then(value => {
+    gratitudeApi(dispatch).deleteGratitudeWithId({id}).then(value => {
         dispatch(removeGratitude(id));
     });
 };
 
 export const updateGratitude = (gratitude: Gratitude): Thunk => async (dispatch) => {
-    gratitudeApi.putGratitudeWithId({id: gratitude.id, gratitudeData: {...gratitude}}).then(value => {
+    gratitudeApi(dispatch).putGratitudeWithId({id: gratitude.id, gratitudeData: {...gratitude}}).then(value => {
         dispatch(updateGratitudeAction(value));
     });
 };
 
 export const loadAllGratitudes = (): Thunk => async (dispatch) => {
-    gratitudeApi.getGratitude().then(value => dispatch(addGratitudes(value)));
+    gratitudeApi(dispatch).getGratitude().then(value => dispatch(addGratitudes(value)));
 };
 
 // State ---------------------------------------------------------------------------------------------------------------

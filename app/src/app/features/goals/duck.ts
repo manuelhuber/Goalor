@@ -1,4 +1,3 @@
-import {notify} from "app/features/notifications/duck";
 import {Thunk} from "app/Store";
 import {Goal} from "generated/models";
 import {Action, Reducer} from "redux";
@@ -8,26 +7,25 @@ import {goalApi} from "util/fetch";
 
 export const addGoals = (goal: Goal): Thunk => async (dispatch) => {
     goal.children = goal.children || [];
-    goalApi.postGoals({goalData: {...goal}})
-           .then(x => dispatch(addGoalsAction(x)))
-           .catch((e) => dispatch(notify({message: "Error creating goals"})));
+    goalApi(dispatch).postGoals({goalData: {...goal}})
+                     .then(x => dispatch(addGoalsAction(x)));
 };
 
 export const updateGoal = (goal: Goal): Thunk => async (dispatch) => {
-    goalApi.putGoalsWithId({id: goal.id, goalData: {...goal}}).then((update) => {
+    goalApi(dispatch).putGoalsWithId({id: goal.id, goalData: {...goal}}).then((update) => {
         dispatch(loadAllGoals())
     });
 };
 
 export const deleteGoal = (id: string): Thunk => async (dispatch) => {
-    goalApi.deleteGoalsWithId({id: id}).then(() => {
+    goalApi(dispatch).deleteGoalsWithId({id: id}).then(() => {
         dispatch(deleteGoalAction(id));
         dispatch(loadAllGoals());
     });
 };
 
 export const loadAllGoals = (): Thunk => async (dispatch) => {
-    goalApi.getGoals().then(goals => dispatch(addGoalsAction(goals)))
+    goalApi(dispatch).getGoals().then(goals => dispatch(addGoalsAction(goals)))
 };
 
 // State ---------------------------------------------------------------------------------------------------------------

@@ -5,9 +5,8 @@ import {loadAllGratitudes} from "app/features/gratitude/duck";
 import {loadHabits} from "app/features/habit/duck";
 import {notify} from "app/features/notifications/duck";
 import {Thunk} from "app/Store";
-import {ErrorResponse, JWTResponse, Registration} from "generated/models";
+import {JWTResponse, Registration} from "generated/models";
 import {Action, Reducer} from "redux";
-import {notifyWithMessage} from "util/duckUtil";
 import {authApi, userApi} from "util/fetch";
 
 // API calls -----------------------------------------------------------------------------------------------------------
@@ -24,45 +23,43 @@ export const DataFetchers = [
 export const login = (username: string, password: string): Thunk => async (dispatch) => {
     dispatch(setLoading(true));
     dispatch(notify({message: "LOGGING IN"}, 3000));
-    authApi.postAuthLogin({login: {username, password}}).then(res => {
+    authApi(dispatch).postAuthLogin({login: {username, password}}).then(res => {
         if (!res.jwt) return;
         dispatch(setToken({token: res.jwt}));
         DataFetchers.forEach(thunk => dispatch(thunk));
         dispatch(notify({message: "Successfully logged in"}, 1500))
-    }).catch((response: ErrorResponse) =>
-        dispatch(notify({message: `Error when logging in: ${response.message}`}))
-    ).finally(() => dispatch(setLoading(false)));
+    }).finally(() => dispatch(setLoading(false)));
 };
 
 export const register = (req: Registration): Thunk => async (dispatch) =>
-    userApi.postUserRegister({registration: req})
-           .then(res => {
-               dispatch(setLoading(false));
-               dispatch(setToken({token: res["token"]}));
-               dispatch(loadAllAspects());
-               dispatch(loadAllGoals());
-           }).catch(notifyWithMessage("Failed to register: ", dispatch));
+    userApi(dispatch).postUserRegister({registration: req})
+                     .then(res => {
+                         dispatch(setLoading(false));
+                         dispatch(setToken({token: res["token"]}));
+                         dispatch(loadAllAspects());
+                         dispatch(loadAllGoals());
+                     });
 
 export const updatePassword = (
     old: string,
     newPw: string,
     token: string = null): (dispatch) => Promise<JWTResponse> => async (dispatch) => {
-    let responsePromise = userApi.postUserPassword({passwordUpdate: {old, pw: newPw, token}});
+    let responsePromise = userApi(dispatch).postUserPassword({passwordUpdate: {old, pw: newPw, token}});
     responsePromise.then(value => {
         dispatch(setToken({token: value.jwt}));
         dispatch(notify({message: "Password updated"}))
-    }).catch(notifyWithMessage("Failed to update password: ", dispatch));
+    });
     return responsePromise;
 };
 
 export const resetPassword = (username: string): Thunk => async (dispatch) => {
-    authApi.postAuthResetWithUsername({username}).then(() => {
+    authApi(dispatch).postAuthResetWithUsername({username}).then(() => {
         dispatch(notify({message: "Reset successful. Check your emails"}))
     });
 };
 
 export const logout = (): Thunk => async (dispatch) => {
-    authApi.postAuthLogout().then(() => {
+    authApi(dispatch).postAuthLogout().then(() => {
         dispatch({type: "RESET"});
         dispatch(logoutAction());
     });
@@ -95,7 +92,7 @@ type SetLoadingAction = SetLoading & Action<"SET_LOADING">;
 const setLoading = (value: boolean): SetLoadingAction => ({type: "SET_LOADING", loading: value});
 
 type LogoutAction = Action<"LOGOUT">;
-const logoutAction = (): LogoutAction => ({type: "LOGOUT"});
+export const logoutAction = (): LogoutAction => ({type: "LOGOUT"});
 
 export type AuthAction = SetTokenAction | SetLoadingAction | LogoutAction;
 

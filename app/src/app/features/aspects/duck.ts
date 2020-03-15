@@ -2,35 +2,36 @@ import {notify} from "app/features/notifications/duck";
 import {Thunk} from "app/Store";
 import {Aspect, CreateAspect} from "generated/models";
 import {Action, Reducer} from "redux";
-import {notifyWithMessage} from "util/duckUtil";
 import {aspectApi} from "util/fetch";
 
 // API calls -----------------------------------------------------------------------------------------------------------
 
 export const loadAllAspects = (): Thunk => async (dispatch) =>
-    aspectApi.getAspects()
-             .then((aspects: Aspect[]) => {
-                 dispatch(addAspectAction(aspects));
-             })
-             .catch(notifyWithMessage("Error loading aspect: ", dispatch));
+    aspectApi(dispatch)
+    .getAspects()
+    .then((aspects: Aspect[]) => {
+        dispatch(addAspectAction(aspects));
+    });
 
 export const updateAspect = (aspect: Aspect): Thunk => async (dispatch) => {
-    aspectApi.putAspectsWithId({id: aspect.id, createAspect: aspect})
-             .then((value: Aspect) => dispatch(updateAspectAction(value)));
+    aspectApi(dispatch)
+    .putAspectsWithId({id: aspect.id, createAspect: aspect})
+    .then((value: Aspect) => dispatch(updateAspectAction(value)));
 };
 
 export const deleteAspect = (id: string): Thunk => async (dispatch) => {
-    aspectApi.deleteAspectsWithId({id})
-             .then(() => {
-                 dispatch(notify({message: "Successfully deleted aspect"}, 5000));
-                 return dispatch(removeAspect(id));
-             });
+    aspectApi(dispatch)
+    .deleteAspectsWithId({id})
+    .then(() => {
+        dispatch(notify({message: "Successfully deleted aspect"}, 5000));
+        return dispatch(removeAspect(id));
+    });
 };
 
 export const createAspect = (create: CreateAspect): Thunk => async (dispatch) => {
-    aspectApi.postAspects({createAspect: create})
-             .then(x => dispatch(addAspectAction(x)))
-             .catch(notifyWithMessage("Error creating aspect: ", dispatch));
+    aspectApi(dispatch)
+    .postAspects({createAspect: create})
+    .then(x => dispatch(addAspectAction(x)))
 };
 
 // State ---------------------------------------------------------------------------------------------------------------
