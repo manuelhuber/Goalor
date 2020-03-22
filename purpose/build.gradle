@@ -1,10 +1,8 @@
 plugins {
+    // Required to run in the JVM
     id 'org.jetbrains.kotlin.jvm' version '1.3.41'
+    // Required for annotation processing
     id "org.jetbrains.kotlin.kapt" version "1.3.61"
-}
-
-kapt {
-    generateStubs = true
 }
 
 group 'de.manuelhuber'
@@ -16,75 +14,69 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 
-//create a single Jar with all dependencies
-task fatJar(type: Jar) {
-    manifest {
-        attributes 'Implementation-Title': 'Gradle Jar File Example',
-                'Implementation-Version': version,
-                'Main-Class': 'de.manuelhuber.purpose.app.MainKt'
-    }
-    baseName = project.name + '-all'
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
-}
-
-sourceSets {
-    // This might actually not be necessary
-    main.java.srcDirs += "${buildDir.absolutePath}/generated/source/kaptKotlin/"
-}
-
 jar {
     manifest {
+        // Define entry point of app
         attributes 'Main-Class': 'de.manuelhuber.purpose.app.MainKt'
     }
-}
-
-test {
-    useJUnitPlatform()
+    // Include dependencies in jar (=fat jar)
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    // Web server library
     compile 'io.javalin:javalin:3.6.0'
+    // Swagger
     compile 'io.swagger.core.v3:swagger-core:2.0.8'
-    compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.9'
     compile 'org.webjars:swagger-ui:3.23.8'
+
+    // Logging
     compile "org.slf4j:slf4j-simple:1.8.0-beta4"
+
+    // Annotation processing
     compile "de.manuelhuber:annotations:1.0"
     kapt "de.manuelhuber:annotation-processor:1.0"
 
-    // JSON mapper
+    // Serialisation
     compile "com.google.code.gson:gson:2.7"
+    compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.9'
 
     // JWT
     compile 'com.github.kmehrunes:javalin-jwt:v0.2'
     // Password hashing
     compile "org.mindrot:jbcrypt:0.4"
 
-    // DB connection
-    compile("org.jetbrains.exposed:exposed-core:0.20.3")
-    compile("org.jetbrains.exposed:exposed-dao:0.20.3")
-    compile("org.jetbrains.exposed:exposed-jdbc:0.20.3")
-    compile("org.jetbrains.exposed:exposed-java-time:0.20.3")
-    compile 'org.postgresql:postgresql:42.2.8.jre7'
+    // Postgres API
+    compile "org.jetbrains.exposed:exposed-core:0.20.3"
+    compile "org.jetbrains.exposed:exposed-dao:0.20.3"
+    compile "org.jetbrains.exposed:exposed-jdbc:0.20.3"
+    compile "org.jetbrains.exposed:exposed-java-time:0.20.3"
+    // Postgres driver
+    compile "org.postgresql:postgresql:42.2.8.jre7"
+    // Queue client
     compile "com.rabbitmq:amqp-client:5.8.0"
 
-    // GUICE
-    compile 'dev.misfitlabs.kotlinguice4:kotlin-guice:1.4.1'
+    // Dependency Injection kotlin API
+    compile "dev.misfitlabs.kotlinguice4:kotlin-guice:1.4.1"
 
     // Tests
-    testImplementation(
-            'org.assertj:assertj-core:3.12.2',
-            'org.junit.jupiter:junit-jupiter-api:5.4.2'
-    )
-    testRuntime('org.junit.jupiter:junit-jupiter-engine:5.4.2')
+    testImplementation "org.assertj:assertj-core:3.12.2"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.4.2"
+    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
     testCompile "org.mockito:mockito-core:2.28.1"
     test.useJUnitPlatform()
 }
 
+test {
+    useJUnitPlatform()
+}
 
 compileKotlin {
+    // Enable us to use 1.8 features
     kotlinOptions.jvmTarget = "1.8"
+    // Enable inline classes
     kotlinOptions {
         freeCompilerArgs = ["-XXLanguage:+InlineClasses"]
     }

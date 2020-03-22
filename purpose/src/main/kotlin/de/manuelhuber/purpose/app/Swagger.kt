@@ -28,6 +28,7 @@ object ModelConverter : ModelConverter {
     override fun resolve(type: AnnotatedType?,
                          context: ModelConverterContext?,
                          chain: MutableIterator<ModelConverter>?): Schema<*> {
+        // Return ID (Array) as String (Array)
         return if (type?.type == Id::class.java) {
             PrimitiveType.STRING.createProperty()
         } else if (type?.type is CollectionType && (type.type as CollectionType).contentType.typeName.contains(Id::class.java.name)) {

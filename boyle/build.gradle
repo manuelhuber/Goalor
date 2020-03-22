@@ -6,11 +6,19 @@ plugins {
 group 'org.example'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = 1.8
-
 repositories {
     mavenCentral()
 }
+
+jar {
+    manifest {
+        // Define entry point of app
+        attributes 'Main-Class': 'de.manuelhuber.boyle.MainKt'
+    }
+    // Include dependencies in jar (=fat jar)
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
