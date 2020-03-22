@@ -10,6 +10,7 @@ version '1.0'
 
 repositories {
     mavenCentral()
+    // jetbrains exposed in only on jcenter
     jcenter()
     maven { url 'https://jitpack.io' }
 }

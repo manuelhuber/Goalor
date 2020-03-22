@@ -47,8 +47,10 @@ const Menu: React.FC<Props> = props => {
                 </li>
             </ul>
             <div className={style.logoutBlock}>
-                {props.isLoggedIn &&
-                <div className={style.item} onClick={props.logout}><MdPowerSettingsNew/>Logout</div>}
+                {props.isLoggedIn ?
+                    <div className={style.item} onClick={props.logout}><MdPowerSettingsNew/>Logout</div>
+                    : <div className={style.item} {...linkTo("login")}><MdPowerSettingsNew/>Login</div>
+                }
             </div>
         </nav>
         <footer className={style.bar}>

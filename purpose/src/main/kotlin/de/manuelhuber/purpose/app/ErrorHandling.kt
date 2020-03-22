@@ -7,11 +7,17 @@ import de.manuelhuber.purpose.lib.controller.ErrorResponse
 import de.manuelhuber.purpose.lib.exceptions.NotFound
 import de.manuelhuber.purpose.lib.exceptions.ValidationError
 import io.javalin.Javalin
+import io.javalin.http.BadRequestResponse
 import org.slf4j.Logger
 
 fun addErrorHandling(app: Javalin, logger: Logger) {
     app
         .exception(ValidationError::class.java) { exception, ctx ->
+            logger.info(exception.message)
+            ctx.status(400)
+                .json(ErrorResponse(exception.message.orEmpty()))
+        }
+        .exception(BadRequestResponse::class.java) { exception, ctx ->
             logger.info(exception.message)
             ctx.status(400)
                 .json(ErrorResponse(exception.message.orEmpty()))

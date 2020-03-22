@@ -47,9 +47,7 @@ const Authenticate: React.FC<Props> = props => {
             {!isRegistration &&
             <WithLabel label='Password'><input type="password" {...bindPassword}/></WithLabel>}
             {isRegistration && <>
-                <PasswordConfirm onUpdate={(newPW, valid, oldPW) =>
-                    setPassword(valid ? newPW : null)
-                }/>
+                <PasswordConfirm onUpdate={(newPW, valid) => setPassword(valid ? newPW : null)}/>
                 <WithLabel label='E-Mail'><input type="email" {...bindEmail}/></WithLabel>
                 <WithLabel label='First name'><input type="text" {...bindFirstName}/></WithLabel>
                 <WithLabel label='Last name'><input type="text" {...bindLastName}/></WithLabel>
@@ -59,7 +57,7 @@ const Authenticate: React.FC<Props> = props => {
         </Form>
         <Button onClick={() => setRegistration(!isRegistration)} design='link' block={true}>
             {isRegistration ? "Already registered? Login!" : "New here? Sign up!"}</Button>
-        <Button design="link" block={true} onClick={reset}>Forgot password?</Button>
+        <Button design="link" block={true} onClick={reset}>Reset password</Button>
     </div>;
 };
 

@@ -18,10 +18,6 @@ class FunctionProcessor(private val processingEnv: ProcessingEnvironment,
                         private val rootPath: String // the base path of the endpoint (used for tagging)
 ) {
 
-    private val fileUpload = func.getAnnotation(FileUpload::class.java) != null
-    // Params are either nothing or:
-    // Javalin Context, Uploaded File (optional), request body
-    private val maxParamCount = if (fileUpload) 3 else 2
     private val ctx = "ctx" // name of the javalin.context variable
     private val swagger = AnnotationSpec.builder(OpenApi::class)
     private val authorized = func.getAnnotation(Authorized::class.java) != null
@@ -154,8 +150,29 @@ class FunctionProcessor(private val processingEnv: ProcessingEnvironment,
             .build()
         swagger.addMember("requestBody = %L", requestBodyAnnotation)
         val variableNamed = "bodyInput"
-        generatedCode.addStatement("val $variableNamed = $ctx.body<%T>()", requestBodyType)
+        getRequestBody(param, variableNamed, requestBodyType)
         return variableNamed
+    }
+
+    private fun getRequestBody(param: VariableElement,
+                               variableNamed: String,
+                               requestBodyType: Any) {
+        generatedCode.addStatement("val $variableNamed = $ctx.bodyValidator<%T>()", requestBodyType)
+
+        processingEnv.typeUtils.asElement(param.asType()).enclosedElements.forEach {
+            val valueNotEmpty = it.getAnnotation(ValueNotEmpty::class.java) !== null
+            val notEmpty = it.getAnnotation(NotEmpty::class.java) !== null
+            if (valueNotEmpty || notEmpty) {
+                val errorMessage = "${it.simpleName} can't be empty"
+                val value = if (valueNotEmpty) ".value" else ""
+                generatedCode.addStatement("""
+                    |   .check(
+                    |       predicate = {it.${it.simpleName}$value.trim().isNotEmpty() },
+                    |       errorMessage = %S)
+                    """.trimMargin(), errorMessage)
+            }
+        }
+        generatedCode.addStatement("    .get()")
     }
 
     private fun responseAnnotation(responseType: TypeName): AnnotationSpec {
