@@ -3,10 +3,7 @@ package de.manuelhuber.purpose.features.users
 import com.google.inject.Inject
 import de.manuelhuber.annotations.*
 import de.manuelhuber.purpose.features.auth.AuthService
-import de.manuelhuber.purpose.features.users.models.Registration
-import de.manuelhuber.purpose.features.users.models.RegistrationResponse
-import de.manuelhuber.purpose.features.users.models.User
-import de.manuelhuber.purpose.features.users.models.UserTO
+import de.manuelhuber.purpose.features.users.models.*
 import de.manuelhuber.purpose.lib.controller.getRequesterId
 import io.javalin.http.Context
 import javalinjwt.examples.JWTResponse
@@ -43,6 +40,3 @@ class UserController @Inject constructor(private val service: UserService, priva
         return service.updateUser(ctx.getRequesterId(), userTO)
     }
 }
-
-data class PasswordUpdate(val old: String?, val token: String?, val pw: String)
-

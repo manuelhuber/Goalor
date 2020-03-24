@@ -1,6 +1,6 @@
 package de.manuelhuber.purpose.features.users.models
 
-import de.manuelhuber.annotations.NotEmpty
+import de.manuelhuber.annotations.MinLength
 import de.manuelhuber.annotations.ValueNotEmpty
 
 data class Registration(@ValueNotEmpty
@@ -9,5 +9,5 @@ data class Registration(@ValueNotEmpty
                         val username: Username,
                         val firstName: String,
                         val lastName: String,
-                        @NotEmpty
+                        @MinLength(5)
                         val password: String)

@@ -14,3 +14,10 @@ annotation class ValueNotEmpty
  * String can't be empty (after .trim())
  */
 annotation class NotEmpty
+
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.FIELD)
+/**
+ * String can't be empty (after .trim())
+ */
+annotation class MinLength(val len: Int)

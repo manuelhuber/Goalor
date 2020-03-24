@@ -162,17 +162,27 @@ class FunctionProcessor(private val processingEnv: ProcessingEnvironment,
         processingEnv.typeUtils.asElement(param.asType()).enclosedElements.forEach {
             val valueNotEmpty = it.getAnnotation(ValueNotEmpty::class.java) !== null
             val notEmpty = it.getAnnotation(NotEmpty::class.java) !== null
+            val propName = it.simpleName
+
             if (valueNotEmpty || notEmpty) {
-                val errorMessage = "${it.simpleName} can't be empty"
                 val value = if (valueNotEmpty) ".value" else ""
-                generatedCode.addStatement("""
-                    |   .check(
-                    |       predicate = {it.${it.simpleName}$value.trim().isNotEmpty() },
-                    |       errorMessage = %S)
-                    """.trimMargin(), errorMessage)
+                check("it.$propName$value.trim().isNotEmpty()", "$propName can't be empty")
+            }
+
+            val minLength = it.getAnnotation(MinLength::class.java)
+            if (minLength !== null) {
+                check("it.$propName.length >= ${minLength.len}", "$propName min length ${minLength.len}")
             }
         }
         generatedCode.addStatement("    .get()")
+    }
+
+    private fun check(predicate: String, error: String) {
+        generatedCode.addStatement("""
+                    |   .check(
+                    |       predicate = { $predicate },
+                    |       errorMessage = %S)
+                    """.trimMargin(), error)
     }
 
     private fun responseAnnotation(responseType: TypeName): AnnotationSpec {
