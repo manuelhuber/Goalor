@@ -59,10 +59,9 @@ export const resetPassword = (username: string): Thunk => async (dispatch) => {
 };
 
 export const logout = (): Thunk => async (dispatch) => {
-    authApi(dispatch).postAuthLogout().then(() => {
-        dispatch({type: "RESET"});
-        dispatch(logoutAction());
-    });
+    authApi(dispatch).postAuthLogout();
+    dispatch({type: "RESET"});
+    dispatch(logoutAction());
 };
 
 // State ---------------------------------------------------------------------------------------------------------------

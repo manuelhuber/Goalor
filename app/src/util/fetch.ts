@@ -28,7 +28,7 @@ let configuration = (dispatch: ThunkDispatch<AppState, {}, Action>) => new Confi
                 dispatch(logoutAction());
             }
             let errorResponse = await response.json();
-            dispatch(notify({message: "Error" + (errorResponse.message || errorResponse.toString())}));
+            dispatch(notify({message: "Error: " + (errorResponse.message || errorResponse.toString())}));
             throw (errorResponse);
         }
     }]

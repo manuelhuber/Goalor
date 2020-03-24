@@ -34,7 +34,7 @@ const Authenticate: React.FC<Props> = props => {
     function register() {
         if (!(isValid(registrationForm) && password.value)) {
             props.notify({message: "Missing data"});
-            return
+            return;
         }
         props.register({
             username: username.value,

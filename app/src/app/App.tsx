@@ -1,5 +1,4 @@
 import {APP_TITLE} from "app/constants";
-import Authenticate from "app/features/auth/Authenticate";
 import {DataFetchers} from "app/features/auth/duck";
 import Menu from "app/features/menu/Menu";
 import Notifications from "app/features/notifications/Notifications";
@@ -38,7 +37,6 @@ const App: React.FC = () => {
                             <RestrictedRoute path='/journal' component={Journal}/>
                             <RestrictedRoute path='/settings' component={Settings}/>
                             <RestrictedRoute path='/habits' component={Habits}/>
-                            <Route path='/login' component={Authenticate}/>
                             <Route path='/reset/:token' component={Reset}/>
                             <Route path='/' exact component={Landing}/>
                             <Route component={NotFound}/>
