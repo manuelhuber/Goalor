@@ -33,23 +33,23 @@ const Menu: React.FC<Props> = props => {
         </div>
         <nav className={jc(style.menuList, [style.visible, show])}>
             <ul className={style.itemList}>
-                <li className={jc(style.item, style.largeOnly)} {...linkTo("me")}>
+                <li className={jc(style.item, style.largeOnly)} {...linkTo("/me")}>
                     <MdPerson/>Home
                 </li>
-                <li className={style.item} {...linkTo("journal")}>
+                <li className={style.item} {...linkTo("/journal")}>
                     <IoMdJournal/>Journal
                 </li>
-                <li className={style.item} {...linkTo("habits")}>
+                <li className={style.item} {...linkTo("/habits")}>
                     <MdSync/>Habits
                 </li>
-                <li className={style.item} {...linkTo("settings")}>
+                <li className={style.item} {...linkTo("/settings")}>
                     <MdPerson/>Account
                 </li>
             </ul>
             <div className={style.logoutBlock}>
                 {props.isLoggedIn ?
                     <div className={style.item} onClick={props.logout}><MdPowerSettingsNew/>Logout</div>
-                    : <div className={style.item} {...linkTo("me")}><MdPowerSettingsNew/>Login</div>
+                    : <div className={style.item} {...linkTo("/me")}><MdPowerSettingsNew/>Login</div>
                 }
             </div>
         </nav>
