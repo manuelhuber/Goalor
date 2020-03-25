@@ -36,14 +36,14 @@ class UserService @Inject constructor(private val authService: AuthService, priv
                 password = authService.hashPassword(request.password)))
     }
 
-    fun updatePassword(userId: Id, newPW: String, oldPw: String? = null, token: String? = null): String {
-        val user = engine.get(userId)
+    fun updatePassword(username: Username, newPW: String, oldPw: String? = null, token: String? = null): String {
+        val user = engine.getByUsername(username)
         when {
             oldPw != null -> authService.login(user.username, oldPw)
             token != null -> if (!user.resetToken.equals(token)) throw NotAuthorized("Token not valid")
             else -> throw NotAuthorized("Either previous password or reset token needed to set new password")
         }
-        return updatePassword(userId, newPW)
+        return updatePassword(user.id, newPW)
     }
 
     fun updatePassword(userId: Id, newPW: String): String {

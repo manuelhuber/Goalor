@@ -24,6 +24,8 @@ dependencies {
     compile "com.rabbitmq:amqp-client:latest.release"
     compile 'com.sendgrid:sendgrid-java:4.0.1'
 
+    compile "com.google.code.gson:gson:2.7"
+
     // Logging
     compile 'org.slf4j:slf4j-api:1.7.25'
     compile 'ch.qos.logback:logback-core:1.2.3'

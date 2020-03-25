@@ -37,7 +37,7 @@ const App: React.FC = () => {
                             <RestrictedRoute path='/journal' component={Journal}/>
                             <RestrictedRoute path='/settings' component={Settings}/>
                             <RestrictedRoute path='/habits' component={Habits}/>
-                            <Route path='/reset/:token' component={Reset}/>
+                            <Route path='/reset/:username/:token' component={Reset}/>
                             <Route path='/' exact component={Landing}/>
                             <Route component={NotFound}/>
                         </Switch>

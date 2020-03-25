@@ -12,7 +12,7 @@ const PasswordConfirm: React.FC<Props> = props => {
     const pws = [newPW, repPW];
 
     useEffect(() => {
-        onUpdate(newPW.value, !isValid(pws), oldPW);
+        onUpdate(newPW.value, isValid(pws), oldPW);
     }, [onUpdate, newPW, oldPW]);
 
     return <div>

@@ -12,7 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import {exists} from '../runtime';
+
 /**
  * 
  * @export
@@ -36,6 +37,12 @@ export interface PasswordUpdate {
      * @type {string}
      * @memberof PasswordUpdate
      */
+    username?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PasswordUpdate
+     */
     pw: string;
 }
 
@@ -51,6 +58,7 @@ export function PasswordUpdateFromJSONTyped(json: any, ignoreDiscriminator: bool
         
         'old': !exists(json, 'old') ? undefined : json['old'],
         'token': !exists(json, 'token') ? undefined : json['token'],
+        'username': !exists(json, 'username') ? undefined : json['username'],
         'pw': json['pw'],
     };
 }
@@ -66,6 +74,7 @@ export function PasswordUpdateToJSON(value?: PasswordUpdate | null): any {
         
         'old': value.old,
         'token': value.token,
+        'username': value.username,
         'pw': value.pw,
     };
 }

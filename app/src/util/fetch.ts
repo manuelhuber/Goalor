@@ -24,7 +24,9 @@ let configuration = (dispatch: ThunkDispatch<AppState, {}, Action>) => new Confi
                 return response;
             }
 
-            if (response.status === 401) {
+            if (response.status === 401
+                // don't logout if the reset PW endpoint throws a 401
+                && response.url.indexOf("/user/password") === -1) {
                 dispatch(logoutAction());
             }
             let errorResponse = await response.json();

@@ -3,6 +3,8 @@ package de.manuelhuber.purpose.features.users
 import com.google.inject.Inject
 import de.manuelhuber.annotations.*
 import de.manuelhuber.purpose.features.auth.AuthService
+import de.manuelhuber.purpose.features.auth.Claims
+import de.manuelhuber.purpose.features.auth.models.NotAuthorized
 import de.manuelhuber.purpose.features.users.models.*
 import de.manuelhuber.purpose.lib.controller.getRequesterId
 import io.javalin.http.Context
@@ -19,9 +21,12 @@ class UserController @Inject constructor(private val service: UserService, priva
     }
 
     @Post("password")
-    @Authorized
     fun updatePw(ctx: Context, passwordUpdate: PasswordUpdate): JWTResponse {
-        return JWTResponse(service.updatePassword(ctx.getRequesterId(),
+        val user = ctx.attribute<User>(Claims.USER.name)
+        val username = passwordUpdate.username
+
+        return JWTResponse(service.updatePassword(
+                user?.let { it.username } ?: username?.let { Username(it) } ?: throw NotAuthorized(),
                 passwordUpdate.pw,
                 passwordUpdate.old,
                 passwordUpdate.token))

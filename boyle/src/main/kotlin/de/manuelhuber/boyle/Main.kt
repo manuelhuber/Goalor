@@ -1,5 +1,7 @@
 package de.manuelhuber.boyle
 
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import com.rabbitmq.client.AMQP
 import com.rabbitmq.client.ConnectionFactory
 import com.rabbitmq.client.DefaultConsumer
@@ -11,6 +13,7 @@ import java.io.IOException
 
 const val QUEUE_NAME = "reset_pw"
 val logger = LoggerFactory.getLogger("Boyle")
+val gson = Gson()
 
 fun main() {
     val factory = ConnectionFactory()
@@ -23,14 +26,19 @@ fun main() {
                                     envelope: Envelope,
                                     properties: AMQP.BasicProperties,
                                     body: ByteArray) {
-            val message = String(body, charset("UTF-8"))
-            logger.info("Dequeued item with message='$message'")
+            val json = String(body, charset("UTF-8"))
+            logger.info("Dequeued item with message='$json'")
 
-            val (email, token) = message.split(":")
             try {
-                sendMail(email, token)
+                val job = gson.fromJson(json, PasswordResetJob::class.java)
+                sendMail(job)
                 channel.basicAck(envelope.deliveryTag, false)
-                logger.info("Sent token $token to $email")
+                logger.info("Sent token ${job.token} to ${job.email}")
+            } catch (exception: JsonSyntaxException) {
+                // ¯\_(ツ)_/¯
+                logger.info("Failed to parse payload $json")
+                channel.basicAck(envelope.deliveryTag, false)
+                return
             } catch (ex: IOException) {
                 logger.error("Failed to send email.", ex)
                 channel.basicNack(envelope.deliveryTag, false, true)
@@ -40,11 +48,11 @@ fun main() {
     channel.basicConsume(QUEUE_NAME, false, consumer)
 }
 
-fun sendMail(userEmail: String, token: String) {
+fun sendMail(job: PasswordResetJob) {
     val from = Email("test@example.com")
     val subject = "Password reset"
-    val to = Email(userEmail)
-    val content = Content("text/plain", "http://167.71.132.37/reset/$token")
+    val to = Email(job.email)
+    val content = Content("text/plain", "http://167.71.132.37/reset/${job.username}/${job.token}")
     val mail = Mail(from, subject, to, content)
 
     val sg = SendGrid(System.getenv("send_grid_key"))
@@ -54,3 +62,5 @@ fun sendMail(userEmail: String, token: String) {
     request.body = mail.build()
     sg.api(request)
 }
+
+data class PasswordResetJob(val email: String, val token: String, val username: String)

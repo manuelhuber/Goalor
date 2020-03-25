@@ -16,15 +16,15 @@ const mapDispatchToProps = bindActions({updatePassword});
 type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
 
 const Reset: React.FC<Props> = props => {
-    const {token} = useParams();
+    const {token, username} = useParams();
     const [password, setPassword] = useState();
     const pwUpdate = (newPW, valid, oldPW) => {
         setPassword(valid ? newPW : null)
     };
     const history = useHistory();
     const savePassword = async () => {
-        props.updatePassword(null, password, token).then(x => {
-            history.push("/login")
+        props.updatePassword(null, password, token, username).then(x => {
+            history.push("/me")
         });
     };
     return <div>

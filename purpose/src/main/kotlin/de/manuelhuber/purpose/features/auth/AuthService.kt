@@ -3,6 +3,7 @@ package de.manuelhuber.purpose.features.auth
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTCreator
 import com.auth0.jwt.algorithms.Algorithm
+import com.google.gson.Gson
 import com.google.inject.Inject
 import com.google.inject.name.Named
 import de.manuelhuber.annotations.Roles
@@ -26,6 +27,7 @@ class AuthService @Inject constructor(private val engine: UserEngine, @Named(JWT
         private set
 
     private val resetQueue = queue.getConnection("reset_pw")
+    private val gson = Gson()
 
     init {
         val algorithm = Algorithm.HMAC256(secret)
@@ -49,7 +51,8 @@ class AuthService @Inject constructor(private val engine: UserEngine, @Named(JWT
                 UUID.randomUUID()
                     .toString()
         engine.update(user.id, user.copy(resetToken = resetToken))
-        resetQueue("${user.email.value}:$resetToken")
+        val job = PasswordResetJob(email = user.email.value, token = resetToken, username = user.username.value)
+        resetQueue(gson.toJson(job))
     }
 
     fun logout(userId: Id) {
@@ -78,3 +81,5 @@ class AuthService @Inject constructor(private val engine: UserEngine, @Named(JWT
         return provider.generateToken(user)
     }
 }
+
+data class PasswordResetJob(val email: String, val token: String, val username: String)

@@ -43,11 +43,13 @@ export const register = (req: Registration): Thunk => async (dispatch) =>
 export const updatePassword = (
     old: string,
     newPw: string,
-    token: string = null): (dispatch) => Promise<JWTResponse> => async (dispatch) => {
-    let responsePromise = userApi(dispatch).postUserPassword({passwordUpdate: {old, pw: newPw, token}});
+    token: string = null,
+    username: string = null): (dispatch) => Promise<JWTResponse> => async (dispatch) => {
+    let responsePromise = userApi(dispatch).postUserPassword({passwordUpdate: {old, pw: newPw, token, username}});
     responsePromise.then(value => {
         dispatch(setToken({token: value.jwt}));
-        dispatch(notify({message: "Password updated"}))
+        dispatch(notify({message: "Password updated"}));
+        DataFetchers.forEach(thunk => dispatch(thunk));
     });
     return responsePromise;
 };
