@@ -7,31 +7,31 @@ import {AspectsApi, AuthApi, GoalsApi, GratitudeApi, UserApi} from "generated/ap
 import {Action, Dispatch} from "redux";
 import {ThunkDispatch} from "redux-thunk";
 
-export const post = (url: string, body?: any, input?: RequestInit) => {
-    return myFetch(url, "POST", body, input)
+export const post = (dispatch: ThunkDispatch<AppState, {}, Action>, url: string, body?: any, input?: RequestInit) => {
+    return myFetch(null, url, "POST", body, input)
 };
-export const get = (url: string, input?: RequestInit) => {
-    return myFetch(url, "GET", null, input)
-};
+
+async function handleError(response: Response, dispatch: ThunkDispatch<AppState, {}, Action>) {
+    if (response.status >= 200 && response.status < 300) {
+        return response;
+    }
+
+    if (response.status === 401
+        // don't logout if the reset PW endpoint throws a 401
+        && response.url.indexOf("/user/password") === -1) {
+        dispatch(logoutAction());
+    }
+    let errorResponse = await response.json();
+    dispatch(notify({message: "Error: " + (errorResponse.message || errorResponse.toString())}));
+    throw (errorResponse);
+}
+
 let configuration = (dispatch: ThunkDispatch<AppState, {}, Action>) => new Configuration({
     accessToken: () => localStorage.getItem("GOALOR_KEY"),
     basePath: process.env.REACT_APP_BASE_URL,
     middleware: [{
         post: async context => {
-            const response = context.response;
-
-            if (response.status >= 200 && response.status < 300) {
-                return response;
-            }
-
-            if (response.status === 401
-                // don't logout if the reset PW endpoint throws a 401
-                && response.url.indexOf("/user/password") === -1) {
-                dispatch(logoutAction());
-            }
-            let errorResponse = await response.json();
-            dispatch(notify({message: "Error: " + (errorResponse.message || errorResponse.toString())}));
-            throw (errorResponse);
+            return await handleError(context.response, dispatch);
         }
     }]
 });
@@ -47,7 +47,11 @@ export const userApi = configApi(UserApi);
 export const gratitudeApi = configApi(GratitudeApi);
 export const habitApi = configApi(HabitsApi);
 
-export const myFetch = (url: string, method: "POST" | "GET" | "PUT" | "DELETE", body?: any, input?: RequestInit) => {
+const myFetch = (dispatch: ThunkDispatch<AppState, {}, Action>,
+                 url: string,
+                 method: "POST" | "GET" | "PUT" | "DELETE",
+                 body?: any,
+                 input?: RequestInit) => {
     const defaultConfig = {
         method: method,
         headers: {
@@ -60,7 +64,9 @@ export const myFetch = (url: string, method: "POST" | "GET" | "PUT" | "DELETE", 
     }
     return fetch(`${process.env.REACT_APP_BASE_URL}/${url}`, {
         ...defaultConfig, ...input
-    }).then(async response => {
+    })
+    .then(async respone => handleError(respone.clone(), dispatch))
+    .then(async response => {
         if (!response.ok) {
             let text;
             try {

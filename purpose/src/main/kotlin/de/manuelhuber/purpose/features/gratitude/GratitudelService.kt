@@ -33,7 +33,7 @@ class GratitudeService @Inject constructor(private val engine: GratitudePostgres
                 filename
             }
         } catch (e: IOException) {
-            null
+            throw Exception("Error saving file")
         }
         val gratitude = Gratitude.fromData(data, owner, imageId)
         return engine.create(gratitude)

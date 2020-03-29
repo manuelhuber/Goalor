@@ -1,7 +1,7 @@
 import {Thunk} from "app/Store";
 import {Gratitude, GratitudeFromJSON} from "generated/models";
 import {Action, Reducer} from "redux";
-import {gratitudeApi, myFetch} from "util/fetch";
+import {gratitudeApi, post} from "util/fetch";
 
 // API calls -----------------------------------------------------------------------------------------------------------
 
@@ -15,7 +15,7 @@ export const createGratitude = (
     data.append("title", title);
     data.append("date", date);
     data.append("description", description);
-    myFetch("gratitude", "POST", data).then(e => {
+    post(dispatch, "gratitude", data).then(e => {
         dispatch(addGratitudes([GratitudeFromJSON(e)]))
     });
 };
