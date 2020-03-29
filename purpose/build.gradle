@@ -28,7 +28,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
     // Web server library
-    compile 'io.javalin:javalin:3.6.0'
+    compile 'io.javalin:javalin:3.8.0'
     // Swagger
     compile 'io.swagger.core.v3:swagger-core:2.0.8'
     compile 'org.webjars:swagger-ui:3.23.8'

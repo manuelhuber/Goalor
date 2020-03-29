@@ -23,7 +23,7 @@ import io.swagger.v3.oas.models.media.Schema
  * Custom converter to create doc for [Id] as a regular string
  */
 object ModelConverter : ModelConverter {
-    private val default = ModelResolver(JacksonToJsonMapper.objectMapper)
+    private val default = ModelResolver(JacksonToJsonMapper.defaultObjectMapper)
 
     override fun resolve(type: AnnotatedType?,
                          context: ModelConverterContext?,
