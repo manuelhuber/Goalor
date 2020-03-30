@@ -171,7 +171,7 @@ class FunctionProcessor(private val processingEnv: ProcessingEnvironment,
 
             val minLength = it.getAnnotation(MinLength::class.java)
             if (minLength !== null) {
-                check("it.$propName.length >= ${minLength.len}", "$propName min length ${minLength.len}")
+                check("it.$propName.trim().length >= ${minLength.len}", "$propName min length ${minLength.len}")
             }
         }
         generatedCode.addStatement("    .get()")
