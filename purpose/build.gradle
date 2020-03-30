@@ -31,7 +31,7 @@ dependencies {
     compile 'io.javalin:javalin:3.8.0'
     // Swagger
     compile 'io.swagger.core.v3:swagger-core:2.0.8'
-    compile 'org.webjars:swagger-ui:3.23.8'
+    compile 'org.webjars:swagger-ui:3.24.3'
 
     // Logging
     compile "org.slf4j:slf4j-simple:1.8.0-beta4"
