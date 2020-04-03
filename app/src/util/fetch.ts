@@ -8,7 +8,7 @@ import {Action, Dispatch} from "redux";
 import {ThunkDispatch} from "redux-thunk";
 
 export const post = (dispatch: ThunkDispatch<AppState, {}, Action>, url: string, body?: any, input?: RequestInit) => {
-    return myFetch(null, url, "POST", body, input)
+    return myFetch(dispatch, url, "POST", body, input)
 };
 
 async function handleError(response: Response, dispatch: ThunkDispatch<AppState, {}, Action>) {
@@ -47,11 +47,12 @@ export const userApi = configApi(UserApi);
 export const gratitudeApi = configApi(GratitudeApi);
 export const habitApi = configApi(HabitsApi);
 
-const myFetch = (dispatch: ThunkDispatch<AppState, {}, Action>,
-                 url: string,
-                 method: "POST" | "GET" | "PUT" | "DELETE",
-                 body?: any,
-                 input?: RequestInit) => {
+const myFetch = (
+    dispatch: ThunkDispatch<AppState, {}, Action>,
+    url: string,
+    method: "POST" | "GET" | "PUT" | "DELETE",
+    body?: any,
+    input?: RequestInit) => {
     const defaultConfig = {
         method: method,
         headers: {
