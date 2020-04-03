@@ -7,7 +7,7 @@ import de.manuelhuber.purpose.features.auth.checkOwnership
 import de.manuelhuber.purpose.features.gratitude.engine.GratitudePostgresEngine
 import de.manuelhuber.purpose.features.gratitude.model.Gratitude
 import de.manuelhuber.purpose.lib.engine.Id
-import io.javalin.core.util.FileUtil
+import de.manuelhuber.purpose.lib.files.writeCompressed
 import io.javalin.http.UploadedFile
 import java.io.File
 import java.io.IOException
@@ -20,17 +20,18 @@ class GratitudeService @Inject constructor(private val engine: GratitudePostgres
     private val dir = File(imageRootPath).resolve("image")
 
     fun createGratitude(data: GratitudeData, image: UploadedFile?, owner: Id): Gratitude {
-        val path = System.getenv(STATIC_FILE_FOLDER)
         val imageId = try {
             image?.let {
                 if (!dir.exists()) {
                     dir.mkdirs()
                 }
                 val filename = UUID.randomUUID().toString() + it.extension
-                val imageFile = dir.resolve(filename)
-
-                FileUtil.streamToFile(it.content, imageFile.absolutePath)
-                filename
+                val compressed =
+                        writeCompressed(it.content,
+                                dir.resolve(filename).absolutePath,
+                                0.4f,
+                                it.extension.trimStart('.'))
+                compressed.name
             }
         } catch (e: IOException) {
             throw Exception("Error saving file")
