@@ -8,8 +8,8 @@ import de.manuelhuber.purpose.lib.engine.toId
 import de.manuelhuber.purpose.lib.exceptions.ValidationError
 import io.javalin.http.Context
 import io.javalin.http.UploadedFile
+import io.javalin.plugin.openapi.annotations.ContentType
 import java.time.LocalDate
-import java.time.format.DateTimeParseException
 
 @APIController(path = "gratitude/")
 class GratitudeController @Inject constructor(private val gratitudeService: GratitudeService) {
@@ -17,19 +17,11 @@ class GratitudeController @Inject constructor(private val gratitudeService: Grat
     @Post
 
     @Authorized
-    fun createGratitude(ctx: Context, @FileUpload("image") file: UploadedFile?): Gratitude {
-        val title = ctx.formParam("title") ?: throw ValidationError("Required field missing: title")
-        val dateString = ctx.formParam("date") ?: throw ValidationError("Required field missing: date")
-        val date = try {
-            LocalDate.parse(dateString)
-        } catch (e: DateTimeParseException) {
-            throw ValidationError("Date couldn't be parsed: $dateString")
-        }
-        file?.let {
+    fun createGratitude(ctx: Context, @BodyParam(ContentType.FORM_DATA_MULTIPART) x: GratitudeData): Gratitude {
+        x.image?.let {
             if (!it.contentType.contains("image")) throw ValidationError("Wrong filetype: only images are supported")
         }
-        val description = ctx.formParam("description")
-        return gratitudeService.createGratitude(GratitudeData(title, description, date), file, ctx.getRequesterId())
+        return gratitudeService.createGratitude(x, ctx.getRequesterId())
     }
 
     @Get
@@ -47,9 +39,13 @@ class GratitudeController @Inject constructor(private val gratitudeService: Grat
     @Put(":id")
     @Authorized
     fun updateGratitude(ctx: Context, data: GratitudeData): Gratitude {
+        // TODO allow image update
         return gratitudeService.updateGoal(ctx.pathParam("id").toId(), data, ctx.getRequesterId())
     }
 
 }
 
-data class GratitudeData(val title: String, val description: String?, val date: LocalDate)
+class GratitudeData(val title: String,
+                    val description: String?,
+                    val date: LocalDate,
+                    @FileUpload("image") val image: UploadedFile?)

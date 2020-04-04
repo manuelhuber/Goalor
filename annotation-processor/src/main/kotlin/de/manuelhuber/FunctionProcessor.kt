@@ -1,14 +1,21 @@
+@file:Suppress("JAVA_MODULE_DOES_NOT_EXPORT_PACKAGE")
+
 package de.manuelhuber
 
 import com.squareup.kotlinpoet.*
+import com.sun.tools.javac.code.Symbol
+import com.sun.tools.javac.code.Type
 import de.manuelhuber.annotations.*
 import io.javalin.http.Context
 import io.javalin.http.UploadedFile
 import io.javalin.plugin.openapi.annotations.*
+import org.jetbrains.annotations.NotNull
 import javax.annotation.processing.ProcessingEnvironment
+import javax.lang.model.element.Element
 import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.VariableElement
 import javax.tools.Diagnostic
+
 
 class FunctionProcessor(private val processingEnv: ProcessingEnvironment,
                         private val annotation: AnnotationData,
@@ -45,6 +52,7 @@ class FunctionProcessor(private val processingEnv: ProcessingEnvironment,
         var hasBodyParam = false
 
         func.parameters.filterNotNull().forEach { param: VariableElement ->
+            val bodyParam = param.getAnnotation(BodyParam::class.java)
             val paramName = when {
                 param.asType().asTypeName().toString() == Context::class.qualifiedName -> {
                     ctx
@@ -57,15 +65,15 @@ class FunctionProcessor(private val processingEnv: ProcessingEnvironment,
                 param.getAnnotation(FileUpload::class.java) != null -> {
                     addFileUploadParam(param)
                 }
-                param.getAnnotation(BodyParam::class.java) != null -> {
+                bodyParam != null -> {
                     hasBodyParam = true
-                    addRequestBodyParam(param)
+                    addRequestBodyParam(param, bodyParam.type)
                 }
                 else -> {
                     if (!hasBodyParam) {
                         // Assume that the one un-annotated param is the body request
                         hasBodyParam = true
-                        addRequestBodyParam(param)
+                        addRequestBodyParam(param, ContentType.AUTODETECT)
                     } else {
                         throw Exception("Unexpected parameter. Please annotate them properly")
                     }
@@ -75,8 +83,8 @@ class FunctionProcessor(private val processingEnv: ProcessingEnvironment,
         }
 
         if (queryParamSwaggers.isNotEmpty()) {
-            val paramsString = queryParamSwaggers.map { "%L" }.joinToString(", ")
-            swagger.addMember("queryParams = [${paramsString}]", *queryParamSwaggers.toTypedArray())
+            val paramsPlaceholder = queryParamSwaggers.joinToString(", ") { "%L" }
+            swagger.addMember("queryParams = [${paramsPlaceholder}]", *queryParamSwaggers.toTypedArray())
         }
 
 
@@ -138,7 +146,15 @@ class FunctionProcessor(private val processingEnv: ProcessingEnvironment,
         return "$ctx.uploadedFile(\"$fileName\")"
     }
 
-    private fun addRequestBodyParam(param: VariableElement): String {
+    private fun addRequestBodyParam(param: VariableElement, type: String): String {
+        return if (type == ContentType.FORM_DATA_MULTIPART) {
+            addRequestBodyParamMultipartForm(param)
+        } else {
+            addRequestBodyParamJson(param)
+        }
+    }
+
+    private fun addRequestBodyParamJson(param: VariableElement): String {
         val requestBodyType = fixTypes(param.asType().asTypeName())
         val requestContent = AnnotationSpec
             .builder(OpenApiContent::class)
@@ -160,21 +176,62 @@ class FunctionProcessor(private val processingEnv: ProcessingEnvironment,
         generatedCode.addStatement("val $variableNamed = $ctx.bodyValidator<%T>()", requestBodyType)
 
         processingEnv.typeUtils.asElement(param.asType()).enclosedElements.forEach {
-            val valueNotEmpty = it.getAnnotation(ValueNotEmpty::class.java) !== null
-            val notEmpty = it.getAnnotation(NotEmpty::class.java) !== null
-            val propName = it.simpleName
-
-            if (valueNotEmpty || notEmpty) {
-                val value = if (valueNotEmpty) ".value" else ""
-                check("it.$propName$value.trim().isNotEmpty()", "$propName can't be empty")
-            }
-
-            val minLength = it.getAnnotation(MinLength::class.java)
-            if (minLength !== null) {
-                check("it.$propName.trim().length >= ${minLength.len}", "$propName min length ${minLength.len}")
-            }
+            addChecks(it)
         }
         generatedCode.addStatement("    .get()")
+    }
+
+    private fun addChecks(it: Element) {
+        val valueNotEmpty = it.getAnnotation(ValueNotEmpty::class.java) !== null
+        val notEmpty = it.getAnnotation(NotEmpty::class.java) !== null
+        val propName = it.simpleName
+
+        if (valueNotEmpty || notEmpty) {
+            val value = if (valueNotEmpty) ".value" else ""
+            check("it.$propName$value.trim().isNotEmpty()", "$propName can't be empty")
+        }
+
+        val minLength = it.getAnnotation(MinLength::class.java)
+        if (minLength !== null) {
+            check("it.$propName.trim().length >= ${minLength.len}", "$propName min length ${minLength.len}")
+        }
+    }
+
+    private fun addRequestBodyParamMultipartForm(param: VariableElement): String {
+        val constructor =
+                (param as Symbol).type.tsym.members().getSymbols().toList().findLast { symbol -> symbol.isConstructor }
+        val params = (constructor as Symbol.MethodSymbol).params
+        val formParamSwaggers = mutableListOf<AnnotationSpec>()
+        params.forEach {
+            if (it.asType().asTypeName().toString() == UploadedFile::class.qualifiedName) {
+                val file = addFileUploadParam(it)
+                val nonNull = if (it.getAnnotation(NotNull::class.java) == null) "" else "!!"
+                generatedCode.addStatement("val ${it.name}FormParam = $file$nonNull", it.name)
+            } else {
+                formParamSwaggers.add(addFormParam(it))
+            }
+        }
+        val formParamPlaceholders = formParamSwaggers.joinToString(", ") { "%L" }
+        swagger.addMember("formParams = [$formParamPlaceholders]", *formParamSwaggers.toTypedArray())
+        val variableNamed = "formInput"
+        val paramsNamed = params.map { "${it.name}FormParam" }.joinToString(", ")
+        val clazzName = (param.type as Type).asElement().name
+        generatedCode.addStatement("val $variableNamed = ${clazzName}($paramsNamed)")
+        return variableNamed
+    }
+
+    private fun addFormParam(it: Symbol.VarSymbol): AnnotationSpec {
+        val paramType = fixTypes(it.type.asTypeName())
+        val formParam = AnnotationSpec.builder(OpenApiFormParam::class)
+            .addMember("name = %S", it.name)
+            .addMember("type = %T::class", paramType)
+            .build()
+        generatedCode.addStatement("val ${it.name}FormParam = $ctx.formParam(%S, %T::class.java)",
+                it.name,
+                paramType)
+        addChecks(it)
+        generatedCode.addStatement("    .get()")
+        return formParam
     }
 
     private fun check(predicate: String, error: String) {

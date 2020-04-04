@@ -1,5 +1,7 @@
 package de.manuelhuber.annotations
 
+import io.javalin.plugin.openapi.annotations.ContentType
+
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
 annotation class APIController(val path: String = "")
@@ -34,4 +36,4 @@ annotation class QueryParam(val name: String = "")
 
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.VALUE_PARAMETER)
-annotation class BodyParam
+annotation class BodyParam(val type: String = ContentType.AUTODETECT)

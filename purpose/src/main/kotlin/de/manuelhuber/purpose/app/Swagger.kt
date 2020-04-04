@@ -1,10 +1,12 @@
 package de.manuelhuber.purpose.app
 
+import com.fasterxml.jackson.databind.type.ArrayType
 import com.fasterxml.jackson.databind.type.CollectionType
 import de.manuelhuber.purpose.lib.controller.ErrorResponse
 import de.manuelhuber.purpose.lib.engine.Id
 import io.javalin.Javalin
 import io.javalin.core.JavalinConfig
+import io.javalin.http.UploadedFile
 import io.javalin.plugin.openapi.ModelConverterFactory
 import io.javalin.plugin.openapi.OpenApiOptions
 import io.javalin.plugin.openapi.OpenApiPlugin
@@ -18,6 +20,7 @@ import io.swagger.v3.core.util.PrimitiveType
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.media.ArraySchema
 import io.swagger.v3.oas.models.media.Schema
+import io.swagger.v3.oas.models.media.StringSchema
 
 /**
  * Custom converter to create doc for [Id] as a regular string
@@ -28,15 +31,16 @@ object ModelConverter : ModelConverter {
     override fun resolve(type: AnnotatedType?,
                          context: ModelConverterContext?,
                          chain: MutableIterator<ModelConverter>?): Schema<*> {
-        // Return ID (Array) as String (Array)
-        return if (type?.type == Id::class.java) {
-            PrimitiveType.STRING.createProperty()
-        } else if (type?.type is CollectionType && (type.type as CollectionType).contentType.typeName.contains(Id::class.java.name)) {
+        // Return Collection<Id> as Collection<String> (Single Ids work out of the box)
+        return if (type?.type is CollectionType && (type.type as CollectionType).contentType.typeName.contains(Id::class.java.name)) {
             ArraySchema().items(PrimitiveType.STRING.createProperty())
+        } else if (type?.type?.typeName?.contains(UploadedFile::class.java.name)!!) {
+            return StringSchema().format("binary")
+        } else if (type?.type is ArrayType && ((type.type as ArrayType).contentType.typeName == "[simple type, class byte]")) {
+            return StringSchema().format("binary")
         } else {
             default.resolve(type, context, chain)
         }
-
     }
 }
 

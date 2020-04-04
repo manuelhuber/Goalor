@@ -8,7 +8,6 @@ import de.manuelhuber.purpose.features.gratitude.engine.GratitudePostgresEngine
 import de.manuelhuber.purpose.features.gratitude.model.Gratitude
 import de.manuelhuber.purpose.lib.engine.Id
 import de.manuelhuber.purpose.lib.files.writeCompressed
-import io.javalin.http.UploadedFile
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -19,9 +18,9 @@ class GratitudeService @Inject constructor(private val engine: GratitudePostgres
 
     private val dir = File(imageRootPath).resolve("image")
 
-    fun createGratitude(data: GratitudeData, image: UploadedFile?, owner: Id): Gratitude {
+    fun createGratitude(data: GratitudeData, owner: Id): Gratitude {
         val imageId = try {
-            image?.let {
+            data.image?.let {
                 if (!dir.exists()) {
                     dir.mkdirs()
                 }
