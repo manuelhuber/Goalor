@@ -5,6 +5,8 @@ import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeName
+import org.jetbrains.annotations.NotNull
+import javax.lang.model.element.Element
 
 fun joinPaths(root: String, end: String): String {
     val final = StringBuilder()
@@ -31,3 +33,6 @@ fun fixTypes(typeName: TypeName): TypeName {
     }
     return typeName
 }
+
+fun Element.notNullable() = this.getAnnotation(NotNull::class.java) != null
+fun Element.nullable() = this.getAnnotation(NotNull::class.java) == null

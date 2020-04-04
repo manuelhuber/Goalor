@@ -9,7 +9,6 @@ import de.manuelhuber.annotations.*
 import io.javalin.http.Context
 import io.javalin.http.UploadedFile
 import io.javalin.plugin.openapi.annotations.*
-import org.jetbrains.annotations.NotNull
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.Element
 import javax.lang.model.element.ExecutableElement
@@ -33,6 +32,9 @@ class FunctionProcessor(private val processingEnv: ProcessingEnvironment,
     private val wrapperFunctionName = "${functionName}Endpoint" // Name of the generated function
     private val generatedCode = FunSpec.builder(wrapperFunctionName)
 
+    private val queryParamSwaggers = mutableListOf<AnnotationSpec>()
+    private val fileUploadSwaggers = mutableListOf<AnnotationSpec>()
+
     private val status = when (annotation.annotation) {
         is Delete -> "204"
         is Post -> "201"
@@ -48,7 +50,6 @@ class FunctionProcessor(private val processingEnv: ProcessingEnvironment,
 
         // Params
         val callParams = mutableListOf<String>()
-        val queryParamSwaggers = mutableListOf<AnnotationSpec>()
         var hasBodyParam = false
 
         func.parameters.filterNotNull().forEach { param: VariableElement ->
@@ -85,6 +86,10 @@ class FunctionProcessor(private val processingEnv: ProcessingEnvironment,
         if (queryParamSwaggers.isNotEmpty()) {
             val paramsPlaceholder = queryParamSwaggers.joinToString(", ") { "%L" }
             swagger.addMember("queryParams = [${paramsPlaceholder}]", *queryParamSwaggers.toTypedArray())
+        }
+        if (fileUploadSwaggers.isNotEmpty()) {
+            val paramsPlaceholder = fileUploadSwaggers.joinToString(", ") { "%L" }
+            swagger.addMember("fileUploads = [${paramsPlaceholder}]", *fileUploadSwaggers.toTypedArray())
         }
 
 
@@ -141,8 +146,9 @@ class FunctionProcessor(private val processingEnv: ProcessingEnvironment,
         val fileUploadAnnotation = AnnotationSpec
             .builder(OpenApiFileUpload::class)
             .addMember("name = %S", fileName)
+            .addMember("required = %L", param.notNullable())
             .build()
-        swagger.addMember("fileUploads = [%L]", fileUploadAnnotation)
+        fileUploadSwaggers.add(fileUploadAnnotation)
         return "$ctx.uploadedFile(\"$fileName\")"
     }
 
@@ -174,10 +180,7 @@ class FunctionProcessor(private val processingEnv: ProcessingEnvironment,
                                variableNamed: String,
                                requestBodyType: Any) {
         generatedCode.addStatement("val $variableNamed = $ctx.bodyValidator<%T>()", requestBodyType)
-
-        processingEnv.typeUtils.asElement(param.asType()).enclosedElements.forEach {
-            addChecks(it)
-        }
+        processingEnv.typeUtils.asElement(param.asType()).enclosedElements.forEach { addChecks(it) }
         generatedCode.addStatement("    .get()")
     }
 
@@ -205,8 +208,8 @@ class FunctionProcessor(private val processingEnv: ProcessingEnvironment,
         params.forEach {
             if (it.asType().asTypeName().toString() == UploadedFile::class.qualifiedName) {
                 val file = addFileUploadParam(it)
-                val nonNull = if (it.getAnnotation(NotNull::class.java) == null) "" else "!!"
-                generatedCode.addStatement("val ${it.name}FormParam = $file$nonNull", it.name)
+                val nullCheck = if (it.nullable()) "" else "!!"
+                generatedCode.addStatement("val ${it.name}FormParam = $file$nullCheck", it.name)
             } else {
                 formParamSwaggers.add(addFormParam(it))
             }
@@ -225,12 +228,14 @@ class FunctionProcessor(private val processingEnv: ProcessingEnvironment,
         val formParam = AnnotationSpec.builder(OpenApiFormParam::class)
             .addMember("name = %S", it.name)
             .addMember("type = %T::class", paramType)
+            .addMember("required = %L", it.notNullable())
             .build()
         generatedCode.addStatement("val ${it.name}FormParam = $ctx.formParam(%S, %T::class.java)",
                 it.name,
                 paramType)
         addChecks(it)
-        generatedCode.addStatement("    .get()")
+        val orNull = if (it.nullable()) "OrNull" else ""
+        generatedCode.addStatement("    .get$orNull()")
         return formParam
     }
 

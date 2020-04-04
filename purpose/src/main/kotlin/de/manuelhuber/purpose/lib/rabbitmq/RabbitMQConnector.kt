@@ -38,6 +38,4 @@ class RabbitMQConnector @Inject constructor(@Named(QUEUE_HOST) val host: String)
             logger.info("Success: Sending to queue='$queue' mesage='$message'")
         }
     }
-
-
 }
