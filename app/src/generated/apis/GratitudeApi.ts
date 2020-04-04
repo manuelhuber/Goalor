@@ -13,15 +13,28 @@
  */
 
 
-import {Gratitude, GratitudeData, GratitudeDataToJSON, GratitudeFromJSON,} from '../models';
 import * as runtime from '../runtime';
+import {
+    ErrorResponse,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
+    Gratitude,
+    GratitudeFromJSON,
+    GratitudeToJSON,
+    GratitudeData,
+    GratitudeDataFromJSON,
+    GratitudeDataToJSON,
+} from '../models';
 
 export interface DeleteGratitudeWithIdRequest {
     id: string;
 }
 
 export interface PostGratitudeRequest {
+    title: string;
+    date: Date;
     image?: Blob;
+    description?: string;
 }
 
 export interface PutGratitudeWithIdRequest {
@@ -109,6 +122,14 @@ export class GratitudeApi extends runtime.BaseAPI {
      * Post gratitude
      */
     async postGratitudeRaw(requestParameters: PostGratitudeRequest): Promise<runtime.ApiResponse<Gratitude>> {
+        if (requestParameters.title === null || requestParameters.title === undefined) {
+            throw new runtime.RequiredError('title','Required parameter requestParameters.title was null or undefined when calling postGratitude.');
+        }
+
+        if (requestParameters.date === null || requestParameters.date === undefined) {
+            throw new runtime.RequiredError('date','Required parameter requestParameters.date was null or undefined when calling postGratitude.');
+        }
+
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -139,6 +160,18 @@ export class GratitudeApi extends runtime.BaseAPI {
 
         if (requestParameters.image !== undefined) {
             formParams.append('image', requestParameters.image as any);
+        }
+
+        if (requestParameters.title !== undefined) {
+            formParams.append('title', requestParameters.title as any);
+        }
+
+        if (requestParameters.description !== undefined) {
+            formParams.append('description', requestParameters.description as any);
+        }
+
+        if (requestParameters.date !== undefined) {
+            formParams.append('date', requestParameters.date as any);
         }
 
         const response = await this.request({

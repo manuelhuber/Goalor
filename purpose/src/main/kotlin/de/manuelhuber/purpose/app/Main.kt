@@ -21,8 +21,11 @@ import io.javalin.plugin.json.JavalinJson.fromJsonMapper
 import io.javalin.plugin.json.JavalinJson.toJsonMapper
 import io.javalin.plugin.json.ToJsonMapper
 import org.slf4j.LoggerFactory
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 private val logger: org.slf4j.Logger = LoggerFactory.getLogger(Javalin::class.java)
 
@@ -56,7 +59,13 @@ fun main() {
     toJsonMapper = object : ToJsonMapper {
         override fun map(obj: Any): String = gson.toJson(obj)
     }
-    JavalinValidation.register(LocalDate::class.java) { LocalDate.parse(it, DateTimeFormatter.ISO_LOCAL_DATE) }
+    JavalinValidation.register(LocalDate::class.java) {
+        try {
+            LocalDate.parse(it, DateTimeFormatter.ISO_LOCAL_DATE)
+        } catch (e: Exception) {
+            Instant.ofEpochMilli(Date.parse(it)).atZone(ZoneId.systemDefault()).toLocalDate()
+        }
+    }
 
     addAuth(app, injector.getInstance<AuthService>().provider, userService)
     createRoutes(app, injector)

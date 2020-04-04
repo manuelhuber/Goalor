@@ -12,7 +12,13 @@
  * Do not edit the class manually.
  */
 
-import {Habit, HabitFromJSON, HabitToJSON,} from './';
+import { exists, mapValues } from '../runtime';
+import {
+    Habit,
+    HabitFromJSON,
+    HabitFromJSONTyped,
+    HabitToJSON,
+} from './';
 
 /**
  * 

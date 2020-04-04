@@ -12,8 +12,7 @@
  * Do not edit the class manually.
  */
 
-import {exists} from '../runtime';
-
+import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -26,6 +25,24 @@ export interface InlineObject {
      * @memberof InlineObject
      */
     image?: Blob;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject
+     */
+    title: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineObject
+     */
+    description?: string;
+    /**
+     * 
+     * @type {Date}
+     * @memberof InlineObject
+     */
+    date: Date;
 }
 
 export function InlineObjectFromJSON(json: any): InlineObject {
@@ -39,6 +56,9 @@ export function InlineObjectFromJSONTyped(json: any, ignoreDiscriminator: boolea
     return {
         
         'image': !exists(json, 'image') ? undefined : json['image'],
+        'title': json['title'],
+        'description': !exists(json, 'description') ? undefined : json['description'],
+        'date': (new Date(json['date'])),
     };
 }
 
@@ -52,6 +72,9 @@ export function InlineObjectToJSON(value?: InlineObject | null): any {
     return {
         
         'image': value.image,
+        'title': value.title,
+        'description': value.description,
+        'date': (value.date.toISOString().substr(0,10)),
     };
 }
 

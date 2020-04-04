@@ -13,22 +13,30 @@
  */
 
 
+import * as runtime from '../runtime';
 import {
+    ErrorResponse,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     JWTResponse,
     JWTResponseFromJSON,
+    JWTResponseToJSON,
     PasswordUpdate,
+    PasswordUpdateFromJSON,
     PasswordUpdateToJSON,
     Registration,
+    RegistrationFromJSON,
+    RegistrationToJSON,
     RegistrationResponse,
     RegistrationResponseFromJSON,
-    RegistrationToJSON,
+    RegistrationResponseToJSON,
     User,
     UserFromJSON,
+    UserToJSON,
     UserTO,
     UserTOFromJSON,
     UserTOToJSON,
 } from '../models';
-import * as runtime from '../runtime';
 
 export interface PostUserPasswordRequest {
     passwordUpdate?: PasswordUpdate;

@@ -13,19 +13,27 @@
  */
 
 
+import * as runtime from '../runtime';
 import {
+    ErrorResponse,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     Habit,
     HabitFromJSON,
+    HabitToJSON,
     HabitRequest,
+    HabitRequestFromJSON,
     HabitRequestToJSON,
     HabitResponse,
     HabitResponseFromJSON,
+    HabitResponseToJSON,
     HabitValue,
     HabitValueFromJSON,
+    HabitValueToJSON,
     HabitValueRequest,
+    HabitValueRequestFromJSON,
     HabitValueRequestToJSON,
 } from '../models';
-import * as runtime from '../runtime';
 
 export interface DeleteHabitsWithHabitRequest {
     habit: string;

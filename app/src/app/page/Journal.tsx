@@ -23,7 +23,7 @@ type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateT
 const Journal: React.FC<Props> = props => {
     const [showAdd, setShowAdd] = useState(false);
 
-    const onAdd = (title: string, date: string, description: string, file: File) => {
+    const onAdd = (title: string, date: Date, description: string, file: File) => {
         setShowAdd(false);
         props.createGratitude(title, date, description, file);
     };

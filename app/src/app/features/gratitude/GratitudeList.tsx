@@ -17,9 +17,8 @@ type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateT
 const GratitudeList: React.FC<Props> = props => {
     const [inEdit, setInEdit] = useState(null);
 
-    const submit = (gratitude: Gratitude) => (title: string, date: string, description: string, file: File) => {
-        const update = {...gratitude, title, date: new Date(date), description};
-        props.updateGratitude(update);
+    const submit = (gratitude: Gratitude) => (title: string, date: Date, description: string, file: File) => {
+        props.updateGratitude({...gratitude, title, date, description});
         setInEdit(false);
     };
 

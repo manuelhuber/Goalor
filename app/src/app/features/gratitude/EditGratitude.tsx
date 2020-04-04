@@ -12,7 +12,7 @@ type Props = {
     title?: string,
     description?: string,
     date?: Date,
-    onSubmit: (title: string, date: string, description: string, file: File) => void,
+    onSubmit: (title: string, date: Date, description: string, file: File) => void,
     onCancel: () => void
 }
 const EditGratitude: React.FC<Props> = props => {
@@ -25,7 +25,7 @@ const EditGratitude: React.FC<Props> = props => {
     const {value: title, bind: bindTitle} = useInput(props.title ?? "");
     const {value: description, bind: bindDescription} = useInput(props.description ?? "");
 
-    const submit = () => props.onSubmit(title, date, description, file);
+    const submit = () => props.onSubmit(title, new Date(date), description, file);
 
     function fileSelected(e) {
         let newFile: File = e.target.files[0];

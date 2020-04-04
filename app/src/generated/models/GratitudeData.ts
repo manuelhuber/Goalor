@@ -37,6 +37,12 @@ export interface GratitudeData {
      * @memberof GratitudeData
      */
     date: Date;
+    /**
+     * 
+     * @type {Blob}
+     * @memberof GratitudeData
+     */
+    image?: Blob;
 }
 
 export function GratitudeDataFromJSON(json: any): GratitudeData {
@@ -52,6 +58,7 @@ export function GratitudeDataFromJSONTyped(json: any, ignoreDiscriminator: boole
         'title': json['title'],
         'description': !exists(json, 'description') ? undefined : json['description'],
         'date': (new Date(json['date'])),
+        'image': !exists(json, 'image') ? undefined : json['image'],
     };
 }
 
@@ -67,6 +74,7 @@ export function GratitudeDataToJSON(value?: GratitudeData | null): any {
         'title': value.title,
         'description': value.description,
         'date': (value.date.toISOString().substr(0,10)),
+        'image': value.image,
     };
 }
 

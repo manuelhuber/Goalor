@@ -1,22 +1,17 @@
 import {Thunk} from "app/Store";
-import {Gratitude, GratitudeFromJSON} from "generated/models";
+import {Gratitude} from "generated/models";
 import {Action, Reducer} from "redux";
-import {gratitudeApi, post} from "util/fetch";
+import {gratitudeApi} from "util/fetch";
 
 // API calls -----------------------------------------------------------------------------------------------------------
 
 export const createGratitude = (
     title: string,
-    date: string,
+    date: Date,
     description: string,
     file: File): Thunk => async (dispatch) => {
-    const data = new FormData();
-    data.append("image", file);
-    data.append("title", title);
-    data.append("date", date);
-    data.append("description", description);
-    post(dispatch, "gratitude", data).then(e => {
-        dispatch(addGratitudes([GratitudeFromJSON(e)]))
+    gratitudeApi(dispatch).postGratitude({title, date, description, image: file}).then(value => {
+        dispatch(addGratitudes([value]))
     });
 };
 
@@ -27,7 +22,9 @@ export const deleteGratitude = (id: string): Thunk => async (dispatch) => {
 };
 
 export const updateGratitude = (gratitude: Gratitude): Thunk => async (dispatch) => {
-    gratitudeApi(dispatch).putGratitudeWithId({id: gratitude.id, gratitudeData: {...gratitude}}).then(value => {
+    gratitudeApi(dispatch)
+    .putGratitudeWithId({id: gratitude.id, gratitudeData: {...gratitude, image: null}})
+    .then(value => {
         dispatch(updateGratitudeAction(value));
     });
 };
